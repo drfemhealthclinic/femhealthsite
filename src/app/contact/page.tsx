@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/Motion";
+import { CLINIC } from "@/lib/clinic";
 
 export default function ContactPage() {
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -18,6 +19,24 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const subject = encodeURIComponent(
+      `Appointment Request - ${formData.name || "New Patient"}`
+    );
+    const body = encodeURIComponent(
+      [
+        `Name: ${formData.name}`,
+        `Phone: ${formData.phone}`,
+        `Preferred Date: ${formData.date || "Not specified"}`,
+        `Service: ${formData.service || "Not specified"}`,
+        "",
+        "Notes:",
+        formData.notes || "None",
+      ].join("\n")
+    );
+    const mailtoUrl = `${CLINIC.emailHref}?subject=${subject}&body=${body}`;
+    const anchor = document.createElement("a");
+    anchor.href = mailtoUrl;
+    anchor.click();
     setFormSubmitted(true);
   };
 
@@ -76,10 +95,10 @@ export default function ContactPage() {
                         Phone &amp; WhatsApp
                       </h3>
                       <a
-                        href="tel:+919876543210"
+                        href={CLINIC.phoneHref}
                         className="text-base text-[#1B1C1C] font-semibold hover:text-[#7B5A7E] transition-colors"
                       >
-                        +91 98765 43210
+                        {CLINIC.phoneDisplay}
                       </a>
                     </div>
                     <div className="bg-[#FDFBFC] p-5 rounded-xl border border-[#CFC3CC]/40 hover:border-[#C0A8C9] transition-colors">
@@ -87,10 +106,10 @@ export default function ContactPage() {
                         Email Inquiries
                       </h3>
                       <a
-                        href="mailto:contact@drpoojawadgaonkar.com"
+                        href={CLINIC.emailHref}
                         className="text-sm text-[#1B1C1C] font-semibold hover:text-[#7B5A7E] transition-colors break-all"
                       >
-                        contact@drpoojawadgaonkar.com
+                        {CLINIC.email}
                       </a>
                     </div>
                   </div>
@@ -125,7 +144,7 @@ export default function ContactPage() {
                         Appointment Request Received
                       </h3>
                       <p className="text-sm text-[#464647] max-w-md mx-auto font-light">
-                        Thank you, <strong>{formData.name || "Patient"}</strong>. Our clinic coordinator will contact you at <strong>{formData.phone}</strong> shortly to confirm your scheduled slot.
+                        Your appointment request has been drafted in your email app — just press Send to deliver it to <strong>{CLINIC.email}</strong>. You can also call us directly at <strong>{CLINIC.phoneDisplay}</strong> to book faster.
                       </p>
                       <button
                         onClick={() => setFormSubmitted(false)}
@@ -161,7 +180,7 @@ export default function ContactPage() {
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                             className="medical-input"
-                            placeholder="+91 98765 43210"
+                            placeholder="+91 92723 79105"
                             type="tel"
                           />
                         </div>
@@ -254,7 +273,7 @@ export default function ContactPage() {
                         </span>
                       </div>
                       <p className="text-xs font-medium text-[#7B5A7E]">
-                        VJ Happiness Street, Hinjewadi Phase 1, Pune
+                        {CLINIC.addressFull}
                       </p>
                       <div className="pt-2 text-xs text-[#464647] space-y-1">
                         <div className="flex items-center gap-1.5">
@@ -312,7 +331,7 @@ export default function ContactPage() {
                 <div className="bg-white rounded-2xl overflow-hidden organic-shadow border border-[#CFC3CC]/30 relative group h-72">
                   <iframe
                     title="FemHealth Clinic Map Location"
-                    src="https://maps.google.com/maps?q=VJ+Happiness+Street,+Hinjewadi,+Pune&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    src={CLINIC.mapEmbedSrc}
                     width="100%"
                     height="100%"
                     style={{ border: 0, filter: "contrast(1.05) saturate(1.1)" }}
@@ -323,12 +342,12 @@ export default function ContactPage() {
                   <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm p-3.5 border-t border-[#CFC3CC]/30 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-[#4E3953]">
-                        FemHealth Clinic, VJ Happiness Street
+                        {CLINIC.name}, VJ Happiness Street
                       </p>
-                      <p className="text-[11px] text-[#878787]">Hinjewadi, Pune</p>
+                      <p className="text-[11px] text-[#878787]">Hinjawadi, Pune - 411057</p>
                     </div>
                     <a
-                      href="https://maps.google.com/?q=VJ+Happiness+Street,+Hinjewadi,+Pune"
+                      href={CLINIC.directionsHref}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider hover:underline flex items-center gap-1"

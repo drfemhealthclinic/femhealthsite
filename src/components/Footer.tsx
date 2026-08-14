@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { CLINIC } from "@/lib/clinic";
 
 export default function Footer() {
   return (
@@ -22,6 +23,11 @@ export default function Footer() {
           </p>
           <p className="text-xs text-[#878787] pt-2">
             © {new Date().getFullYear()} FemHealth Clinic. Dr. Pooja Wadgaonkar (Patil). All rights reserved.
+          </p>
+          <p className="text-xs text-[#878787]">
+            <Link href="/privacy" className="hover:text-[#7B5A7E] transition-colors underline">
+              Privacy Policy
+            </Link>
           </p>
         </div>
 
@@ -76,9 +82,7 @@ export default function Footer() {
             <p className="font-semibold text-[#1B1C1C]">FemHealth Clinic (Hinjewadi):</p>
             <p>10:30 AM – 2:00 PM</p>
             <p>4:00 PM – 8:00 PM</p>
-            <p className="text-xs text-[#878787] pt-2">
-              VJ Happiness Street, Hinjewadi, Pune
-            </p>
+            <p className="text-xs text-[#878787] pt-2">{CLINIC.addressFull}</p>
           </div>
         </div>
       </div>

@@ -8,17 +8,23 @@ export default function Testimonials() {
     {
       quote:
         "Dr. Pooja provided exceptional care throughout my high-risk pregnancy. Her calm demeanor, clear guidance, and clinical expertise gave my entire family peace of mind.",
-      attribution: "\u2014 Maternity Patient",
+      role: "Maternity Patient",
+      stars: 5,
+      color: "#D46789",
     },
     {
       quote:
         "The laparoscopic procedure was minimally invasive with a very smooth recovery. I appreciated the thorough pre-op counseling and attentive post-operative follow-up.",
-      attribution: "\u2014 Surgery Patient",
+      role: "Surgery Patient",
+      stars: 5,
+      color: "#7B5A7E",
     },
     {
       quote:
         "Dr. Pooja\u2019s individualized fertility approach was both compassionate and transparent. Her empathetic counseling made a stressful journey feel hopeful.",
-      attribution: "\u2014 Fertility Patient",
+      role: "Fertility Patient",
+      stars: 5,
+      color: "#C0A8C9",
     },
   ];
 
@@ -37,26 +43,66 @@ export default function Testimonials() {
 
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8" staggerDelay={0.12}>
         {stories.map((story) => (
-          <StaggerItem key={story.attribution}>
+          <StaggerItem key={story.role}>
             <motion.div
               whileHover={{ y: -6 }}
               transition={{ duration: 0.25 }}
-              className="bg-white p-8 rounded-xl organic-shadow border border-[#CFC3CC]/30 relative flex flex-col justify-between group hover:border-[#C0A8C9] transition-colors h-full"
+              className="rounded-2xl organic-shadow border border-[#CFC3CC]/30 relative flex flex-col justify-between group hover:border-[#C0A8C9] transition-all duration-300 h-full overflow-hidden"
+              style={{ background: `linear-gradient(180deg, ${story.color}14 0%, #FFFFFF 45%)` }}
             >
-              <motion.span
-                initial={{ rotate: 0 }}
-                whileHover={{ rotate: -8, scale: 1.1 }}
-                className="material-symbols-outlined text-[#C0A8C9] opacity-60 text-4xl mb-4 inline-block"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                format_quote
-              </motion.span>
-              <p className="text-sm text-[#464647] leading-relaxed italic mb-6">
-                &ldquo;{story.quote}&rdquo;
-              </p>
-              <p className="text-xs font-bold text-[#7B5A7E] uppercase tracking-wider">
-                {story.attribution}
-              </p>
+
+              <div className="p-8 pt-10 flex flex-col flex-1">
+                {/* Quote icon */}
+                <span
+                  className="material-symbols-outlined text-[#C0A8C9]/30 text-5xl mb-4 inline-block self-start"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  format_quote
+                </span>
+
+                {/* Quote text */}
+                <p className="text-sm text-[#464647] leading-relaxed italic mb-6 flex-1">
+                  &ldquo;{story.quote}&rdquo;
+                </p>
+
+                {/* Star rating */}
+                <div className="flex gap-0.5 mb-4">
+                  {Array.from({ length: story.stars }).map((_, i) => (
+                    <span
+                      key={i}
+                      className="material-symbols-outlined text-sm"
+                      style={{ color: story.color, fontVariationSettings: "'FILL' 1" }}
+                    >
+                      star
+                    </span>
+                  ))}
+                </div>
+
+                {/* Attribution */}
+                <div className="flex items-center gap-3 pt-4 border-t border-[#CFC3CC]/30">
+                  <div className="relative shrink-0">
+                    <div
+                      className="absolute -inset-1.5 rounded-full blur-lg opacity-40"
+                      style={{ backgroundColor: story.color }}
+                    />
+                    <div
+                      className="relative w-10 h-10 rounded-full flex items-center justify-center text-white"
+                      style={{ backgroundColor: story.color }}
+                    >
+                      <span
+                        className="material-symbols-outlined text-lg"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        person
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[#4E3953]">{story.role}</p>
+                    <p className="text-[11px] text-[#878787] uppercase tracking-wider">Patient Story</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </StaggerItem>
         ))}

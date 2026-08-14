@@ -280,14 +280,6 @@ export default function AboutPage() {
                         Member of <strong className="text-[#1B1C1C] font-semibold">IMA</strong> (Indian Medical Association)
                       </span>
                     </li>
-                    <li className="flex items-start gap-2.5 leading-relaxed">
-                      <span className="material-symbols-outlined text-[#D46789] text-sm mt-1 shrink-0">
-                        check_circle
-                      </span>
-                      <span>
-                        Member of <strong className="text-[#1B1C1C] font-semibold">FOGSI</strong> (Federation of Obstetric &amp; Gynaecological Societies of India)
-                      </span>
-                    </li>
                   </ul>
                 </motion.div>
               </StaggerItem>
