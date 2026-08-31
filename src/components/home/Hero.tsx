@@ -8,7 +8,7 @@ import { FadeIn } from "@/components/ui/Motion";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden min-h-[90vh] flex items-center bg-[#2E1E32]">
-      {/* ── Background Video Layer ───────────────────────────────── */}
+      {/* ── Background Video Layer (Rotated Left -90deg for Correct Orientation) ── */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <video
           autoPlay
@@ -16,7 +16,17 @@ export default function Hero() {
           muted
           playsInline
           preload="auto"
-          className="w-full h-full object-cover scale-105"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) rotate(-90deg)",
+            width: "180vh",
+            height: "180vw",
+            minWidth: "120vmax",
+            minHeight: "120vmax",
+            objectFit: "cover",
+          }}
         >
           <source src="/hero-video.mov" type="video/mp4" />
           <source src="/hero-video/Interior video.mov" type="video/quicktime" />
@@ -150,17 +160,17 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Column: Doctor Photo tilted to the RIGHT (5 cols) */}
+          {/* Right Column: Doctor Photo (5 cols) */}
           <FadeIn direction="right" delay={0.3} className="lg:col-span-5">
             <div className="relative flex justify-center lg:justify-end">
               <div className="relative w-full max-w-sm sm:max-w-md group">
-                {/* Decorative background shape tilted to the RIGHT */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#E898A8]/30 via-[#C0A8C9]/25 to-[#D46789]/30 rounded-3xl rotate-3 scale-105 transition-transform duration-500 group-hover:rotate-1" />
+                {/* Decorative background shape */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#E898A8]/30 via-[#C0A8C9]/25 to-[#D46789]/30 rounded-3xl -rotate-2 scale-105 transition-transform duration-500 group-hover:rotate-0" />
 
-                {/* Photo container tilted to the RIGHT */}
+                {/* Photo container */}
                 <motion.div
                   whileHover={{ rotate: 0 }}
-                  className="relative overflow-hidden rounded-3xl shadow-2xl shadow-black/40 border-2 border-white/30 bg-[#241427] aspect-[3/4] rotate-2 transition-transform duration-500"
+                  className="relative overflow-hidden rounded-3xl shadow-2xl shadow-black/40 border-2 border-white/30 bg-[#241427] aspect-[3/4] -rotate-1 transition-transform duration-500"
                 >
                   <Image
                     src="/doctorphoto.jpg"
