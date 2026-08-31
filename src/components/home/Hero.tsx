@@ -174,7 +174,7 @@ export default function Hero() {
                     src="/dr-pooja-wadgaonkar-patil-gynaecologist-pune.jpeg"
                     alt="Dr. Pooja Wadgaonkar Patil - Leading Consultant Gynaecologist and Obstetrician in Hinjawadi Pune"
                     fill
-                    className="object-cover object-top group-hover:scale-103 transition-transform duration-700"
+                    className="object-cover object-top scale-115 origin-top group-hover:scale-120 transition-transform duration-700"
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     priority
                   />
