@@ -32,8 +32,8 @@ export default function Hero() {
           <source src="/hero-video/Interior video.mov" type="video/quicktime" />
         </video>
 
-        {/* Soft, Light Cinematic Veil for Contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/15 pointer-events-none" />
+        {/* Ultra-Light Featherweight Veil */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/18 to-black/8 pointer-events-none" />
       </div>
 
       {/* ── Main Hero Content ────────────────────────────────────── */}
@@ -66,7 +66,7 @@ export default function Hero() {
 
             {/* Giant Editorial Headline */}
             <FadeIn direction="up" delay={0.2}>
-              <div className="max-w-2xl">
+              <div className="max-w-2xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
                 <h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-serif-display text-white leading-[1.05] font-semibold tracking-tight">
                   Compassionate,{" "}
                   <span className="relative inline-block text-[#F7D6E4]">
@@ -89,9 +89,9 @@ export default function Hero() {
             </FadeIn>
 
             {/* Subtitle & Value Proposition */}
-            <div className="space-y-6">
+            <div className="space-y-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               <FadeIn direction="up" delay={0.3}>
-                <p className="text-lg md:text-xl text-white/85 max-w-lg leading-relaxed font-light">
+                <p className="text-lg md:text-xl text-white max-w-lg leading-relaxed font-light">
                   Advanced Maternity, Gynaecological Care, Minimal Access
                   Laparoscopic Surgery &amp; Complete Infertility Solutions in Hinjawadi, Pune.
                 </p>
