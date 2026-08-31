@@ -63,6 +63,7 @@ export default function AdminLoginPage() {
               alt="FemHealth Clinic"
               width={160}
               height={50}
+              style={{ height: "auto" }}
               className="h-auto object-contain"
             />
           </div>

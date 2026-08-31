@@ -80,6 +80,7 @@ export default function AdminLayout({
               alt="FemHealth Clinic"
               width={150}
               height={45}
+              style={{ height: "auto" }}
               className="h-auto object-contain"
             />
             <div className="mt-2 text-[10px] uppercase font-bold tracking-widest text-[#D46789]">
@@ -176,6 +177,7 @@ export default function AdminLayout({
             alt="FemHealth Clinic"
             width={120}
             height={36}
+            style={{ height: "auto" }}
             className="h-auto object-contain"
           />
           <span className="text-[10px] font-bold text-[#7B5A7E] uppercase">

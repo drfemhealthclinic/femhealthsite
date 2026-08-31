@@ -78,6 +78,7 @@ export default function Navbar() {
                 width={180}
                 height={55}
                 priority
+                style={{ height: "auto" }}
                 className="w-full h-auto object-contain transition-opacity duration-200 group-hover:opacity-90"
               />
             </motion.div>
