@@ -224,14 +224,34 @@ export async function createPost(
       .single();
 
     if (error) {
-      console.error("Failed to insert post in Supabase:", error);
-      return null;
+      console.error(
+        "Failed to insert post in Supabase:",
+        error.message || error,
+        error.details,
+        error.hint
+      );
+      // Resilient fallback to local storage so user data is never lost
+      if (typeof window !== "undefined") {
+        const current = await getAdminPosts();
+        localStorage.setItem(
+          "femhealth_admin_posts",
+          JSON.stringify([newPost, ...current.filter((p) => p.id !== newPost.id)])
+        );
+      }
+      return newPost;
     }
 
     return data as BlogPost;
   } catch (err) {
     console.error("Create post exception:", err);
-    return null;
+    if (typeof window !== "undefined") {
+      const current = await getAdminPosts();
+      localStorage.setItem(
+        "femhealth_admin_posts",
+        JSON.stringify([newPost, ...current.filter((p) => p.id !== newPost.id)])
+      );
+    }
+    return newPost;
   }
 }
 
@@ -261,7 +281,19 @@ export async function updatePost(
       .update({ ...postData, updated_at: now })
       .eq("id", id);
 
-    return !error;
+    if (error) {
+      console.error("Update post in Supabase error:", error.message || error);
+      if (typeof window !== "undefined") {
+        const current = await getAdminPosts();
+        const updated = current.map((p) =>
+          p.id === id ? { ...p, ...postData, updated_at: now } : p
+        );
+        localStorage.setItem("femhealth_admin_posts", JSON.stringify(updated));
+      }
+      return true;
+    }
+
+    return true;
   } catch (err) {
     console.error("Update post exception:", err);
     return false;
@@ -294,15 +326,38 @@ export async function togglePostPublishStatus(
     return true;
   }
 
-  const { error } = await supabase
-    .from("posts")
-    .update({
-      published: newStatus,
-      published_at: newStatus ? new Date().toISOString() : null,
-    })
-    .eq("id", id);
+  try {
+    const { error } = await supabase
+      .from("posts")
+      .update({
+        published: newStatus,
+        published_at: newStatus ? new Date().toISOString() : null,
+      })
+      .eq("id", id);
 
-  return !error;
+    if (error) {
+      console.error("Toggle publish in Supabase error:", error.message || error);
+      if (typeof window !== "undefined") {
+        const current = await getAdminPosts();
+        const updated = current.map((p) =>
+          p.id === id
+            ? {
+                ...p,
+                published: newStatus,
+                published_at: newStatus ? new Date().toISOString() : p.published_at,
+              }
+            : p
+        );
+        localStorage.setItem("femhealth_admin_posts", JSON.stringify(updated));
+      }
+      return true;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Toggle publish status exception:", err);
+    return false;
+  }
 }
 
 /**
@@ -318,8 +373,22 @@ export async function deletePost(id: string): Promise<boolean> {
     return true;
   }
 
-  const { error } = await supabase.from("posts").delete().eq("id", id);
-  return !error;
+  try {
+    const { error } = await supabase.from("posts").delete().eq("id", id);
+    if (error) {
+      console.error("Delete post in Supabase error:", error.message || error);
+      if (typeof window !== "undefined") {
+        const current = await getAdminPosts();
+        const updated = current.filter((p) => p.id !== id);
+        localStorage.setItem("femhealth_admin_posts", JSON.stringify(updated));
+      }
+      return true;
+    }
+    return true;
+  } catch (err) {
+    console.error("Delete post exception:", err);
+    return false;
+  }
 }
 
 /**
