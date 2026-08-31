@@ -160,7 +160,7 @@ export default function Hero() {
 
           {/* Right Column: Doctor Photo (5 cols) */}
           <FadeIn direction="right" delay={0.3} className="lg:col-span-5">
-            <div className="relative flex justify-center lg:justify-end">
+            <div className="relative flex justify-center lg:justify-end lg:translate-x-2">
               <div className="relative w-full max-w-sm sm:max-w-md group">
                 {/* Decorative background shape */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#E898A8]/30 via-[#C0A8C9]/25 to-[#D46789]/30 rounded-3xl -rotate-2 scale-105 transition-transform duration-500 group-hover:rotate-0" />
@@ -174,7 +174,7 @@ export default function Hero() {
                     src="/hero2.jpg"
                     alt="Dr. Pooja Wadgaonkar Patil - Leading Consultant Gynaecologist and Obstetrician in Hinjawadi Pune"
                     fill
-                    className="object-cover object-top scale-115 origin-top group-hover:scale-120 transition-transform duration-700"
+                    className="object-cover object-[65%_top] scale-115 origin-top group-hover:scale-120 transition-transform duration-700"
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     priority
                   />
