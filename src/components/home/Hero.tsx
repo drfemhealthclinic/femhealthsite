@@ -39,8 +39,8 @@ export default function Hero() {
       {/* ── Main Hero Content ────────────────────────────────────── */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-12 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Column: Headline & Clinical Actions (7 cols) */}
-          <div className="lg:col-span-7 space-y-8 md:space-y-10 text-white">
+          {/* Left Column: Headline & Clinical Actions (6 cols) */}
+          <div className="lg:col-span-6 space-y-8 md:space-y-10 text-white">
             {/* Doctor Name + Credentials */}
             <FadeIn direction="down" delay={0.1}>
               <div className="flex flex-wrap items-center gap-3 sm:gap-4">
@@ -158,24 +158,24 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Column: Doctor Photo (5 cols) */}
-          <FadeIn direction="right" delay={0.3} className="lg:col-span-5">
-            <div className="relative flex justify-center lg:justify-end lg:translate-x-2">
-              <div className="relative w-full max-w-sm sm:max-w-md group">
+          {/* Right Column: Doctor Photo (6 cols) */}
+          <FadeIn direction="right" delay={0.3} className="lg:col-span-6">
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-xl group">
                 {/* Decorative background shape */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#E898A8]/30 via-[#C0A8C9]/25 to-[#D46789]/30 rounded-3xl -rotate-2 scale-105 transition-transform duration-500 group-hover:rotate-0" />
 
                 {/* Photo container */}
                 <motion.div
                   whileHover={{ rotate: 0 }}
-                  className="relative overflow-hidden rounded-3xl shadow-2xl shadow-black/40 border-2 border-white/30 bg-[#241427] aspect-[3/4] -rotate-1 transition-transform duration-500"
+                  className="relative overflow-hidden rounded-3xl shadow-2xl shadow-black/40 border-2 border-white/30 bg-[#241427] aspect-[4/5] sm:aspect-[3/4] -rotate-1 transition-transform duration-500"
                 >
                   <Image
                     src="/hero2.jpg"
                     alt="Dr. Pooja Wadgaonkar Patil - Leading Consultant Gynaecologist and Obstetrician in Hinjawadi Pune"
                     fill
                     className="object-cover object-[65%_top] scale-115 origin-top group-hover:scale-120 transition-transform duration-700"
-                    sizes="(max-width: 1024px) 100vw, 38vw"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     priority
                   />
 
