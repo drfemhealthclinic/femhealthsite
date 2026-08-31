@@ -32,8 +32,8 @@ export default function Hero() {
           <source src="/hero-video/Interior video.mov" type="video/quicktime" />
         </video>
 
-        {/* Ultra-Light Featherweight Veil */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/18 to-black/8 pointer-events-none" />
+        {/* Rich Dark Cinematic Veil */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1e0e22]/80 via-[#2e1732]/65 to-[#1e0e22]/50 pointer-events-none" />
       </div>
 
       {/* ── Main Hero Content ────────────────────────────────────── */}
