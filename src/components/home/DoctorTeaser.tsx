@@ -70,8 +70,8 @@ export default function DoctorTeaser() {
               {/* Photo container */}
               <div className="relative w-full h-full rounded-2xl overflow-hidden organic-shadow border border-[#CFC3CC]/40">
                 <Image
-                  src="/about-image.jpeg"
-                  alt="Dr. Pooja Wadgaonkar Patil - Consultant Gynaecologist and Laparoscopic Surgeon"
+                  src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                  alt="Dr. Pooja Wadgaonkar Patil - Expert Obstetrician and Advanced Laparoscopic Surgeon Pune"
                   fill
                   className="object-cover object-top"
                   sizes="(max-width: 768px) 100vw, 50vw"

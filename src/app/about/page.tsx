@@ -61,8 +61,8 @@ export default function AboutPage() {
                     <div className="relative bg-white rounded-2xl border border-[#CFC3CC]/40 overflow-hidden shadow-xl shadow-[#7B5A7E]/8">
                       <div className="relative aspect-[3/4] w-full">
                         <Image
-                          src="/about-image.jpeg"
-                          alt="Dr. Pooja Wadgaonkar Patil - Consultant Gynaecologist and Laparoscopic Surgeon"
+                          src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                          alt="Dr. Pooja Wadgaonkar Patil - Expert Obstetrician and Advanced Laparoscopic Surgeon Pune"
                           fill
                           className="object-cover object-top"
                           sizes="(max-width: 768px) 100vw, 40vw"
