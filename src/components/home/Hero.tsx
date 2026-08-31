@@ -171,7 +171,7 @@ export default function Hero() {
                   className="relative overflow-hidden rounded-3xl shadow-2xl shadow-black/40 border-2 border-white/30 bg-[#241427] aspect-[3/4] -rotate-1 transition-transform duration-500"
                 >
                   <Image
-                    src="/doctorphoto.jpg"
+                    src="/herophoto.jpg"
                     alt="Dr. Pooja Wadgaonkar Patil - Consultant Gynaecologist and Laparoscopic Surgeon"
                     fill
                     className="object-cover object-top group-hover:scale-103 transition-transform duration-700"
