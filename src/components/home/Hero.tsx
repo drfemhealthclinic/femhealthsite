@@ -171,10 +171,10 @@ export default function Hero() {
                   className="relative overflow-hidden rounded-3xl shadow-2xl shadow-black/40 border-2 border-white/30 bg-[#241427] aspect-[3/4] -rotate-1 transition-transform duration-500"
                 >
                   <Image
-                    src="/dr-pooja-wadgaonkar-patil-gynaecologist-pune.jpeg"
+                    src="/hero2.jpg"
                     alt="Dr. Pooja Wadgaonkar Patil - Leading Consultant Gynaecologist and Obstetrician in Hinjawadi Pune"
                     fill
-                    className="object-cover object-top scale-115 origin-top group-hover:scale-120 transition-transform duration-700"
+                    className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     priority
                   />
