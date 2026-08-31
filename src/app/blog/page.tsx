@@ -1,0 +1,328 @@
+"use client";
+
+import { useState, useMemo, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/Motion";
+import { BlogPost, BLOG_CATEGORIES, BlogCategory, FALLBACK_POSTS } from "@/lib/blog-fallback";
+import { getPublishedPosts } from "@/lib/supabase";
+
+export default function BlogIndexPage() {
+  const [posts, setPosts] = useState<BlogPost[]>(FALLBACK_POSTS);
+  const [selectedCategory, setSelectedCategory] = useState<BlogCategory>("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const fetched = await getPublishedPosts();
+        if (fetched && fetched.length > 0) {
+          setPosts(fetched);
+        }
+      } catch (err) {
+        console.error("Error loading blog posts:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      const matchesCategory =
+        selectedCategory === "All" || post.category === selectedCategory;
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        post.title.toLowerCase().includes(q) ||
+        post.excerpt.toLowerCase().includes(q) ||
+        post.category.toLowerCase().includes(q) ||
+        post.tags.some((tag) => tag.toLowerCase().includes(q));
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [posts, selectedCategory, searchQuery]);
+
+  const featuredPost = posts[0];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-[#FDFBFC]">
+      <Navbar />
+
+      <main className="flex-1 pt-28 pb-20">
+        {/* Hero Section */}
+        <section className="px-5 md:px-12 py-12 md:py-16 max-w-7xl mx-auto text-center space-y-5">
+          <FadeIn direction="up">
+            <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">
+              Evidence-Based Women&apos;s Health
+            </span>
+          </FadeIn>
+
+          <FadeIn direction="up" delay={0.1}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif-display text-[#4E3953] max-w-4xl mx-auto leading-tight font-semibold">
+              Medical Insights &amp; Patient Education
+            </h1>
+          </FadeIn>
+
+          <FadeIn direction="up" delay={0.2}>
+            <p className="text-base sm:text-lg text-[#464647] max-w-2xl mx-auto leading-relaxed font-light">
+              Clear, compassionate, and doctor-authored guides on maternity, fertility, laparoscopic surgery, and hormonal health by Dr. Pooja Wadgaonkar Patil.
+            </p>
+          </FadeIn>
+
+          {/* Search & Category Filter Controls */}
+          <FadeIn direction="up" delay={0.3}>
+            <div className="pt-6 max-w-2xl mx-auto space-y-6">
+              {/* Search Bar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search articles by topic, condition, or keyword..."
+                  className="w-full px-5 py-3.5 pl-12 rounded-full border border-[#CFC3CC]/60 bg-white text-[#464647] placeholder:text-[#878787] text-sm focus:outline-none focus:border-[#7B5A7E] focus:ring-2 focus:ring-[#7B5A7E]/20 shadow-sm transition-all"
+                />
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#7B5A7E]/70 text-xl">
+                  search
+                </span>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#878787] hover:text-[#4E3953] bg-[#EFEDEE] px-2 py-0.5 rounded-full"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              {/* Category Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {BLOG_CATEGORIES.map((cat) => {
+                  const isSelected = selectedCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
+                        isSelected
+                          ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20 scale-105"
+                          : "bg-white border border-[#CFC3CC]/50 text-[#464647] hover:border-[#7B5A7E] hover:text-[#7B5A7E]"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+
+        {/* Featured Spotlight (Only if No Search Query and "All" category is selected) */}
+        {!searchQuery && selectedCategory === "All" && featuredPost && (
+          <section className="px-5 md:px-12 max-w-7xl mx-auto mb-16">
+            <FadeIn direction="up">
+              <Link href={`/blog/${featuredPost.slug}`} className="group block">
+                <div className="bg-white rounded-3xl overflow-hidden border border-[#CFC3CC]/50 organic-shadow hover:shadow-2xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-0">
+                  {/* Left Column: Image */}
+                  <div className="lg:col-span-7 relative h-72 lg:h-[420px] bg-[#F3EEF5] overflow-hidden">
+                    {featuredPost.cover_image && (
+                      <Image
+                        src={featuredPost.cover_image}
+                        alt={featuredPost.title}
+                        fill
+                        priority
+                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    )}
+                    <div className="absolute top-5 left-5 bg-[#7B5A7E] text-white px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">
+                      Featured Guide
+                    </div>
+                  </div>
+
+                  {/* Right Column: Details */}
+                  <div className="lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between space-y-6 bg-gradient-to-br from-white to-[#FDFBFC]">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 text-xs text-[#878787] font-medium">
+                        <span className="text-[#D46789] font-bold uppercase tracking-wider">
+                          {featuredPost.category}
+                        </span>
+                        <span>•</span>
+                        <span>{featuredPost.reading_time}</span>
+                      </div>
+                      <h2 className="text-2xl lg:text-3xl font-serif-display font-bold text-[#4E3953] group-hover:text-[#7B5A7E] transition-colors leading-tight">
+                        {featuredPost.title}
+                      </h2>
+                      <p className="text-sm lg:text-base text-[#464647] font-light leading-relaxed">
+                        {featuredPost.excerpt}
+                      </p>
+                    </div>
+
+                    <div className="pt-6 border-t border-[#CFC3CC]/30 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#7B5A7E]/10 flex items-center justify-center text-[#7B5A7E] font-bold text-xs">
+                          PW
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-[#4E3953]">
+                            {featuredPost.author_name}
+                          </p>
+                          <p className="text-[10px] text-[#878787]">
+                            Consultant Gynaecologist
+                          </p>
+                        </div>
+                      </div>
+
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#7B5A7E] group-hover:translate-x-1 transition-transform">
+                        Read Full Article
+                        <span className="material-symbols-outlined text-base">arrow_forward</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </FadeIn>
+          </section>
+        )}
+
+        {/* Articles Grid */}
+        <section className="px-5 md:px-12 max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#CFC3CC]/30">
+            <h2 className="text-xl font-serif-display font-semibold text-[#4E3953]">
+              {selectedCategory === "All" ? "All Educational Articles" : `${selectedCategory} Articles`}
+              <span className="ml-2 text-xs font-normal text-[#878787]">
+                ({filteredPosts.length} {filteredPosts.length === 1 ? "article" : "articles"})
+              </span>
+            </h2>
+          </div>
+
+          {filteredPosts.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-2xl border border-[#CFC3CC]/30 p-8 space-y-4">
+              <span className="material-symbols-outlined text-5xl text-[#C0A8C9]">
+                article_shortcut
+              </span>
+              <h3 className="text-xl font-serif-display text-[#4E3953]">
+                No articles found
+              </h3>
+              <p className="text-sm text-[#878787] max-w-md mx-auto font-light">
+                We couldn&apos;t find any articles matching your search criteria. Try adjusting your keywords or clearing the category filter.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("All");
+                }}
+                className="mt-2 inline-flex items-center gap-2 bg-[#7B5A7E] text-white px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-[#4E3953] transition-colors"
+              >
+                Reset Filters
+              </button>
+            </div>
+          ) : (
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" staggerDelay={0.08}>
+              {filteredPosts.map((post) => (
+                <StaggerItem key={post.id}>
+                  <Link href={`/blog/${post.slug}`} className="group block h-full">
+                    <motion.article
+                      whileHover={{ y: -6 }}
+                      transition={{ duration: 0.25 }}
+                      className="bg-white rounded-2xl overflow-hidden border border-[#CFC3CC]/40 organic-shadow hover:shadow-xl hover:border-[#7B5A7E]/40 transition-all duration-300 flex flex-col h-full"
+                    >
+                      {/* Image Container */}
+                      <div className="relative w-full h-52 bg-[#F3EEF5] overflow-hidden">
+                        {post.cover_image ? (
+                          <Image
+                            src={post.cover_image}
+                            alt={post.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[#7B5A7E]/40">
+                            <span className="material-symbols-outlined text-5xl">menu_book</span>
+                          </div>
+                        )}
+                        <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm">
+                          {post.category}
+                        </div>
+                      </div>
+
+                      {/* Content Details */}
+                      <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div className="space-y-2.5">
+                          <div className="flex items-center gap-3 text-xs text-[#878787]">
+                            <span>
+                              {new Date(post.published_at || post.created_at).toLocaleDateString("en-IN", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </span>
+                            <span>•</span>
+                            <span>{post.reading_time}</span>
+                          </div>
+                          <h3 className="text-lg font-serif-display font-semibold text-[#4E3953] group-hover:text-[#7B5A7E] transition-colors leading-snug line-clamp-2">
+                            {post.title}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-[#464647] leading-relaxed line-clamp-3 font-light">
+                            {post.excerpt}
+                          </p>
+                        </div>
+
+                        {/* Footer tags and link */}
+                        <div className="pt-4 border-t border-[#CFC3CC]/20 flex items-center justify-between">
+                          <span className="text-[11px] font-semibold text-[#878787]">
+                            By {post.author_name}
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-[#7B5A7E] group-hover:translate-x-1 transition-transform">
+                            <span>Read</span>
+                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                          </span>
+                        </div>
+                      </div>
+                    </motion.article>
+                  </Link>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          )}
+        </section>
+
+        {/* Consultation Call to Action */}
+        <section className="px-5 md:px-12 max-w-7xl mx-auto mt-24">
+          <FadeIn direction="up">
+            <div className="rounded-3xl bg-gradient-to-br from-[#4E3953] to-[#7B5A7E] text-white p-8 md:p-14 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="space-y-4 max-w-xl text-center md:text-left z-10">
+                <span className="text-xs uppercase tracking-widest text-[#E6C2D6] font-bold">
+                  Personalised Care
+                </span>
+                <h3 className="text-2xl md:text-4xl font-serif-display font-bold leading-tight">
+                  Have questions about your specific condition?
+                </h3>
+                <p className="text-sm md:text-base text-[#FDFBFC]/90 font-light leading-relaxed">
+                  Book a confidential, one-on-one consultation with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjawadi or partner hospitals.
+                </p>
+              </div>
+              <div className="shrink-0 z-10">
+                <Link
+                  href="/contact#book"
+                  className="inline-flex items-center justify-center bg-white text-[#4E3953] px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[#FDFBFC] hover:shadow-xl transition-all active:scale-95 duration-200"
+                >
+                  Book Consultation
+                </Link>
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
