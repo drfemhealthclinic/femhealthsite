@@ -70,7 +70,7 @@ export default function DoctorTeaser() {
               {/* Photo container */}
               <div className="relative w-full h-full rounded-2xl overflow-hidden organic-shadow border border-[#CFC3CC]/40">
                 <Image
-                  src="/doctorphoto.jpg"
+                  src="/about-image.jpeg"
                   alt="Dr. Pooja Wadgaonkar Patil - Consultant Gynaecologist and Laparoscopic Surgeon"
                   fill
                   className="object-cover object-top"
