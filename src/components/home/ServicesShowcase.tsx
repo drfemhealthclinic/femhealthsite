@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/Motion";
 
 interface ClinicalOffering {
-  num: string;
   badge: string;
   icon: string;
   title: string;
@@ -21,7 +20,6 @@ interface ClinicalOffering {
 
 const CLINICAL_OFFERINGS: ClinicalOffering[] = [
   {
-    num: "01",
     badge: "Reproductive Medicine",
     icon: "family_restroom",
     title: "Advanced Infertility & Reproductive Health",
@@ -43,7 +41,6 @@ const CLINICAL_OFFERINGS: ClinicalOffering[] = [
     blogCategoryLink: "/blog?category=Infertility%20%26%20IVF",
   },
   {
-    num: "02",
     badge: "Minimally Invasive Surgery",
     icon: "healing",
     title: "Minimally Invasive / Laparoscopic Surgery",
@@ -68,7 +65,6 @@ const CLINICAL_OFFERINGS: ClinicalOffering[] = [
     blogCategoryLink: "/blog?category=Laparoscopic%20Surgery",
   },
   {
-    num: "03",
     badge: "Maternal & Fetal Care",
     icon: "pregnant_woman",
     title: "Comprehensive Obstetrics (Maternity Care)",
@@ -90,7 +86,6 @@ const CLINICAL_OFFERINGS: ClinicalOffering[] = [
     blogCategoryLink: "/blog?category=Maternity%20%26%20Pregnancy",
   },
   {
-    num: "04",
     badge: "Women's Wellness & Prevention",
     icon: "health_and_safety",
     title: "General & Preventive Gynaecology",
@@ -141,7 +136,7 @@ export default function ServicesShowcase() {
             const isEven = idx % 2 === 1; // 0: Left Photo, 1: Right Photo, 2: Left Photo, 3: Right Photo
 
             return (
-              <FadeIn key={offering.num} direction="up" delay={0.1}>
+              <FadeIn key={offering.title} direction="up" delay={0.1}>
                 <div
                   className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center ${
                     isEven ? "lg:flex-row-reverse" : ""
@@ -169,24 +164,20 @@ export default function ServicesShowcase() {
                         {/* Gradient Overlay for Tag Legibility */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-                        {/* Top Floating Number Badge */}
-                        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-serif-display font-bold text-[#4E3953] shadow-md flex items-center gap-2">
-                          <span className="text-[#D46789]">{offering.num}</span>
-                          <span className="w-1 h-1 rounded-full bg-[#CFC3CC]" />
-                          <span className="text-[11px] font-sans text-[#7B5A7E] font-semibold">
+                        {/* Top Floating Badge */}
+                        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-[#7B5A7E] shadow-md flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-sm text-[#D46789]">
+                            {offering.icon}
+                          </span>
+                          <span className="text-[11px] font-sans tracking-wide">
                             {offering.badge}
                           </span>
                         </div>
 
-                        {/* Bottom Floating Icon & Title */}
+                        {/* Bottom Floating Subtitle */}
                         <div className="absolute bottom-5 left-5 right-5 text-white flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shrink-0 border border-white/30">
-                            <span className="material-symbols-outlined text-xl">
-                              {offering.icon}
-                            </span>
-                          </div>
-                          <p className="text-xs font-semibold text-white/90 leading-tight">
-                            Personalized Care by Dr. Pooja Wadgaonkar Patil
+                          <p className="text-xs font-medium text-white/95 leading-tight bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-white/20">
+                            Dr. Pooja Wadgaonkar Patil · Specialist Care
                           </p>
                         </div>
                       </div>
@@ -201,11 +192,11 @@ export default function ServicesShowcase() {
                   >
                     {/* Header */}
                     <div className="space-y-3">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7B5A7E]/10 text-[#7B5A7E] text-xs font-bold uppercase tracking-wider">
+                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#7B5A7E]/10 text-[#7B5A7E] text-xs font-bold uppercase tracking-wider">
                         <span className="material-symbols-outlined text-sm">
                           {offering.icon}
                         </span>
-                        <span>Pillar {offering.num}</span>
+                        <span>{offering.badge}</span>
                       </div>
 
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-serif-display font-bold text-[#4E3953] leading-tight">
