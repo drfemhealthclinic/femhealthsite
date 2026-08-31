@@ -28,8 +28,7 @@ const HIGHLIGHTS = [
     title: "Infertility",
     desc: "Personalised Conception Plans & Fertility Enhancement",
     icon: "family_restroom",
-    image:
-      "https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?q=80&w=1200&auto=format&fit=crop",
+    image: "/infertility.jpg",
     imageAlt: "Infertility - Personalised Conception Plans & Fertility Enhancement",
   },
   {

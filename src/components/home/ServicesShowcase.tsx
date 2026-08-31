@@ -25,8 +25,7 @@ const CLINICAL_OFFERINGS: ClinicalOffering[] = [
     title: "Advanced Infertility & Reproductive Health",
     description:
       "Evidence-based fertility evaluation, precision cycle monitoring, and personalized reproductive care designed to support and guide your journey to parenthood.",
-    image:
-      "https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?q=80&w=1200&auto=format&fit=crop",
+    image: "/infertility.jpg",
     imageAlt: "Advanced Fertility and Reproductive Health Consultation",
     items: [
       "Comprehensive Fertility Evaluation (Male & Female)",
