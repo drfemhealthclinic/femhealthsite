@@ -6,8 +6,13 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/Motion";
-import { BlogPost, BLOG_CATEGORIES, BlogCategory, FALLBACK_POSTS } from "@/lib/blog-fallback";
+import { FadeIn } from "@/components/ui/Motion";
+import {
+  BlogPost,
+  BLOG_CATEGORIES,
+  BlogCategory,
+  FALLBACK_POSTS,
+} from "@/lib/blog-fallback";
 import { getPublishedPosts } from "@/lib/supabase";
 
 export default function BlogIndexPage() {
@@ -35,20 +40,24 @@ export default function BlogIndexPage() {
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       const matchesCategory =
-        selectedCategory === "All" || post.category === selectedCategory;
+        selectedCategory === "All" ||
+        (post.category || "").trim().toLowerCase() ===
+          selectedCategory.trim().toLowerCase();
+
       const q = searchQuery.toLowerCase().trim();
+      const tags = Array.isArray(post.tags) ? post.tags : [];
       const matchesSearch =
         !q ||
-        post.title.toLowerCase().includes(q) ||
-        post.excerpt.toLowerCase().includes(q) ||
-        post.category.toLowerCase().includes(q) ||
-        post.tags.some((tag) => tag.toLowerCase().includes(q));
+        (post.title || "").toLowerCase().includes(q) ||
+        (post.excerpt || "").toLowerCase().includes(q) ||
+        (post.category || "").toLowerCase().includes(q) ||
+        tags.some((tag) => (tag || "").toLowerCase().includes(q));
 
       return matchesCategory && matchesSearch;
     });
   }, [posts, selectedCategory, searchQuery]);
 
-  const featuredPost = posts[0];
+  const featuredPost = posts.length > 0 ? posts[0] : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDFBFC]">
@@ -107,6 +116,7 @@ export default function BlogIndexPage() {
                   return (
                     <button
                       key={cat}
+                      type="button"
                       onClick={() => setSelectedCategory(cat)}
                       className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
                         isSelected
@@ -214,83 +224,89 @@ export default function BlogIndexPage() {
                 We couldn&apos;t find any articles matching your search criteria. Try adjusting your keywords or clearing the category filter.
               </p>
               <button
+                type="button"
                 onClick={() => {
                   setSearchQuery("");
                   setSelectedCategory("All");
                 }}
-                className="mt-2 inline-flex items-center gap-2 bg-[#7B5A7E] text-white px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-[#4E3953] transition-colors"
+                className="mt-2 inline-flex items-center gap-2 bg-[#7B5A7E] text-white px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-[#4E3953] transition-colors cursor-pointer"
               >
                 Reset Filters
               </button>
             </div>
           ) : (
-            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" staggerDelay={0.08}>
-              {filteredPosts.map((post) => (
-                <StaggerItem key={post.id}>
-                  <Link href={`/blog/${post.slug}`} className="group block h-full">
-                    <motion.article
-                      whileHover={{ y: -6 }}
-                      transition={{ duration: 0.25 }}
-                      className="bg-white rounded-2xl overflow-hidden border border-[#CFC3CC]/40 organic-shadow hover:shadow-xl hover:border-[#7B5A7E]/40 transition-all duration-300 flex flex-col h-full"
-                    >
-                      {/* Image Container */}
-                      <div className="relative w-full h-52 bg-[#F3EEF5] overflow-hidden">
-                        {post.cover_image ? (
-                          <Image
-                            src={post.cover_image}
-                            alt={post.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[#7B5A7E]/40">
-                            <span className="material-symbols-outlined text-5xl">menu_book</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <AnimatePresence mode="popLayout">
+                {filteredPosts.map((post) => (
+                  <motion.div
+                    key={post.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <Link href={`/blog/${post.slug}`} className="group block h-full">
+                      <article className="bg-white rounded-2xl overflow-hidden border border-[#CFC3CC]/40 organic-shadow hover:shadow-xl hover:border-[#7B5A7E]/40 transition-all duration-300 flex flex-col h-full hover:-translate-y-1.5">
+                        {/* Image Container */}
+                        <div className="relative w-full h-52 bg-[#F3EEF5] overflow-hidden">
+                          {post.cover_image ? (
+                            <Image
+                              src={post.cover_image}
+                              alt={post.title}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[#7B5A7E]/40">
+                              <span className="material-symbols-outlined text-5xl">menu_book</span>
+                            </div>
+                          )}
+                          <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm">
+                            {post.category}
                           </div>
-                        )}
-                        <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm">
-                          {post.category}
                         </div>
-                      </div>
 
-                      {/* Content Details */}
-                      <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div className="space-y-2.5">
-                          <div className="flex items-center gap-3 text-xs text-[#878787]">
-                            <span>
-                              {new Date(post.published_at || post.created_at).toLocaleDateString("en-IN", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              })}
+                        {/* Content Details */}
+                        <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                          <div className="space-y-2.5">
+                            <div className="flex items-center gap-3 text-xs text-[#878787]">
+                              <span>
+                                {new Date(post.published_at || post.created_at).toLocaleDateString("en-IN", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                })}
+                              </span>
+                              <span>•</span>
+                              <span>{post.reading_time}</span>
+                            </div>
+                            <h3 className="text-lg font-serif-display font-semibold text-[#4E3953] group-hover:text-[#7B5A7E] transition-colors leading-snug line-clamp-2">
+                              {post.title}
+                            </h3>
+                            <p className="text-xs sm:text-sm text-[#464647] leading-relaxed line-clamp-3 font-light">
+                              {post.excerpt}
+                            </p>
+                          </div>
+
+                          {/* Footer tags and link */}
+                          <div className="pt-4 border-t border-[#CFC3CC]/20 flex items-center justify-between">
+                            <span className="text-[11px] font-semibold text-[#878787]">
+                              By {post.author_name}
                             </span>
-                            <span>•</span>
-                            <span>{post.reading_time}</span>
+                            <span className="inline-flex items-center gap-1 text-xs font-bold text-[#7B5A7E] group-hover:translate-x-1 transition-transform">
+                              <span>Read</span>
+                              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                            </span>
                           </div>
-                          <h3 className="text-lg font-serif-display font-semibold text-[#4E3953] group-hover:text-[#7B5A7E] transition-colors leading-snug line-clamp-2">
-                            {post.title}
-                          </h3>
-                          <p className="text-xs sm:text-sm text-[#464647] leading-relaxed line-clamp-3 font-light">
-                            {post.excerpt}
-                          </p>
                         </div>
-
-                        {/* Footer tags and link */}
-                        <div className="pt-4 border-t border-[#CFC3CC]/20 flex items-center justify-between">
-                          <span className="text-[11px] font-semibold text-[#878787]">
-                            By {post.author_name}
-                          </span>
-                          <span className="inline-flex items-center gap-1 text-xs font-bold text-[#7B5A7E] group-hover:translate-x-1 transition-transform">
-                            <span>Read</span>
-                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                          </span>
-                        </div>
-                      </div>
-                    </motion.article>
-                  </Link>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
+                      </article>
+                    </Link>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           )}
         </section>
 
@@ -309,13 +325,22 @@ export default function BlogIndexPage() {
                   Book a confidential, one-on-one consultation with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjawadi or partner hospitals.
                 </p>
               </div>
-              <div className="shrink-0 z-10">
+
+              <div className="flex flex-col sm:flex-row items-center gap-4 shrink-0 z-10 w-full sm:w-auto">
                 <Link
-                  href="/contact#book"
-                  className="inline-flex items-center justify-center bg-white text-[#4E3953] px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[#FDFBFC] hover:shadow-xl transition-all active:scale-95 duration-200"
+                  href="/contact"
+                  className="w-full sm:w-auto text-center bg-white text-[#7B5A7E] hover:bg-[#FAF7F9] px-7 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-lg active:scale-95"
                 >
-                  Book Consultation
+                  Book Appointment
                 </Link>
+                <a
+                  href="https://wa.me/918446608581?text=Hello%20Dr.%20Pooja,%20I%20would%20like%20to%20inquire%20about%20a%20consultation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto text-center border border-white/40 hover:bg-white/10 text-white px-7 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all"
+                >
+                  WhatsApp Clinic
+                </a>
               </div>
             </div>
           </FadeIn>
