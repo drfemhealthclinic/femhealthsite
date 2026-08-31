@@ -31,6 +31,9 @@ export default function Hero() {
           <source src="/hero-video.mov" type="video/mp4" />
           <source src="/hero-video/Interior video.mov" type="video/quicktime" />
         </video>
+
+        {/* Soft, Light Cinematic Veil for Contrast */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/15 pointer-events-none" />
       </div>
 
       {/* ── Main Hero Content ────────────────────────────────────── */}
