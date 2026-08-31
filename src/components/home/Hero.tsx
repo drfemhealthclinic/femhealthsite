@@ -31,11 +31,6 @@ export default function Hero() {
           <source src="/hero-video.mov" type="video/mp4" />
           <source src="/hero-video/Interior video.mov" type="video/quicktime" />
         </video>
-
-        {/* Rich Cinematic Overlay for Text Legibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#241427]/95 via-[#3D2543]/88 to-[#241427]/75 backdrop-blur-[1.5px]" />
-        {/* Soft Radial Ambient Glow */}
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-[#D46789]/15 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* ── Main Hero Content ────────────────────────────────────── */}
