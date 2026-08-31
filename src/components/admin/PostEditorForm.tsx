@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,43 +8,187 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BlogPost, BLOG_CATEGORIES } from "@/lib/blog-fallback";
 import { createPost, updatePost, uploadBlogImage } from "@/lib/supabase";
 
+/* ─────────────────────────────────────────────
+   Types
+   ───────────────────────────────────────────── */
+
 interface PostEditorFormProps {
   initialData?: BlogPost;
   isEditing?: boolean;
 }
 
-// Curated 1-click photo presets for Dr. Pooja
+/** One content section the doctor fills in. */
+interface Section {
+  id: string;
+  type: "paragraph" | "bullets" | "doctorTip";
+  heading: string;
+  body: string; // plain text — bullets are one-per-line
+}
+
+/* ─────────────────────────────────────────────
+   Photo presets
+   ───────────────────────────────────────────── */
+
 const PHOTO_PRESETS = [
   {
-    name: "Maternity & Newborn",
+    label: "Maternity",
     url: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop",
-    category: "Maternity & Pregnancy",
   },
   {
-    name: "Surgical & Clinic",
+    label: "Surgery",
     url: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1200&auto=format&fit=crop",
-    category: "Laparoscopic Surgery",
   },
   {
-    name: "Hormonal & Wellness",
+    label: "Wellness",
     url: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1200&auto=format&fit=crop",
-    category: "PCOS & PCOD",
   },
   {
-    name: "Family & Fertility",
+    label: "Fertility",
     url: "https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?q=80&w=1200&auto=format&fit=crop",
-    category: "Infertility & IVF",
   },
 ];
+
+/* ─────────────────────────────────────────────
+   Helpers
+   ───────────────────────────────────────────── */
+
+let _idCounter = 0;
+function uid() {
+  return `s-${Date.now()}-${++_idCounter}`;
+}
+
+/** Parse existing HTML content back into structured sections for editing. */
+function parseContentToSections(html: string): Section[] {
+  if (!html || !html.trim()) return defaultSections();
+
+  const sections: Section[] = [];
+  // Very simple tag-based parser — no DOM needed
+  const parts = html.split(/<h2>(.*?)<\/h2>/gi);
+
+  // parts[0] = text before first h2 (usually empty / whitespace)
+  // parts[1] = first h2 text, parts[2] = body until next h2, ...
+  for (let i = 1; i < parts.length; i += 2) {
+    const heading = parts[i]?.trim() || "";
+    const bodyHtml = parts[i + 1] || "";
+
+    // Check for clinical-callout
+    const calloutMatch = bodyHtml.match(
+      /<div class="clinical-callout"[^>]*>[\s\S]*?<strong>.*?<\/strong>\s*([\s\S]*?)\s*<\/div>/i
+    );
+
+    // Check for ul/li list
+    const listMatch = bodyHtml.match(/<ul>([\s\S]*?)<\/ul>/i);
+
+    if (calloutMatch) {
+      sections.push({
+        id: uid(),
+        type: "doctorTip",
+        heading,
+        body: calloutMatch[1]
+          ?.replace(/<[^>]+>/g, "")
+          .trim() || "",
+      });
+    } else if (listMatch) {
+      const items = listMatch[1]
+        ?.match(/<li>([\s\S]*?)<\/li>/gi)
+        ?.map((li) => li.replace(/<[^>]+>/g, "").trim())
+        .filter(Boolean);
+      sections.push({
+        id: uid(),
+        type: "bullets",
+        heading,
+        body: items?.join("\n") || "",
+      });
+    } else {
+      sections.push({
+        id: uid(),
+        type: "paragraph",
+        heading,
+        body: bodyHtml
+          .replace(/<[^>]+>/g, "")
+          .trim(),
+      });
+    }
+  }
+
+  return sections.length > 0 ? sections : defaultSections();
+}
+
+function defaultSections(): Section[] {
+  return [
+    {
+      id: uid(),
+      type: "paragraph",
+      heading: "Introduction",
+      body: "",
+    },
+    {
+      id: uid(),
+      type: "doctorTip",
+      heading: "Doctor's Advice",
+      body: "",
+    },
+    {
+      id: uid(),
+      type: "bullets",
+      heading: "Key Points",
+      body: "",
+    },
+  ];
+}
+
+/** Assemble sections into the HTML format the blog renderer expects. */
+function sectionsToHtml(sections: Section[]): string {
+  return sections
+    .filter((s) => s.heading.trim() || s.body.trim())
+    .map((s) => {
+      const h = `<h2>${escHtml(s.heading)}</h2>`;
+      switch (s.type) {
+        case "doctorTip":
+          return `${h}\n<div class="clinical-callout"><strong>Doctor's Advice:</strong> ${escHtml(s.body)}</div>`;
+        case "bullets": {
+          const items = s.body
+            .split("\n")
+            .map((line) => line.trim())
+            .filter(Boolean)
+            .map((line) => `<li>${escHtml(line)}</li>`)
+            .join("\n");
+          return `${h}\n<ul>\n${items}\n</ul>`;
+        }
+        default:
+          return `${h}\n<p>${escHtml(s.body)}</p>`;
+      }
+    })
+    .join("\n\n");
+}
+
+function escHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function makeSlug(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
+}
+
+/* ─────────────────────────────────────────────
+   Component
+   ───────────────────────────────────────────── */
 
 export default function PostEditorForm({
   initialData,
   isEditing = false,
 }: PostEditorFormProps) {
   const router = useRouter();
-  const editorRef = useRef<HTMLDivElement>(null);
 
-  // Core visual fields
+  /* ── State ──────────────────────────────── */
   const [title, setTitle] = useState(initialData?.title || "");
   const [category, setCategory] = useState(
     initialData?.category || "Maternity & Pregnancy"
@@ -52,243 +196,210 @@ export default function PostEditorForm({
   const [coverImage, setCoverImage] = useState<string | null>(
     initialData?.cover_image || PHOTO_PRESETS[0].url
   );
-  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [sections, setSections] = useState<Section[]>(() =>
+    initialData?.content
+      ? parseContentToSections(initialData.content)
+      : defaultSections()
+  );
 
-  // Active view tab: "write" or "preview"
   const [activeTab, setActiveTab] = useState<"write" | "preview">("write");
-
-  // Advanced collapsible settings (hidden by default)
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [customSlug, setCustomSlug] = useState(initialData?.slug || "");
-  const [customExcerpt, setCustomExcerpt] = useState(
-    initialData?.excerpt || ""
-  );
-  const [customTags, setCustomTags] = useState(
-    initialData?.tags?.join(", ") || ""
-  );
-
-  // Form submission & feedback
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedbackMessage, setFeedbackMessage] = useState<{
-    type: "error" | "success";
-    text: string;
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    ok: boolean;
+    msg: string;
   } | null>(null);
 
-  // Sync initial content to contentEditable on mount
-  useEffect(() => {
-    if (editorRef.current) {
-      if (initialData?.content) {
-        editorRef.current.innerHTML = initialData.content;
-      } else {
-        editorRef.current.innerHTML = `
-          <h2>Introduction</h2>
-          <p>Start writing your clinical guidance and advice here. You can type naturally just like in Word or Google Docs.</p>
-          <div class="clinical-callout">
-            <strong>Doctor's Advice:</strong> Click to edit this clinical highlight box with your key advice for patients.
-          </div>
-          <h2>Key Symptoms &amp; When to Consult</h2>
-          <ul>
-            <li>Early symptom or recommendation</li>
-            <li>When to seek clinical evaluation</li>
-          </ul>
-        `;
-      }
-    }
-  }, [initialData]);
-
-  // Execute rich formatting commands
-  const applyFormat = (command: string, value: string | undefined = undefined) => {
-    document.execCommand(command, false, value);
-    if (editorRef.current) {
-      editorRef.current.focus();
-    }
+  /* ── Section CRUD ───────────────────────── */
+  const updateSection = (id: string, patch: Partial<Section>) => {
+    setSections((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...patch } : s))
+    );
   };
 
-  // Insert a styled Doctor's Tip Box into the content
-  const insertDoctorTipBox = () => {
-    if (!editorRef.current) return;
-    const calloutHtml = `
-      <div class="clinical-callout" style="background:#FAF7F9; border-left:4px solid #D46789; padding:16px; border-radius:0 16px 16px 0; margin:20px 0;">
-        <strong style="color:#4E3953;">Doctor's Advice:</strong> Type your clinical tip here...
-      </div>
-      <p><br></p>
-    `;
-    document.execCommand("insertHTML", false, calloutHtml);
+  const removeSection = (id: string) => {
+    setSections((prev) => prev.filter((s) => s.id !== id));
   };
 
-  // Calculate estimated reading time
-  const getCalculatedReadingTime = useCallback(() => {
-    const text = editorRef.current?.innerText || "";
-    const words = text.trim().split(/\s+/).filter(Boolean).length;
-    const mins = Math.max(1, Math.ceil(words / 180));
-    return `${mins} min read`;
-  }, []);
+  const addSection = (type: Section["type"]) => {
+    const labels: Record<Section["type"], string> = {
+      paragraph: "New Section",
+      bullets: "Key Points",
+      doctorTip: "Doctor's Advice",
+    };
+    setSections((prev) => [
+      ...prev,
+      { id: uid(), type, heading: labels[type], body: "" },
+    ]);
+  };
 
-  // Extract excerpt automatically if not manually overridden
-  const getCalculatedExcerpt = useCallback(() => {
-    if (customExcerpt.trim()) return customExcerpt.trim();
-    const text = editorRef.current?.innerText || "";
-    const cleanText = text.replace(/Doctor's Advice:.*?\n/g, "").trim();
-    return cleanText.length > 160
-      ? cleanText.substring(0, 160) + "..."
-      : cleanText || title;
-  }, [customExcerpt, title]);
+  const moveSection = (idx: number, dir: -1 | 1) => {
+    setSections((prev) => {
+      const next = [...prev];
+      const target = idx + dir;
+      if (target < 0 || target >= next.length) return prev;
+      [next[idx], next[target]] = [next[target], next[idx]];
+      return next;
+    });
+  };
 
-  // Generate URL slug
-  const getCalculatedSlug = useCallback(() => {
-    if (customSlug.trim()) {
-      return customSlug
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .trim();
-    }
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .trim();
-  }, [customSlug, title]);
+  /* ── Derived ────────────────────────────── */
+  const plainText = sections
+    .map((s) => s.body)
+    .join(" ")
+    .trim();
+  const wordCount = plainText.split(/\s+/).filter(Boolean).length;
+  const readingTime = `${Math.max(1, Math.ceil(wordCount / 180))} min read`;
 
-  // Handle custom photo upload
+  const excerpt = useCallback(() => {
+    const first = sections.find((s) => s.type === "paragraph" && s.body.trim());
+    const text = first?.body || title;
+    return text.length > 160 ? text.slice(0, 160) + "…" : text;
+  }, [sections, title]);
+
+  /* ── Photo upload ───────────────────────── */
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setIsUploadingPhoto(true);
-    setFeedbackMessage(null);
+    setFeedback(null);
     try {
       const url = await uploadBlogImage(file);
-      if (url) {
-        setCoverImage(url);
-      } else {
-        setFeedbackMessage({
-          type: "error",
-          text: "Failed to upload photo. Please try again.",
-        });
-      }
+      if (url) setCoverImage(url);
+      else setFeedback({ ok: false, msg: "Upload failed. Try again." });
     } catch {
-      setFeedbackMessage({
-        type: "error",
-        text: "An error occurred uploading the image file.",
-      });
+      setFeedback({ ok: false, msg: "Error uploading image." });
     } finally {
       setIsUploadingPhoto(false);
     }
   };
 
-  // Save / Publish
-  const handleSave = async (shouldPublish: boolean) => {
+  /* ── Save / Publish ─────────────────────── */
+  const handleSave = async (publish: boolean) => {
     if (!title.trim()) {
-      setFeedbackMessage({
-        type: "error",
-        text: "Please enter an article title before saving.",
+      setFeedback({ ok: false, msg: "Please enter an article title." });
+      return;
+    }
+    if (sections.every((s) => !s.body.trim())) {
+      setFeedback({
+        ok: false,
+        msg: "Please write some content in at least one section.",
       });
       return;
     }
 
-    const htmlContent = editorRef.current?.innerHTML || "<p></p>";
-    const finalSlug = getCalculatedSlug() || `article-${Date.now()}`;
-    const finalExcerpt = getCalculatedExcerpt();
-    const readingTime = getCalculatedReadingTime();
-    const tagsArray = customTags
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
-
     setIsSubmitting(true);
-    setFeedbackMessage(null);
+    setFeedback(null);
 
-    const postPayload = {
+    const slug = makeSlug(title) || `article-${Date.now()}`;
+    const htmlContent = sectionsToHtml(sections);
+    const tags = [category];
+
+    const payload = {
       title: title.trim(),
-      slug: finalSlug,
-      excerpt: finalExcerpt,
+      slug,
+      excerpt: excerpt(),
       content: htmlContent,
       cover_image: coverImage,
       category,
-      tags: tagsArray.length > 0 ? tagsArray : [category],
-      published: shouldPublish,
-      published_at: shouldPublish
+      tags,
+      published: publish,
+      published_at: publish
         ? initialData?.published_at || new Date().toISOString()
         : null,
       reading_time: readingTime,
       meta_title: `${title.trim()} | Dr. Pooja Wadgaonkar Patil`,
-      meta_description: finalExcerpt,
+      meta_description: excerpt(),
       author_name: "Dr. Pooja Wadgaonkar Patil",
     };
 
     try {
+      let ok: boolean | BlogPost | null;
       if (isEditing && initialData) {
-        const success = await updatePost(initialData.id, postPayload);
-        if (success) {
-          router.push("/admin/posts");
-          router.refresh();
-        } else {
-          setFeedbackMessage({
-            type: "error",
-            text: "Could not update article. Please check your connection.",
-          });
-        }
+        ok = await updatePost(initialData.id, payload);
       } else {
-        const created = await createPost(postPayload as any);
-        if (created) {
-          router.push("/admin/posts");
-          router.refresh();
-        } else {
-          setFeedbackMessage({
-            type: "error",
-            text: "Could not create article. Please check your connection.",
-          });
-        }
+        ok = await createPost(payload as any);
+      }
+      if (ok) {
+        router.push("/admin/posts");
+        router.refresh();
+      } else {
+        setFeedback({
+          ok: false,
+          msg: "Could not save. Check your connection.",
+        });
       }
     } catch {
-      setFeedbackMessage({
-        type: "error",
-        text: "An unexpected error occurred while saving.",
-      });
+      setFeedback({ ok: false, msg: "Unexpected error while saving." });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  /* ── Section type metadata for display ──── */
+  const sectionMeta: Record<
+    Section["type"],
+    { icon: string; color: string; placeholder: string; label: string }
+  > = {
+    paragraph: {
+      icon: "article",
+      color: "#7B5A7E",
+      placeholder:
+        "Write your thoughts here in plain text. It will be formatted automatically as a paragraph on the website.",
+      label: "Text Paragraph",
+    },
+    bullets: {
+      icon: "list",
+      color: "#2E7D32",
+      placeholder:
+        "Type each point on a new line.\nFor example:\nFirst point goes here\nSecond point goes here\nThird point goes here",
+      label: "Bullet-Point List",
+    },
+    doctorTip: {
+      icon: "local_hospital",
+      color: "#D46789",
+      placeholder:
+        "Type your clinical advice or important note for patients here. This will appear as a highlighted tip box on the website.",
+      label: "Doctor's Advice Box",
+    },
+  };
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     RENDER
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-20">
-      {/* Top Bar Navigation & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white px-6 py-4 rounded-2xl border border-[#CFC3CC]/40 organic-shadow sticky top-4 z-20 backdrop-blur-md bg-white/95">
+    <div className="max-w-3xl mx-auto space-y-5 pb-24">
+      {/* ───── Sticky Top Bar ───── */}
+      <div className="sticky top-2 z-30 bg-white/95 backdrop-blur-md px-5 py-3 rounded-2xl border border-[#CFC3CC]/40 shadow-lg shadow-[#7B5A7E]/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <Link
           href="/admin/posts"
           className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7B5A7E] hover:text-[#4E3953] transition-colors"
         >
-          <span className="material-symbols-outlined text-base">arrow_back</span>
-          <span>All Articles</span>
+          <span className="material-symbols-outlined text-base">
+            arrow_back
+          </span>
+          All Articles
         </Link>
 
-        {/* View Mode Tabs (Write vs Preview) */}
+        {/* Tab Toggle */}
         <div className="inline-flex rounded-full p-1 bg-[#FAF7F9] border border-[#CFC3CC]/40 text-xs font-bold">
-          <button
-            type="button"
-            onClick={() => setActiveTab("write")}
-            className={`px-4 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${
-              activeTab === "write"
-                ? "bg-[#7B5A7E] text-white shadow-xs"
-                : "text-[#878787] hover:text-[#4E3953]"
-            }`}
-          >
-            <span className="material-symbols-outlined text-base">edit</span>
-            <span>Write Article</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("preview")}
-            className={`px-4 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${
-              activeTab === "preview"
-                ? "bg-[#7B5A7E] text-white shadow-xs"
-                : "text-[#878787] hover:text-[#4E3953]"
-            }`}
-          >
-            <span className="material-symbols-outlined text-base">visibility</span>
-            <span>Patient View</span>
-          </button>
+          {(["write", "preview"] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${
+                activeTab === tab
+                  ? "bg-[#7B5A7E] text-white shadow-sm"
+                  : "text-[#878787] hover:text-[#4E3953]"
+              }`}
+            >
+              <span className="material-symbols-outlined text-sm">
+                {tab === "write" ? "edit" : "visibility"}
+              </span>
+              {tab === "write" ? "Write" : "Patient View"}
+            </button>
+          ))}
         </div>
 
         {/* Action Buttons */}
@@ -297,7 +408,7 @@ export default function PostEditorForm({
             type="button"
             disabled={isSubmitting}
             onClick={() => handleSave(false)}
-            className="px-4 py-2 rounded-full border border-[#CFC3CC] text-[#464647] text-xs font-bold uppercase tracking-wider hover:bg-[#FAF7F9] transition-colors disabled:opacity-50"
+            className="px-4 py-2 rounded-full border border-[#CFC3CC] text-[#464647] text-xs font-bold hover:bg-[#FAF7F9] transition-colors disabled:opacity-40"
           >
             Save Draft
           </button>
@@ -305,322 +416,305 @@ export default function PostEditorForm({
             type="button"
             disabled={isSubmitting}
             onClick={() => handleSave(true)}
-            className="px-5 py-2 rounded-full bg-[#7B5A7E] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#4E3953] transition-all shadow-md shadow-[#7B5A7E]/20 active:scale-95 disabled:opacity-50 flex items-center gap-1.5"
+            className="px-5 py-2 rounded-full bg-[#7B5A7E] text-white text-xs font-bold hover:bg-[#4E3953] transition-all shadow-md shadow-[#7B5A7E]/20 active:scale-95 disabled:opacity-40 flex items-center gap-1.5"
           >
-            {isSubmitting ? (
-              <span>Saving...</span>
-            ) : (
-              <>
-                <span className="material-symbols-outlined text-base">
-                  cloud_upload
-                </span>
-                <span>Publish to Website</span>
-              </>
-            )}
+            <span className="material-symbols-outlined text-sm">
+              cloud_upload
+            </span>
+            {isSubmitting ? "Saving…" : "Publish"}
           </button>
         </div>
       </div>
 
-      {/* Feedback Banner */}
-      {feedbackMessage && (
+      {/* ───── Feedback ───── */}
+      {feedback && (
         <motion.div
-          initial={{ opacity: 0, y: -5 }}
+          initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`p-4 rounded-2xl text-xs flex items-center gap-2.5 ${
-            feedbackMessage.type === "error"
-              ? "bg-[#FDF2F4] border border-[#D46789]/30 text-[#A03055]"
-              : "bg-[#E8F5E9] border border-[#2E7D32]/30 text-[#2E7D32]"
+          className={`p-4 rounded-2xl text-xs flex items-center gap-2 ${
+            feedback.ok
+              ? "bg-[#E8F5E9] border border-[#2E7D32]/30 text-[#2E7D32]"
+              : "bg-[#FDF2F4] border border-[#D46789]/30 text-[#A03055]"
           }`}
         >
           <span className="material-symbols-outlined text-base">
-            {feedbackMessage.type === "error" ? "error" : "check_circle"}
+            {feedback.ok ? "check_circle" : "error"}
           </span>
-          <span>{feedbackMessage.text}</span>
+          {feedback.msg}
         </motion.div>
       )}
 
-      {/* Main Content Area */}
+      {/* ═══════════════════════════════════════
+         WRITE TAB
+         ═══════════════════════════════════════ */}
       {activeTab === "write" ? (
-        <div className="space-y-6">
-          {/* Visual Canvas Card */}
-          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#CFC3CC]/40 organic-shadow space-y-8">
-            {/* 1. Category Selector Pills */}
+        <div className="space-y-5">
+          {/* ── Card 1 – Title & Category ── */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#CFC3CC]/40 shadow-sm space-y-6">
+            {/* Category pills */}
             <div className="space-y-2">
               <label className="block text-[11px] font-bold uppercase tracking-widest text-[#7B5A7E]">
-                Select Medical Specialty
+                Medical Specialty
               </label>
               <div className="flex flex-wrap gap-2">
-                {BLOG_CATEGORIES.filter((c) => c !== "All").map((cat) => {
-                  const isSelected = category === cat;
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setCategory(cat)}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${
-                        isSelected
-                          ? "bg-[#7B5A7E] text-white shadow-xs scale-105"
-                          : "bg-[#FAF7F9] border border-[#CFC3CC]/50 text-[#464647] hover:border-[#7B5A7E]"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  );
-                })}
+                {BLOG_CATEGORIES.filter((c) => c !== "All").map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCategory(cat)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                      category === cat
+                        ? "bg-[#7B5A7E] text-white shadow-sm"
+                        : "bg-[#FAF7F9] border border-[#CFC3CC]/50 text-[#464647] hover:border-[#7B5A7E]"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* 2. Headline / Title Input */}
-            <div className="space-y-1">
+            {/* Title */}
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-widest text-[#7B5A7E] mb-1.5">
+                Article Title
+              </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Article Headline (e.g., Managing First Trimester Health)..."
-                className="w-full text-2xl sm:text-3xl md:text-4xl font-serif-display font-bold text-[#4E3953] placeholder:text-[#CFC3CC] focus:outline-none border-b border-transparent focus:border-[#7B5A7E]/30 pb-2 transition-colors bg-transparent"
-              />
-            </div>
-
-            {/* 3. Cover Photo Picker with Presets */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between">
-                <label className="block text-[11px] font-bold uppercase tracking-widest text-[#7B5A7E]">
-                  Cover Photo
-                </label>
-                <label className="text-xs font-bold text-[#7B5A7E] hover:underline cursor-pointer flex items-center gap-1">
-                  <span className="material-symbols-outlined text-sm">
-                    upload_file
-                  </span>
-                  <span>{isUploadingPhoto ? "Uploading..." : "Upload Custom Photo"}</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    disabled={isUploadingPhoto}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-
-              {/* Active Cover Preview & 1-Click Preset Options */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                {PHOTO_PRESETS.map((preset) => {
-                  const isChosen = coverImage === preset.url;
-                  return (
-                    <button
-                      key={preset.name}
-                      type="button"
-                      onClick={() => setCoverImage(preset.url)}
-                      className={`relative h-24 rounded-2xl overflow-hidden border-2 transition-all group ${
-                        isChosen
-                          ? "border-[#7B5A7E] ring-2 ring-[#7B5A7E]/30 scale-102"
-                          : "border-[#CFC3CC]/40 opacity-70 hover:opacity-100"
-                      }`}
-                    >
-                      <Image
-                        src={preset.url}
-                        alt={preset.name}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-2">
-                        <span className="text-[10px] font-bold text-white leading-tight">
-                          {preset.name}
-                        </span>
-                      </div>
-                      {isChosen && (
-                        <div className="absolute top-1.5 right-1.5 bg-[#7B5A7E] text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px]">
-                          ✓
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 4. Visual Formatting Toolbar (Google Docs / Medium Style) */}
-            <div className="pt-4 border-t border-[#CFC3CC]/30 space-y-3">
-              <div className="sticky top-20 z-10 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-[#CFC3CC]/50 shadow-sm flex flex-wrap items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => applyFormat("formatBlock", "<h2>")}
-                  className="px-3 py-1.5 text-xs font-bold text-[#4E3953] bg-[#FAF7F9] hover:bg-[#7B5A7E] hover:text-white rounded-lg transition-colors"
-                  title="Large Subheading"
-                >
-                  Subheading
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applyFormat("formatBlock", "<h3>")}
-                  className="px-3 py-1.5 text-xs font-semibold text-[#4E3953] bg-[#FAF7F9] hover:bg-[#7B5A7E] hover:text-white rounded-lg transition-colors"
-                  title="Minor Subheading"
-                >
-                  Section
-                </button>
-                <span className="w-px h-5 bg-[#CFC3CC]/60 mx-1" />
-                <button
-                  type="button"
-                  onClick={() => applyFormat("bold")}
-                  className="w-8 h-8 font-bold text-sm text-[#4E3953] bg-[#FAF7F9] hover:bg-[#7B5A7E] hover:text-white rounded-lg flex items-center justify-center transition-colors"
-                  title="Bold"
-                >
-                  B
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applyFormat("italic")}
-                  className="w-8 h-8 italic font-serif text-sm text-[#4E3953] bg-[#FAF7F9] hover:bg-[#7B5A7E] hover:text-white rounded-lg flex items-center justify-center transition-colors"
-                  title="Italic"
-                >
-                  I
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applyFormat("insertUnorderedList")}
-                  className="px-2.5 py-1.5 text-xs font-medium text-[#4E3953] bg-[#FAF7F9] hover:bg-[#7B5A7E] hover:text-white rounded-lg flex items-center gap-1 transition-colors"
-                  title="Bullet List"
-                >
-                  <span>• Bullets</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applyFormat("insertOrderedList")}
-                  className="px-2.5 py-1.5 text-xs font-medium text-[#4E3953] bg-[#FAF7F9] hover:bg-[#7B5A7E] hover:text-white rounded-lg flex items-center gap-1 transition-colors"
-                  title="Numbered Steps"
-                >
-                  <span>1. Steps</span>
-                </button>
-                <span className="w-px h-5 bg-[#CFC3CC]/60 mx-1" />
-                {/* Highlight Doctor Callout Tool */}
-                <button
-                  type="button"
-                  onClick={insertDoctorTipBox}
-                  className="px-3 py-1.5 text-xs font-bold text-[#D46789] bg-[#FDF2F4] hover:bg-[#D46789] hover:text-white rounded-lg border border-[#D46789]/30 flex items-center gap-1.5 transition-colors"
-                  title="Insert Doctor's Clinical Tip Box"
-                >
-                  <span className="material-symbols-outlined text-sm">
-                    local_hospital
-                  </span>
-                  <span>+ Doctor&apos;s Advice Box</span>
-                </button>
-              </div>
-
-              {/* Visual Writing Canvas (contentEditable) */}
-              <div
-                ref={editorRef}
-                contentEditable
-                suppressContentEditableWarning
-                className="min-h-[380px] p-6 rounded-2xl border border-transparent focus:border-[#7B5A7E]/20 focus:outline-none text-[#464647] font-light leading-relaxed text-base sm:text-lg space-y-4
-                  [&_h2]:text-2xl sm:[&_h2]:text-3xl [&_h2]:font-serif-display [&_h2]:font-bold [&_h2]:text-[#4E3953] [&_h2]:mt-6 [&_h2]:mb-2
-                  [&_h3]:text-xl sm:[&_h3]:text-2xl [&_h3]:font-serif-display [&_h3]:font-semibold [&_h3]:text-[#7B5A7E] [&_h3]:mt-4 [&_h3]:mb-2
-                  [&_p]:leading-relaxed
-                  [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1.5
-                  [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1.5
-                  [&_.clinical-callout]:bg-[#FAF7F9] [&_.clinical-callout]:border-l-4 [&_.clinical-callout]:border-[#D46789] [&_.clinical-callout]:p-4 [&_.clinical-callout]:rounded-r-2xl [&_.clinical-callout]:my-6 [&_.clinical-callout]:text-[#4E3953]"
+                placeholder="e.g.  Managing First Trimester Health"
+                className="w-full text-xl sm:text-2xl font-serif-display font-bold text-[#4E3953] placeholder:text-[#CFC3CC] border-b-2 border-[#CFC3CC]/30 focus:border-[#7B5A7E] pb-2 focus:outline-none bg-transparent transition-colors"
               />
             </div>
           </div>
 
-          {/* 5. Optional Advanced Settings Accordion (Hidden by default) */}
-          <div className="bg-white rounded-2xl border border-[#CFC3CC]/40 organic-shadow overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-[#FAF7F9] transition-colors"
-            >
-              <span className="text-xs font-bold text-[#878787] uppercase tracking-wider flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">tune</span>
-                <span>Advanced Settings &amp; SEO (Auto-Managed)</span>
-              </span>
-              <span className="material-symbols-outlined text-[#878787] text-base">
-                {showAdvanced ? "expand_less" : "expand_more"}
-              </span>
-            </button>
+          {/* ── Card 2 – Cover Photo ── */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#CFC3CC]/40 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-[#7B5A7E]">
+                Cover Photo
+              </label>
+              <label className="text-xs font-bold text-[#7B5A7E] hover:underline cursor-pointer flex items-center gap-1">
+                <span className="material-symbols-outlined text-sm">
+                  upload_file
+                </span>
+                {isUploadingPhoto ? "Uploading…" : "Upload Custom"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  disabled={isUploadingPhoto}
+                  className="hidden"
+                />
+              </label>
+            </div>
 
-            <AnimatePresence>
-              {showAdvanced && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {PHOTO_PRESETS.map((p) => {
+                const active = coverImage === p.url;
+                return (
+                  <button
+                    key={p.label}
+                    type="button"
+                    onClick={() => setCoverImage(p.url)}
+                    className={`relative h-20 rounded-2xl overflow-hidden border-2 transition-all ${
+                      active
+                        ? "border-[#7B5A7E] ring-2 ring-[#7B5A7E]/30"
+                        : "border-[#CFC3CC]/40 opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <Image
+                      src={p.url}
+                      alt={p.label}
+                      fill
+                      className="object-cover"
+                    />
+                    <span className="absolute inset-x-0 bottom-0 bg-black/50 text-white text-[10px] font-bold text-center py-0.5">
+                      {p.label}
+                    </span>
+                    {active && (
+                      <span className="absolute top-1 right-1 bg-[#7B5A7E] text-white w-4 h-4 rounded-full text-[10px] flex items-center justify-center">
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Card 3 – Article Sections ── */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <h2 className="text-[11px] font-bold uppercase tracking-widest text-[#7B5A7E]">
+                Article Content — fill in each section
+              </h2>
+              <span className="text-[11px] text-[#878787]">
+                {wordCount} words · {readingTime}
+              </span>
+            </div>
+
+            {sections.map((section, idx) => {
+              const meta = sectionMeta[section.type];
+              return (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="px-6 pb-6 pt-2 border-t border-[#CFC3CC]/20 space-y-4 text-xs"
+                  key={section.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="bg-white rounded-3xl border border-[#CFC3CC]/40 shadow-sm overflow-hidden"
                 >
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-semibold text-[#878787]">
-                      Custom Web Link (URL Slug)
-                    </label>
+                  {/* Section Header */}
+                  <div
+                    className="px-5 py-3 flex items-center gap-3 border-b border-[#CFC3CC]/20"
+                    style={{ backgroundColor: `${meta.color}08` }}
+                  >
+                    <span
+                      className="material-symbols-outlined text-lg"
+                      style={{ color: meta.color }}
+                    >
+                      {meta.icon}
+                    </span>
+
+                    {/* Editable section heading */}
                     <input
                       type="text"
-                      value={customSlug}
-                      onChange={(e) => setCustomSlug(e.target.value)}
-                      placeholder={getCalculatedSlug() || "auto-generated-from-title"}
-                      className="w-full px-3 py-2 rounded-xl border border-[#CFC3CC]/60 text-xs text-[#464647] bg-white focus:outline-none focus:border-[#7B5A7E]"
+                      value={section.heading}
+                      onChange={(e) =>
+                        updateSection(section.id, {
+                          heading: e.target.value,
+                        })
+                      }
+                      className="flex-1 text-sm font-bold bg-transparent border-none focus:outline-none text-[#4E3953] placeholder:text-[#CFC3CC]"
+                      placeholder="Section heading…"
                     />
+
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                      style={{
+                        color: meta.color,
+                        backgroundColor: `${meta.color}15`,
+                      }}
+                    >
+                      {meta.label}
+                    </span>
+
+                    {/* Reorder + Delete */}
+                    <div className="flex items-center gap-0.5">
+                      <button
+                        type="button"
+                        onClick={() => moveSection(idx, -1)}
+                        disabled={idx === 0}
+                        className="p-1 rounded-lg hover:bg-[#FAF7F9] text-[#878787] disabled:opacity-20 transition-colors"
+                        title="Move up"
+                      >
+                        <span className="material-symbols-outlined text-base">
+                          arrow_upward
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveSection(idx, 1)}
+                        disabled={idx === sections.length - 1}
+                        className="p-1 rounded-lg hover:bg-[#FAF7F9] text-[#878787] disabled:opacity-20 transition-colors"
+                        title="Move down"
+                      >
+                        <span className="material-symbols-outlined text-base">
+                          arrow_downward
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeSection(section.id)}
+                        className="p-1 rounded-lg hover:bg-[#FDF2F4] text-[#878787] hover:text-[#D46789] transition-colors"
+                        title="Remove section"
+                      >
+                        <span className="material-symbols-outlined text-base">
+                          close
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-semibold text-[#878787]">
-                      Custom Summary for Cards (Optional)
-                    </label>
+                  {/* Section Body */}
+                  <div className="p-5">
                     <textarea
-                      rows={2}
-                      value={customExcerpt}
-                      onChange={(e) => setCustomExcerpt(e.target.value)}
-                      placeholder={getCalculatedExcerpt() || "Auto-extracted from first paragraph"}
-                      className="w-full p-3 rounded-xl border border-[#CFC3CC]/60 text-xs text-[#464647] bg-white focus:outline-none focus:border-[#7B5A7E]"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-semibold text-[#878787]">
-                      Search Tags (comma separated)
-                    </label>
-                    <input
-                      type="text"
-                      value={customTags}
-                      onChange={(e) => setCustomTags(e.target.value)}
-                      placeholder="e.g. Pregnancy, Trimester, Health"
-                      className="w-full px-3 py-2 rounded-xl border border-[#CFC3CC]/60 text-xs text-[#464647] bg-white focus:outline-none focus:border-[#7B5A7E]"
+                      value={section.body}
+                      onChange={(e) =>
+                        updateSection(section.id, { body: e.target.value })
+                      }
+                      placeholder={meta.placeholder}
+                      rows={section.type === "bullets" ? 6 : 4}
+                      className="w-full text-sm text-[#464647] leading-relaxed bg-transparent border-none focus:outline-none resize-y placeholder:text-[#CFC3CC] min-h-[80px]"
                     />
                   </div>
                 </motion.div>
-              )}
-            </AnimatePresence>
+              );
+            })}
+
+            {/* Add Section Buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-3 py-4">
+              <span className="text-[11px] font-bold text-[#878787] uppercase tracking-wider mr-2">
+                Add Section:
+              </span>
+              {(
+                [
+                  ["paragraph", "article", "Text Paragraph"],
+                  ["bullets", "list", "Bullet List"],
+                  ["doctorTip", "local_hospital", "Doctor's Tip"],
+                ] as const
+              ).map(([type, icon, label]) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => addSection(type)}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-dashed border-[#CFC3CC]/60 text-xs font-bold text-[#7B5A7E] hover:border-[#7B5A7E] hover:bg-[#FAF7F9] transition-all"
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    {icon}
+                  </span>
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       ) : (
-        /* Patient View Live Preview Mode */
-        <div className="bg-white rounded-3xl p-6 sm:p-12 border border-[#CFC3CC]/40 organic-shadow space-y-8">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 text-xs">
-              <span className="px-3.5 py-1 rounded-full bg-[#7B5A7E]/10 text-[#7B5A7E] font-bold uppercase">
-                {category}
-              </span>
-              <span className="text-[#878787]">
-                {new Date().toLocaleDateString("en-IN", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </span>
-              <span className="text-[#878787]">•</span>
-              <span className="text-[#878787] font-medium">
-                {getCalculatedReadingTime()}
-              </span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl font-serif-display font-bold text-[#4E3953] leading-tight">
-              {title || "Untitled Article"}
-            </h1>
-
-            <p className="text-base text-[#464647] font-light leading-relaxed border-l-2 border-[#D46789] pl-4 italic bg-[#FAF7F9] py-3 rounded-r-xl">
-              {getCalculatedExcerpt()}
-            </p>
+        /* ═══════════════════════════════════════
+           PREVIEW TAB
+           ═══════════════════════════════════════ */
+        <div className="bg-white rounded-3xl p-6 sm:p-12 border border-[#CFC3CC]/40 shadow-sm space-y-8">
+          {/* Meta line */}
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            <span className="px-3.5 py-1 rounded-full bg-[#7B5A7E]/10 text-[#7B5A7E] font-bold uppercase">
+              {category}
+            </span>
+            <span className="text-[#878787]">
+              {new Date().toLocaleDateString("en-IN", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+            <span className="text-[#878787]">·</span>
+            <span className="text-[#878787] font-medium">{readingTime}</span>
           </div>
 
+          {/* Title */}
+          <h1 className="text-3xl sm:text-4xl font-serif-display font-bold text-[#4E3953] leading-tight">
+            {title || "Untitled Article"}
+          </h1>
+
+          {/* Excerpt */}
+          <p className="text-base text-[#464647] font-light leading-relaxed border-l-2 border-[#D46789] pl-4 italic bg-[#FAF7F9] py-3 rounded-r-xl">
+            {excerpt()}
+          </p>
+
+          {/* Cover image */}
           {coverImage && (
-            <div className="relative w-full h-72 sm:h-96 rounded-3xl overflow-hidden shadow-md bg-[#F3EEF5]">
+            <div className="relative w-full h-64 sm:h-80 rounded-3xl overflow-hidden shadow-md bg-[#F3EEF5]">
               <Image
                 src={coverImage}
                 alt={title}
@@ -631,21 +725,42 @@ export default function PostEditorForm({
             </div>
           )}
 
-          {/* Rendered Live Article Content */}
-          <div
-            className="prose prose-slate max-w-none text-[#464647] leading-relaxed font-light space-y-4 text-base sm:text-lg
-              [&_h2]:text-2xl sm:[&_h2]:text-3xl [&_h2]:font-serif-display [&_h2]:font-bold [&_h2]:text-[#4E3953] [&_h2]:mt-8 [&_h2]:mb-3
-              [&_h3]:text-xl sm:[&_h3]:text-2xl [&_h3]:font-serif-display [&_h3]:font-semibold [&_h3]:text-[#7B5A7E] [&_h3]:mt-6 [&_h3]:mb-2
-              [&_p]:leading-relaxed
-              [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1.5
-              [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1.5
-              [&_.clinical-callout]:bg-[#FAF7F9] [&_.clinical-callout]:border-l-4 [&_.clinical-callout]:border-[#D46789] [&_.clinical-callout]:p-5 [&_.clinical-callout]:rounded-r-2xl [&_.clinical-callout]:my-6 [&_.clinical-callout]:text-[#4E3953]"
-            dangerouslySetInnerHTML={{
-              __html: editorRef.current?.innerHTML || "<p></p>",
-            }}
-          />
+          {/* Rendered sections */}
+          <div className="space-y-6">
+            {sections
+              .filter((s) => s.heading.trim() || s.body.trim())
+              .map((s) => (
+                <div key={s.id}>
+                  {s.heading && (
+                    <h2 className="text-xl sm:text-2xl font-serif-display font-bold text-[#4E3953] mb-3">
+                      {s.heading}
+                    </h2>
+                  )}
+                  {s.type === "doctorTip" && s.body && (
+                    <div className="bg-[#FAF7F9] border-l-4 border-[#D46789] p-5 rounded-r-2xl text-[#4E3953]">
+                      <strong>Doctor&apos;s Advice:</strong> {s.body}
+                    </div>
+                  )}
+                  {s.type === "paragraph" && s.body && (
+                    <p className="text-base text-[#464647] leading-relaxed font-light">
+                      {s.body}
+                    </p>
+                  )}
+                  {s.type === "bullets" && s.body && (
+                    <ul className="list-disc pl-6 space-y-1.5 text-base text-[#464647] font-light">
+                      {s.body
+                        .split("\n")
+                        .filter(Boolean)
+                        .map((item, i) => (
+                          <li key={i}>{item.trim()}</li>
+                        ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+          </div>
 
-          {/* Author Card in Preview */}
+          {/* Author card */}
           <div className="pt-8 border-t border-[#CFC3CC]/30 flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-[#7B5A7E] text-white flex items-center justify-center font-bold text-sm shadow-sm">
               PW
