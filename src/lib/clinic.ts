@@ -1,6 +1,6 @@
 export const CLINIC = {
   name: "FemHealth Clinic",
-  doctor: "Dr. Pooja Wadgaonkar (Patil)",
+  doctor: "Dr. Pooja Wadgaonkar Patil",
   phoneDisplay: "+91 92723 79105",
   phoneHref: "tel:+919272379105",
   whatsappHref: "https://wa.me/919272379105",
@@ -9,7 +9,7 @@ export const CLINIC = {
   addressFull:
     "Shop No. 85, 1st Floor, VJ Happiness Street, Hinjawadi Phase 2 Road, Rajiv Gandhi Infotech Park, Maan, Pune - 411057",
   addressShort: "VJ Happiness Street, Hinjawadi, Pune",
-  hours: ["10:30 AM – 2:00 PM", "4:00 PM – 8:00 PM"],
+  hours: ["10:30 AM – 2:00 PM", "4:00 PM – 8:30 PM"],
   mapQuery:
     "Shop No. 85, VJ Happiness Street, Hinjawadi Phase 2 Road, Rajiv Gandhi Infotech Park, Maan, Pune 411057",
   mapEmbedSrc:

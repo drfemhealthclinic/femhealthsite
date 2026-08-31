@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/Motion";
+import { FadeIn } from "@/components/ui/Motion";
 
 export default function Hero() {
   return (
@@ -39,20 +39,21 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
           {/* Left column: Text content */}
           <div className="space-y-8 md:space-y-10">
-            {/* Top: Brand tag + Credentials */}
+            {/* Top: Doctor Name + Credentials */}
             <FadeIn direction="down" delay={0.1}>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-                <div className="flex items-center gap-3">
-                  <span className="w-10 h-px bg-[#D46789]" />
-                  <span className="text-xs font-semibold tracking-[0.2em] text-[#D46789] uppercase">
-                    FemHealth Clinic
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-8 h-px bg-[#D46789]" />
+                  <span className="text-xs font-bold tracking-wider text-[#7B5A7E] uppercase">
+                    Dr. Pooja Wadgaonkar Patil
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <span className="hidden sm:inline text-[#CFC3CC]">•</span>
+                <div className="flex flex-wrap items-center gap-1.5">
                   {["MBBS", "MS OBGY", "FMAS", "DNB"].map((cred) => (
                     <span
                       key={cred}
-                      className="px-2.5 py-1 rounded-full border border-[#C0A8C9]/40 bg-white/70 backdrop-blur-sm text-[10px] font-bold tracking-wider text-[#7B5A7E] uppercase shadow-sm"
+                      className="px-2.5 py-0.5 rounded-full border border-[#C0A8C9]/40 bg-white/80 backdrop-blur-sm text-[10px] font-bold tracking-wider text-[#7B5A7E] uppercase shadow-xs"
                     >
                       {cred}
                     </span>
@@ -102,7 +103,7 @@ export default function Hero() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-[#4E3953]">
-                      Dr. Pooja Wadgaonkar (Patil)
+                      Dr. Pooja Wadgaonkar Patil
                     </p>
                     <p className="text-xs text-[#878787]">
                       Consultant Gynaecologist &amp; Laparoscopic Surgeon
@@ -160,35 +161,6 @@ export default function Hero() {
             </div>
           </FadeIn>
         </div>
-
-        {/* Bottom trust bar */}
-        <StaggerContainer className="mt-16 md:mt-20 pt-8 border-t border-[#CFC3CC]/30 flex flex-wrap items-center gap-8 md:gap-12">
-          <StaggerItem>
-            <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#C0A8C9]">
-              Trusted For
-            </span>
-          </StaggerItem>
-          {[
-            { icon: "pregnant_woman", text: "High-Risk Maternity" },
-            { icon: "healing", text: "Laparoscopic Surgery" },
-            { icon: "family_restroom", text: "Fertility Solutions" },
-            { icon: "health_and_safety", text: "Preventive Gynaecology" },
-          ].map((item) => (
-            <StaggerItem key={item.text}>
-              <div className="flex items-center gap-2 group">
-                <span
-                  className="material-symbols-outlined text-base text-[#7B5A7E]/50 group-hover:text-[#7B5A7E] transition-colors"
-                  style={{ fontVariationSettings: "'FILL' 0" }}
-                >
-                  {item.icon}
-                </span>
-                <span className="text-xs font-medium text-[#464647]/70 group-hover:text-[#464647] transition-colors">
-                  {item.text}
-                </span>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
       </div>
     </section>
   );

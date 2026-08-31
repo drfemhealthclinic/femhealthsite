@@ -21,7 +21,7 @@ export default function WelcomeQuote() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
-          className="text-xl sm:text-2xl md:text-3xl font-serif-display text-[#4E3953] leading-relaxed italic"
+          className="text-xl sm:text-2xl md:text-3xl font-serif-display text-[#4E3953] leading-relaxed"
         >
           &ldquo;Every woman&rsquo;s health journey is unique. My practice is built on a foundation of empathy, clinical excellence, and cutting-edge medical technology—ensuring you receive personalised care at every stage of life, from adolescence to motherhood and beyond.&rdquo;
         </motion.p>
@@ -39,7 +39,7 @@ export default function WelcomeQuote() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="block text-xs font-bold text-[#464647] tracking-widest uppercase"
         >
-          Dr. Pooja Wadgaonkar
+          Dr. Pooja Wadgaonkar Patil
         </motion.span>
       </div>
     </section>

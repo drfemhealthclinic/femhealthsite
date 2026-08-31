@@ -65,7 +65,7 @@ export default function ContactPage() {
 
           <FadeIn direction="up" delay={0.2}>
             <p className="text-base sm:text-lg text-[#464647] max-w-2xl mx-auto leading-relaxed font-light">
-              Appointments, multiple consultation locations, and convenient ways to connect with Dr. Pooja Wadgaonkar.
+              Appointments, multiple consultation locations, and convenient ways to connect with Dr. Pooja Wadgaonkar Patil.
             </p>
           </FadeIn>
         </section>
@@ -286,7 +286,7 @@ export default function ContactPage() {
                           <span className="material-symbols-outlined text-sm text-[#D46789]">
                             schedule
                           </span>
-                          <span>Evening: 4:00 PM – 8:00 PM</span>
+                          <span>Evening: 4:00 PM – 8:30 PM</span>
                         </div>
                       </div>
                     </div>
@@ -403,7 +403,7 @@ export default function ContactPage() {
                   </h3>
                 </div>
                 <p className="text-sm text-[#464647] leading-relaxed font-light">
-                  Please bring along previous medical records, recent ultrasound scans, blood test reports, and a list of current medications to help Dr. Pooja offer an accurate, comprehensive clinical assessment.
+                  Please bring along previous medical records, recent ultrasound scans, blood test reports, and a list of current medications to help Dr. Pooja Wadgaonkar Patil offer an accurate, comprehensive clinical assessment.
                 </p>
               </div>
             </StaggerItem>

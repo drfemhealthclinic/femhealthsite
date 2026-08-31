@@ -32,7 +32,7 @@ export default function FinalCTA() {
               </h3>
               <p className="text-base text-[#FDFBFC]/90 font-light leading-relaxed pl-6">
                 10:30 AM to 2:00 PM<br />
-                4:00 PM to 8:00 PM
+                4:00 PM to 8:30 PM
               </p>
             </div>
           </FadeIn>

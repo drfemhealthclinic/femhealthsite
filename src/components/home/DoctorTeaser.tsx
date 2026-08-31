@@ -28,7 +28,7 @@ export default function DoctorTeaser() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-3xl md:text-4xl font-serif-display text-[#4E3953]"
               >
-                Meet Dr. Pooja Wadgaonkar
+                Meet Dr. Pooja Wadgaonkar Patil
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 15 }}
@@ -37,7 +37,7 @@ export default function DoctorTeaser() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-sm md:text-base text-[#464647] leading-relaxed"
               >
-                Dr. Pooja Wadgaonkar (Patil) is an accomplished Consultant Obstetrician, Gynaecologist, Laparoscopic Surgeon, and Infertility Specialist. With extensive expertise in managing high-risk pregnancies, performing minimally invasive surgeries, and guiding couples through their fertility journeys, Dr. Pooja brings both clinical precision and heartfelt dedication to every patient.
+                Dr. Pooja Wadgaonkar Patil is an accomplished Consultant Obstetrician, Gynaecologist, Laparoscopic Surgeon, and Infertility Specialist. With extensive expertise in managing high-risk pregnancies, performing minimally invasive surgeries, and guiding couples through their fertility journeys, Dr. Pooja Wadgaonkar Patil brings both clinical precision and heartfelt dedication to every patient.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 15 }}

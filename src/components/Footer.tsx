@@ -22,7 +22,7 @@ export default function Footer() {
             Personalised, compassionate, and evidence-based healthcare for women across all stages of life.
           </p>
           <p className="text-xs text-[#878787] pt-2">
-            © {new Date().getFullYear()} FemHealth Clinic. Dr. Pooja Wadgaonkar (Patil). All rights reserved.
+            © {new Date().getFullYear()} FemHealth Clinic. Dr. Pooja Wadgaonkar Patil. All rights reserved.
           </p>
           <p className="text-xs text-[#878787]">
             <Link href="/privacy" className="hover:text-[#7B5A7E] transition-colors underline">
@@ -44,7 +44,7 @@ export default function Footer() {
             </li>
             <li>
               <Link href="/about" className="hover:text-[#7B5A7E] transition-colors">
-                About &amp; Clinic
+                About
               </Link>
             </li>
             <li>
@@ -81,7 +81,7 @@ export default function Footer() {
           <div className="text-sm text-[#4C444C] space-y-1">
             <p className="font-semibold text-[#1B1C1C]">FemHealth Clinic (Hinjewadi):</p>
             <p>10:30 AM – 2:00 PM</p>
-            <p>4:00 PM – 8:00 PM</p>
+            <p>4:00 PM – 8:30 PM</p>
             <p className="text-xs text-[#878787] pt-2">{CLINIC.addressFull}</p>
           </div>
         </div>

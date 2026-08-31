@@ -5,7 +5,7 @@ import { CLINIC } from "@/lib/clinic";
 
 export const metadata = {
   title: "Privacy Policy | FemHealth Clinic",
-  description: "Privacy Policy for FemHealth Clinic - Dr. Pooja Wadgaonkar (Patil)",
+  description: "Privacy Policy for FemHealth Clinic - Dr. Pooja Wadgaonkar Patil",
 };
 
 export default function PrivacyPolicyPage() {
@@ -96,7 +96,7 @@ export default function PrivacyPolicyPage() {
                 </p>
                 <div className="bg-[#F5F3F4] rounded-xl p-5 mt-3 space-y-1">
                   <p className="font-semibold text-[#4E3953]">FemHealth Clinic</p>
-                  <p>Dr. Pooja Wadgaonkar (Patil)</p>
+                  <p>Dr. Pooja Wadgaonkar Patil</p>
                   <p>
                     <Link href={CLINIC.phoneHref} className="text-[#7B5A7E] hover:underline">
                       {CLINIC.phoneDisplay}

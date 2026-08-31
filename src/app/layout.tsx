@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
+import FloatingContact from "@/components/FloatingContact";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -17,10 +18,11 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "FemHealth Clinic | Dr. Pooja Wadgaonkar (Patil)",
+  title: "FemHealth Clinic | Dr. Pooja Wadgaonkar Patil",
   description:
-    "Advanced Maternity, Gynaecological Care, Minimal Access Laparoscopic Surgery & Complete Infertility Solutions by Dr. Pooja Wadgaonkar (Patil) in Pune.",
+    "Advanced Maternity, Gynaecological Care, Minimal Access Laparoscopic Surgery & Complete Infertility Solutions by Dr. Pooja Wadgaonkar Patil in Pune.",
   keywords: [
+    "Dr Pooja Wadgaonkar Patil",
     "Dr Pooja Wadgaonkar",
     "Dr Pooja Patil",
     "Gynaecologist Hinjewadi",
@@ -46,6 +48,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col bg-[#fbf9fa] text-[#1b1c1c] antialiased">
         {children}
+        <FloatingContact />
       </body>
     </html>
   );

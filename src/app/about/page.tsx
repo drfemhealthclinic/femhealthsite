@@ -27,7 +27,7 @@ export default function AboutPage() {
 
           <FadeIn direction="up" delay={0.1}>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif-display text-[#4E3953] max-w-5xl mx-auto leading-tight font-semibold tracking-tight">
-              Dr. Pooja Wadgaonkar (Patil)
+              Dr. Pooja Wadgaonkar Patil
             </h1>
           </FadeIn>
 
@@ -94,7 +94,7 @@ export default function AboutPage() {
                     Philosophy of Care
                   </span>
                   <h2 className="text-3xl md:text-4xl font-serif-display text-[#4E3953] font-semibold">
-                    Meet Dr. Pooja
+                    Meet Dr. Pooja Wadgaonkar Patil
                   </h2>
                   <div className="w-16 h-1 bg-[#D46789] rounded-full mt-2" />
                 </div>
@@ -102,13 +102,13 @@ export default function AboutPage() {
 
               <FadeIn direction="up" delay={0.2}>
                 <p className="text-base sm:text-lg text-[#464647] leading-relaxed font-light">
-                  Dr. Pooja Wadgaonkar (Patil) is an accomplished Consultant Obstetrician, Gynaecologist, Laparoscopic Surgeon, and Infertility Specialist. With extensive expertise in managing high-risk pregnancies, performing minimally invasive surgeries, and guiding couples through their fertility journeys, Dr. Pooja brings both clinical precision and heartfelt dedication to every patient.
+                  Dr. Pooja Wadgaonkar Patil is an accomplished Consultant Obstetrician, Gynaecologist, Laparoscopic Surgeon, and Infertility Specialist. With extensive expertise in managing high-risk pregnancies, performing minimally invasive surgeries, and guiding couples through their fertility journeys, Dr. Pooja Wadgaonkar Patil brings both clinical precision and heartfelt dedication to every patient.
                 </p>
               </FadeIn>
 
               <FadeIn direction="up" delay={0.3}>
                 <p className="text-base text-[#464647] leading-relaxed font-light">
-                  Believing firmly that healthcare should be a collaborative partnership between doctor and patient, Dr. Pooja ensures every woman is heard, empowered with evidence-based choices, and treated with utmost empathy in a warm, welcoming environment.
+                  Believing firmly that healthcare should be a collaborative partnership between doctor and patient, Dr. Pooja Wadgaonkar Patil ensures every woman is heard, empowered with evidence-based choices, and treated with utmost empathy in a warm, welcoming environment.
                 </p>
               </FadeIn>
 
@@ -400,7 +400,7 @@ export default function AboutPage() {
                 Begin Your Health Journey Today
               </h2>
               <p className="text-base text-[#C0A8C9] font-light">
-                Schedule a consultation with Dr. Pooja Wadgaonkar for personalized, expert care.
+                Schedule a consultation with Dr. Pooja Wadgaonkar Patil for personalized, expert care.
               </p>
               <div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-block">
