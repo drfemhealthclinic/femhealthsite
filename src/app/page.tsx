@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/home/Hero";
 import WelcomeQuote from "@/components/home/WelcomeQuote";
 import Highlights from "@/components/home/Highlights";
-import ServicesAccordion from "@/components/home/ServicesAccordion";
+import ServicesShowcase from "@/components/home/ServicesShowcase";
 import DoctorTeaser from "@/components/home/DoctorTeaser";
 import WhyChoose from "@/components/home/WhyChoose";
 import Testimonials from "@/components/home/Testimonials";
@@ -18,7 +18,7 @@ export default function Home() {
         <Hero />
         <WelcomeQuote />
         <Highlights />
-        <ServicesAccordion />
+        <ServicesShowcase />
         <DoctorTeaser />
         <WhyChoose />
         <Testimonials />
