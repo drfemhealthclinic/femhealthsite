@@ -435,6 +435,7 @@ export default function PostEditorForm({
                     src={coverImage}
                     alt="Cover preview"
                     fill
+                    unoptimized
                     className="object-cover"
                   />
                 </div>
@@ -695,6 +696,7 @@ export default function PostEditorForm({
                       src={coverImage}
                       alt={title}
                       fill
+                      unoptimized
                       className="object-cover"
                     />
                   </div>
