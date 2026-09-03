@@ -94,14 +94,29 @@ export default function BlogIndexPage() {
         (post.category || "").trim().toLowerCase() ===
           selectedCategory.trim().toLowerCase();
 
-      const q = searchQuery.toLowerCase().trim();
+      const rawQ = searchQuery.toLowerCase().trim();
+      if (!rawQ) return matchesCategory;
+
+      const qClean = rawQ.replace(/^#/, "").trim();
       const tags = Array.isArray(post.tags) ? post.tags : [];
+      
+      // Check exact query or clean query against all key fields including full body content
+      const searchBlob = [
+        post.title || "",
+        post.excerpt || "",
+        post.content || "",
+        post.category || "",
+        ...tags,
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      // Check if entire query matches, or each individual term matches
+      const terms = qClean.split(/\s+/).filter(Boolean);
       const matchesSearch =
-        !q ||
-        (post.title || "").toLowerCase().includes(q) ||
-        (post.excerpt || "").toLowerCase().includes(q) ||
-        (post.category || "").toLowerCase().includes(q) ||
-        tags.some((tag) => (tag || "").toLowerCase().includes(q));
+        searchBlob.includes(rawQ) ||
+        searchBlob.includes(qClean) ||
+        (terms.length > 1 && terms.every((t) => searchBlob.includes(t)));
 
       return matchesCategory && matchesSearch;
     });
