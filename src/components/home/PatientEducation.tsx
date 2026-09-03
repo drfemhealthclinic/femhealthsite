@@ -85,9 +85,12 @@ export default function PatientEducation() {
                         <span className="material-symbols-outlined text-4xl">menu_book</span>
                       </div>
                     )}
-                    <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm">
+                    <Link
+                      href={`/blog?category=${encodeURIComponent(post.category)}`}
+                      className="absolute top-3 left-3 bg-[#FDFBFC]/95 hover:bg-[#7B5A7E] hover:text-white backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm transition-colors z-10"
+                    >
                       {post.category}
-                    </div>
+                    </Link>
                   </div>
 
                   <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
@@ -158,9 +161,12 @@ export default function PatientEducation() {
                       <span className="material-symbols-outlined text-5xl">menu_book</span>
                     </div>
                   )}
-                  <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm">
+                  <Link
+                    href={`/blog?category=${encodeURIComponent(post.category)}`}
+                    className="absolute top-3 left-3 bg-[#FDFBFC]/95 hover:bg-[#7B5A7E] hover:text-white backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm transition-colors z-10"
+                  >
                     {post.category}
-                  </div>
+                  </Link>
                 </div>
 
                 {/* Content */}

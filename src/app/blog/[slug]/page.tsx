@@ -81,15 +81,23 @@ export default async function BlogDetailPage({ params }: PageProps) {
               Blog
             </Link>
             <span>/</span>
-            <span className="text-[#D46789] font-semibold">{post.category}</span>
+            <Link
+              href={`/blog?category=${encodeURIComponent(post.category)}`}
+              className="text-[#D46789] hover:underline font-semibold"
+            >
+              {post.category}
+            </Link>
           </nav>
 
           {/* Article Header */}
           <header className="space-y-6 mb-10">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="px-3.5 py-1 rounded-full bg-[#F9E4EA] text-[#D46789] border border-[#E898A8]/30 text-xs font-bold uppercase tracking-wider">
+              <Link
+                href={`/blog?category=${encodeURIComponent(post.category)}`}
+                className="px-3.5 py-1 rounded-full bg-[#F9E4EA] hover:bg-[#7B5A7E] hover:text-white text-[#D46789] border border-[#E898A8]/30 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-xs"
+              >
                 {post.category}
-              </span>
+              </Link>
               <span className="text-xs text-[#878787] font-medium">
                 {new Date(displayDate).toLocaleDateString("en-IN", {
                   month: "long",
@@ -171,12 +179,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 Tags:
               </span>
               {post.tags.map((tag) => (
-                <span
+                <Link
                   key={tag}
-                  className="px-3 py-1 bg-white border border-[#CFC3CC]/50 rounded-full text-xs text-[#7B5A7E] font-medium"
+                  href={`/blog?tag=${encodeURIComponent(tag)}`}
+                  className="px-3.5 py-1 bg-[#F9F5F7] hover:bg-[#7B5A7E] hover:text-white border border-[#CFC3CC]/50 rounded-full text-xs text-[#7B5A7E] font-medium transition-all shadow-xs cursor-pointer inline-flex items-center"
                 >
                   #{tag}
-                </span>
+                </Link>
               ))}
             </div>
           )}

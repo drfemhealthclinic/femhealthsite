@@ -32,7 +32,60 @@ export default function BlogIndexPage() {
       }
     }
     loadData();
+
+    // Read initial URL params (?category=..., ?tag=..., ?q=...)
+    function readUrlParams() {
+      if (typeof window === "undefined") return;
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get("category");
+      const tagParam = params.get("tag");
+      const qParam = params.get("q");
+
+      if (catParam) {
+        const matched = BLOG_CATEGORIES.find(
+          (c) => c.toLowerCase() === catParam.trim().toLowerCase()
+        );
+        if (matched) {
+          setSelectedCategory(matched);
+        } else {
+          setSearchQuery(catParam);
+        }
+      }
+
+      if (tagParam) {
+        setSearchQuery(tagParam);
+      } else if (qParam) {
+        setSearchQuery(qParam);
+      }
+    }
+
+    readUrlParams();
+    window.addEventListener("popstate", readUrlParams);
+    return () => window.removeEventListener("popstate", readUrlParams);
   }, []);
+
+  const handleSelectCategory = (cat: BlogCategory) => {
+    setSelectedCategory(cat);
+    if (typeof window !== "undefined") {
+      const url = cat === "All" ? "/blog" : `/blog?category=${encodeURIComponent(cat)}`;
+      window.history.replaceState(null, "", url);
+    }
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSearchQuery(tag);
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", `/blog?tag=${encodeURIComponent(tag)}`);
+    }
+  };
+
+  const clearAllFilters = () => {
+    setSelectedCategory("All");
+    setSearchQuery("");
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", "/blog");
+    }
+  };
 
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
@@ -83,7 +136,7 @@ export default function BlogIndexPage() {
 
           {/* Search & Category Filter Controls */}
           <FadeIn direction="up" delay={0.3}>
-            <div className="pt-6 max-w-2xl mx-auto space-y-6">
+            <div className="pt-6 max-w-2xl mx-auto space-y-5">
               {/* Search Bar */}
               <div className="relative">
                 <input
@@ -99,7 +152,7 @@ export default function BlogIndexPage() {
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#878787] hover:text-[#4E3953] bg-[#EFEDEE] px-2 py-0.5 rounded-full"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#878787] hover:text-[#4E3953] bg-[#EFEDEE] px-2 py-0.5 rounded-full cursor-pointer"
                   >
                     Clear
                   </button>
@@ -114,8 +167,8 @@ export default function BlogIndexPage() {
                     <button
                       key={cat}
                       type="button"
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
+                      onClick={() => handleSelectCategory(cat)}
+                      className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer ${
                         isSelected
                           ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20 scale-105"
                           : "bg-white border border-[#CFC3CC]/50 text-[#464647] hover:border-[#7B5A7E] hover:text-[#7B5A7E]"
@@ -126,6 +179,46 @@ export default function BlogIndexPage() {
                   );
                 })}
               </div>
+
+              {/* Active Filter Indicators */}
+              {(searchQuery || selectedCategory !== "All") && (
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-xs">
+                  <span className="text-[#878787]">Active filter:</span>
+                  {selectedCategory !== "All" && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7B5A7E]/10 text-[#7B5A7E] font-semibold">
+                      <span>Category: {selectedCategory}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleSelectCategory("All")}
+                        className="hover:text-red-500 font-bold ml-1 cursor-pointer"
+                        aria-label="Clear category filter"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  )}
+                  {searchQuery && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D46789]/10 text-[#D46789] font-semibold">
+                      <span>Tag: #{searchQuery}</span>
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery("")}
+                        className="hover:text-red-500 font-bold ml-1 cursor-pointer"
+                        aria-label="Clear search filter"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={clearAllFilters}
+                    className="text-[11px] text-[#878787] hover:text-[#4E3953] underline ml-1 cursor-pointer"
+                  >
+                    Reset all
+                  </button>
+                </div>
+              )}
             </div>
           </FadeIn>
         </section>
@@ -157,9 +250,21 @@ export default function BlogIndexPage() {
                   <div className="lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between space-y-6 bg-gradient-to-br from-white to-[#FDFBFC]">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 text-xs text-[#878787] font-medium">
-                        <span className="text-[#D46789] font-bold uppercase tracking-wider">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const matched = BLOG_CATEGORIES.find(
+                              (c) => c.toLowerCase() === (featuredPost.category || "").trim().toLowerCase()
+                            );
+                            if (matched) handleSelectCategory(matched);
+                            else handleTagClick(featuredPost.category);
+                          }}
+                          className="text-[#D46789] hover:underline font-bold uppercase tracking-wider cursor-pointer"
+                        >
                           {featuredPost.category}
-                        </span>
+                        </button>
                         <span>•</span>
                         <span>{featuredPost.reading_time}</span>
                       </div>
@@ -169,6 +274,26 @@ export default function BlogIndexPage() {
                       <p className="text-sm lg:text-base text-[#464647] font-light leading-relaxed">
                         {featuredPost.excerpt}
                       </p>
+
+                      {/* Featured Tags */}
+                      {featuredPost.tags && featuredPost.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {featuredPost.tags.map((t) => (
+                            <button
+                              key={t}
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleTagClick(t);
+                              }}
+                              className="text-xs px-3 py-1 rounded-full bg-[#F3EEF5] hover:bg-[#7B5A7E] hover:text-white text-[#7B5A7E] font-medium transition-colors cursor-pointer"
+                            >
+                              #{t}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     <div className="pt-6 border-t border-[#CFC3CC]/30 flex items-center justify-between">
@@ -260,9 +385,21 @@ export default function BlogIndexPage() {
                               <span className="material-symbols-outlined text-5xl">menu_book</span>
                             </div>
                           )}
-                          <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#D46789] uppercase tracking-wider shadow-sm">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const matched = BLOG_CATEGORIES.find(
+                                (c) => c.toLowerCase() === (post.category || "").trim().toLowerCase()
+                              );
+                              if (matched) handleSelectCategory(matched);
+                              else handleTagClick(post.category);
+                            }}
+                            className="absolute top-3 left-3 bg-[#FDFBFC]/95 hover:bg-[#7B5A7E] hover:text-white backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#D46789] uppercase tracking-wider shadow-sm transition-colors cursor-pointer z-10"
+                          >
                             {post.category}
-                          </div>
+                          </button>
                         </div>
 
                         {/* Content Details */}
@@ -285,6 +422,26 @@ export default function BlogIndexPage() {
                             <p className="text-xs sm:text-sm text-[#464647] leading-relaxed line-clamp-3 font-light">
                               {post.excerpt}
                             </p>
+
+                            {/* Clickable Tags on Card */}
+                            {post.tags && post.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 pt-1">
+                                {post.tags.slice(0, 3).map((t) => (
+                                  <button
+                                    key={t}
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleTagClick(t);
+                                    }}
+                                    className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#F3EEF5] hover:bg-[#7B5A7E] hover:text-white text-[#7B5A7E] font-medium transition-colors cursor-pointer"
+                                  >
+                                    #{t}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                           </div>
 
                           {/* Footer tags and link */}
