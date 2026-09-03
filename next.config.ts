@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  allowedDevOrigins: [
+    "jayceon-musicianly-phillip.ngrok-free.dev",
+    "*.ngrok-free.dev",
+  ],
 };
 
 export default nextConfig;

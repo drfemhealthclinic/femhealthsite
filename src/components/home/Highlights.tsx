@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/Motion";
@@ -10,8 +11,7 @@ const HIGHLIGHTS = [
     title: "Obstetrics",
     desc: "Complete Pregnancy & High-Risk Maternity Care",
     icon: "pregnant_woman",
-    image:
-      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop",
+    image: "/IMG_4214.PNG",
     imageAlt: "Obstetrics - Complete Pregnancy & High-Risk Maternity Care",
   },
   {
@@ -19,8 +19,7 @@ const HIGHLIGHTS = [
     title: "Laparoscopy",
     desc: "Scarless, Fast-Recovery Surgical Solutions",
     icon: "healing",
-    image:
-      "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1200&auto=format&fit=crop",
+    image: "/IMG_4215.JPG",
     imageAlt: "Laparoscopy - Scarless, Fast-Recovery Surgical Solutions",
   },
   {
@@ -28,7 +27,7 @@ const HIGHLIGHTS = [
     title: "Infertility",
     desc: "Personalised Conception Plans & Fertility Enhancement",
     icon: "family_restroom",
-    image: "/infertility.jpg",
+    image: "/infertility.webp",
     imageAlt: "Infertility - Personalised Conception Plans & Fertility Enhancement",
   },
   {
@@ -36,8 +35,7 @@ const HIGHLIGHTS = [
     title: "Preventive Care",
     desc: "Routine Gynaecological Check-ups & Cancer Screenings",
     icon: "health_and_safety",
-    image:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop",
+    image: "/preventive.jpg",
     imageAlt: "Preventive Care - Routine Gynaecological Check-ups & Cancer Screenings",
   },
   {
@@ -45,8 +43,7 @@ const HIGHLIGHTS = [
     title: "Lifestyle and Endocrine Disorders Management",
     desc: "Holistic, sustainable care for PCOS, hormonal balance, and metabolic health",
     icon: "spa",
-    image:
-      "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1200&auto=format&fit=crop",
+    image: "/IMG_4219.JPG",
     imageAlt: "Lifestyle and Endocrine Disorders Management",
   },
 ];
@@ -55,32 +52,29 @@ interface CardProps {
   item: (typeof HIGHLIGHTS)[number];
   className?: string;
   heightClass?: string;
-  contentWidth?: string;
-  featured?: boolean;
 }
 
 function HighlightCard({
   item,
   className = "",
-  heightClass = "",
-  contentWidth = "max-w-md",
-  featured = false,
+  heightClass = "h-[380px] md:h-[420px]",
 }: CardProps) {
   return (
     <motion.div
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
-      className={`group relative h-80 md:h-[420px] overflow-hidden rounded-3xl border border-[#CFC3CC]/40 bg-white text-white organic-shadow hover:organic-shadow-hover ${heightClass} ${className}`}
+      className={`group relative overflow-hidden rounded-3xl border border-[#CFC3CC]/40 bg-[#231726] text-white organic-shadow hover:border-[#D46789]/40 hover:shadow-xl transition-all duration-300 ${heightClass} ${className}`}
     >
+      {/* Edge-to-edge photo filling exact card area naturally without extreme zoom */}
       <Image
         src={item.image}
         alt={item.imageAlt}
         fill
-        sizes="(max-width: 768px) 100vw, 50vw"
-        className="object-cover transition-transform duration-700 group-hover:scale-105"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className="object-cover object-center transition-transform duration-500"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-[#2E1E32]/85 via-[#4E3953]/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#231726]/90 via-[#231726]/30 to-transparent" />
 
       {/* Top row: numeral + icon */}
       <div className="absolute top-0 inset-x-0 flex items-center justify-between p-6">
@@ -95,17 +89,11 @@ function HighlightCard({
       {/* Bottom content */}
       <div className="absolute bottom-0 inset-x-0 p-6 sm:p-7">
         <div className="space-y-2">
-          <span className="block w-9 h-0.5 bg-white/70 transition-colors group-hover:bg-[#E6C2D6]" />
-          <h3
-            className={`font-serif-display font-bold text-white leading-tight transition-colors group-hover:text-[#F3EEF5] ${featured ? "text-2xl sm:text-3xl lg:text-4xl" : "text-xl sm:text-2xl"
-              }`}
-          >
+          <span className="block w-10 h-[3px] bg-white/70 rounded-full transition-colors group-hover:bg-[#E898A8]" />
+          <h3 className="font-serif-display font-bold text-white text-xl sm:text-2xl leading-tight transition-colors group-hover:text-[#F3EEF5]">
             {item.title}
           </h3>
-          <p
-            className={`text-white/90 font-light leading-relaxed ${contentWidth} ${featured ? "text-sm sm:text-base" : "text-xs sm:text-sm"
-              }`}
-          >
+          <p className="text-white/90 font-light text-xs sm:text-sm leading-relaxed max-w-md">
             {item.desc}
           </p>
         </div>
@@ -116,9 +104,18 @@ function HighlightCard({
 
 export default function Highlights() {
   const [obstetrics, laparoscopy, infertility, preventive, lifestyle] = HIGHLIGHTS;
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll > 0) {
+      setScrollProgress(Math.max(0, Math.min(1, el.scrollLeft / maxScroll)));
+    }
+  };
 
   return (
-    <section className="py-24 md:py-32 px-5 md:px-12 max-w-7xl mx-auto space-y-12 md:space-y-16">
+    <section className="py-20 md:py-28 px-5 md:px-12 max-w-7xl mx-auto space-y-12">
       {/* Section Header */}
       <FadeIn direction="up">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#CFC3CC]/30">
@@ -126,7 +123,7 @@ export default function Highlights() {
             <span className="text-xs font-bold tracking-widest text-[#D46789] uppercase block">
               Clinical Focus
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif-display text-[#4E3953] font-semibold leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif-display text-[#4E3953] font-semibold leading-tight">
               Core Key Highlights
             </h2>
           </div>
@@ -136,41 +133,60 @@ export default function Highlights() {
         </div>
       </FadeIn>
 
-      {/* Asymmetric Editorial Bento */}
-      <div className="space-y-5 md:space-y-6">
-        {/* Row 1: Infertility feature (7) + Obstetrics (5) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6">
-          <FadeIn direction="up" className="md:col-span-7">
-            <HighlightCard
-              item={infertility}
-              featured
-              heightClass="h-80 md:h-[420px]"
-              contentWidth="max-w-lg"
+      {/* Mobile Swipe Strip: All 5 cards in 1 smooth swipe row */}
+      <div className="md:hidden space-y-3">
+        <div
+          onScroll={handleScroll}
+          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-5 px-5 pb-2 gap-4"
+        >
+          {HIGHLIGHTS.map((item) => (
+            <div key={item.title} className="w-[82vw] sm:w-[50vw] shrink-0 snap-center">
+              <HighlightCard item={item} heightClass="h-[380px]" />
+            </div>
+          ))}
+        </div>
+
+        {/* Apple-style Progress Indicator */}
+        <div className="flex items-center justify-between px-2 pt-1">
+          <div className="w-24 h-1 bg-[#CFC3CC]/30 rounded-full overflow-hidden relative">
+            <div
+              className="absolute top-0 bottom-0 bg-[#D46789] rounded-full transition-all duration-75"
+              style={{
+                width: "20%",
+                left: `${scrollProgress * 80}%`,
+              }}
             />
+          </div>
+          <span className="text-[11px] font-medium text-[#7B5A7E] tracking-wider">
+            {Math.min(5, Math.floor(scrollProgress * 4.99) + 1)} of 5
+          </span>
+        </div>
+      </div>
+
+      {/* Desktop & Tablet: Balanced 3 + 2 Grid */}
+      <div className="hidden md:block space-y-6">
+        {/* Row 1: 3 equal portrait-proportional cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <FadeIn direction="up">
+            <HighlightCard item={infertility} heightClass="h-[380px] md:h-[430px]" />
           </FadeIn>
-          <FadeIn direction="up" delay={0.12} className="md:col-span-5">
-            <HighlightCard item={obstetrics} heightClass="h-80 md:h-[420px]" />
+          <FadeIn direction="up" delay={0.1}>
+            <HighlightCard item={obstetrics} heightClass="h-[380px] md:h-[430px]" />
+          </FadeIn>
+          <FadeIn direction="up" delay={0.2}>
+            <HighlightCard item={laparoscopy} heightClass="h-[380px] md:h-[430px]" />
           </FadeIn>
         </div>
 
-        {/* Row 2: Laparoscopy (5) + Preventive (7) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6">
-          <FadeIn direction="up" className="md:col-span-5">
-            <HighlightCard item={laparoscopy} heightClass="h-64 md:h-[300px]" />
+        {/* Row 2: 2 equal landscape-proportional cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FadeIn direction="up">
+            <HighlightCard item={preventive} heightClass="h-[300px] md:h-[350px]" />
           </FadeIn>
-          <FadeIn direction="up" delay={0.12} className="md:col-span-7">
-            <HighlightCard item={preventive} heightClass="h-64 md:h-[300px]" contentWidth="max-w-lg" />
+          <FadeIn direction="up" delay={0.1}>
+            <HighlightCard item={lifestyle} heightClass="h-[300px] md:h-[350px]" />
           </FadeIn>
         </div>
-
-        {/* Row 3: wide Lifestyle horizontal band */}
-        <FadeIn direction="up" delay={0.1}>
-          <HighlightCard
-            item={lifestyle}
-            heightClass="h-64 md:h-[320px]"
-            contentWidth="max-w-xl"
-          />
-        </FadeIn>
       </div>
     </section>
   );

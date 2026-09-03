@@ -13,7 +13,6 @@ export const CLINIC = {
   mapQuery:
     "Shop No. 85, VJ Happiness Street, Hinjawadi Phase 2 Road, Rajiv Gandhi Infotech Park, Maan, Pune 411057",
   mapEmbedSrc:
-    "https://maps.google.com/maps?q=Shop+No.+85,+VJ+Happiness+Street,+Hinjawadi+Phase+2+Road,+Rajiv+Gandhi+Infotech+Park,+Maan,+Pune+411057&z=15&ie=UTF8&output=embed",
-  directionsHref:
-    "https://maps.google.com/?q=Shop+No.+85,+VJ+Happiness+Street,+Hinjawadi+Phase+2+Road,+Rajiv+Gandhi+Infotech+Park,+Maan,+Pune+411057",
+    "https://maps.google.com/maps?q=18.5873025,73.7010871+(FemHealth+Clinic+-+Dr.+Pooja+Wadgaonkar+Patil)&z=16&ie=UTF8&iwloc=B&output=embed",
+  directionsHref: "https://maps.app.goo.gl/nMDYh7KxdbZmxcAi8",
 } as const;

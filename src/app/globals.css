@@ -9,8 +9,8 @@
     --accent-pink: #E898A8;
     --charcoal: #464647;
     --grey: #878787;
-    --background: #FDFBFC;
-    --surface: #FBF9FA;
+    --background: #FEFCFD;
+    --surface: #FEFCFD;
     --surface-dim: #DBD9DA;
     --surface-container-lowest: #FFFFFF;
     --surface-container-low: #F5F3F4;
@@ -22,6 +22,8 @@
     --outline-variant: #CFC3CC;
     --lavender-wash: #F3EEF5;
     --lavender-tint: #F1E3F5;
+    --rose-soft: #F9E4EA;
+    --petal: #D46789;
   }
 }
 
@@ -62,8 +64,8 @@ h3,
 }
 
 .organic-shadow-hover:hover {
-  box-shadow: 0 8px 30px rgba(123, 90, 126, 0.18);
-  border-color: var(--primary-light);
+  box-shadow: 0 8px 30px rgba(123, 90, 126, 0.14);
+  border-color: #D46789;
 }
 
 /* Form inputs */
@@ -105,4 +107,24 @@ h3,
 
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out;
+}
+
+/* Infinite Marquee for Testimonials / Reviews */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }

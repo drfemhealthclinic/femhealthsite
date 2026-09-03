@@ -3,18 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BlogPost, FALLBACK_POSTS } from "@/lib/blog-fallback";
+import { BlogPost } from "@/lib/blog-fallback";
 import { getAdminPosts, isSupabaseConfigured } from "@/lib/supabase";
 
 export default function AdminDashboardPage() {
-  const [posts, setPosts] = useState<BlogPost[]>(FALLBACK_POSTS);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
         const data = await getAdminPosts();
-        if (data) setPosts(data);
+        setPosts(data || []);
       } catch (err) {
         console.error("Error loading admin stats:", err);
       } finally {

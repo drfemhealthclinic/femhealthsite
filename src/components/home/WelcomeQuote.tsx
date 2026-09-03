@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 
 export default function WelcomeQuote() {
   return (
-    <section className="bg-[#F5F3F4] border-y border-[#CFC3CC]/30 overflow-hidden">
+    <section className="bg-[#F9E4EA] border-y border-[#E898A8]/25 overflow-hidden">
       <div className="px-5 md:px-12 py-16 md:py-24 max-w-4xl mx-auto text-center space-y-6">
         <motion.span
           initial={{ scale: 0.5, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 0.9 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="material-symbols-outlined text-[#C0A8C9] text-5xl block"
+          className="material-symbols-outlined text-[#D46789] text-5xl block"
           style={{ fontVariationSettings: "'FILL' 1" }}
         >
           format_quote
@@ -30,7 +30,7 @@ export default function WelcomeQuote() {
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="pt-4 border-t border-[#C0A8C9]/60 w-24 mx-auto origin-center"
+          className="pt-4 border-t border-[#D46789]/40 w-24 mx-auto origin-center"
         />
         <motion.span
           initial={{ opacity: 0 }}

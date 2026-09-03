@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/Motion";
 
@@ -31,8 +32,18 @@ export default function WhyChoose() {
     },
   ];
 
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll > 0) {
+      setScrollProgress(Math.max(0, Math.min(1, el.scrollLeft / maxScroll)));
+    }
+  };
+
   return (
-    <section className="px-5 md:px-12 py-20 md:py-28 max-w-7xl mx-auto bg-gradient-to-b from-[#FDFBFC] to-[#F5F3F4] rounded-3xl my-12">
+    <section className="px-5 md:px-12 py-20 md:py-28 max-w-7xl mx-auto bg-gradient-to-b from-[#FDFBFC] to-[#F7F3F5] rounded-3xl my-12">
       <FadeIn direction="up">
         <div className="text-center mb-16 space-y-3">
           <span className="text-xs uppercase tracking-widest text-[#7B5A7E] font-bold">
@@ -44,7 +55,69 @@ export default function WhyChoose() {
         </div>
       </FadeIn>
 
-      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Mobile Swipe Strip */}
+      <div className="md:hidden space-y-3">
+        <div
+          onScroll={handleScroll}
+          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-5 px-5 pb-2 gap-4"
+        >
+          {pillars.map((pillar, i) => (
+            <div key={pillar.title} className="w-[78vw] sm:w-[50vw] shrink-0 snap-center">
+              <div
+                className="text-center space-y-3.5 p-6 rounded-2xl organic-shadow border border-[#CFC3CC]/25 h-full relative overflow-hidden bg-white"
+                style={{ background: `linear-gradient(180deg, ${pillar.color}14 0%, #FFFFFF 45%)` }}
+              >
+                <span
+                  className="absolute top-4 right-4 text-[10px] font-bold tracking-wider opacity-25"
+                  style={{ color: pillar.color }}
+                >
+                  0{i + 1}
+                </span>
+
+                <div className="relative mx-auto w-fit">
+                  <div
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full blur-xl opacity-20"
+                    style={{ backgroundColor: pillar.color }}
+                  />
+                  <div className="relative w-14 h-14 bg-[#F3EEF5] rounded-full flex items-center justify-center text-[#D46789] z-10 shadow-xs">
+                    <span
+                      className="material-symbols-outlined text-2xl"
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
+                      {pillar.icon}
+                    </span>
+                  </div>
+                </div>
+                <h3 className="text-base font-serif-display font-semibold text-[#4E3953] relative z-10">
+                  {pillar.title}
+                </h3>
+                <p className="text-xs text-[#464647] leading-relaxed relative z-10 font-light">
+                  {pillar.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Apple-style Progress Indicator */}
+        <div className="flex items-center justify-between px-2 pt-1">
+          <div className="w-24 h-1 bg-[#CFC3CC]/30 rounded-full overflow-hidden relative">
+            <div
+              className="absolute top-0 bottom-0 bg-[#7B5A7E] rounded-full transition-all duration-75"
+              style={{
+                width: "25%",
+                left: `${scrollProgress * 75}%`,
+              }}
+            />
+          </div>
+          <span className="text-[11px] font-medium text-[#7B5A7E] tracking-wider">
+            {Math.min(4, Math.floor(scrollProgress * 3.99) + 1)} of 4
+          </span>
+        </div>
+      </div>
+
+      {/* Desktop 4-Column Grid */}
+      <StaggerContainer className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8">
         {pillars.map((pillar, i) => (
           <StaggerItem key={pillar.title}>
             <motion.div
@@ -79,12 +152,12 @@ export default function WhyChoose() {
                     e.currentTarget.style.boxShadow = "";
                   }}
                 >
-                <span
-                  className="material-symbols-outlined text-3xl"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  {pillar.icon}
-                </span>
+                  <span
+                    className="material-symbols-outlined text-3xl"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    {pillar.icon}
+                  </span>
                 </div>
               </div>
               <h3 className="text-lg font-serif-display font-semibold text-[#4E3953] relative z-10">

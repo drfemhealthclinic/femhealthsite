@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   BlogPost,
   BLOG_CATEGORIES,
-  FALLBACK_POSTS,
 } from "@/lib/blog-fallback";
 import {
   getAdminPosts,
@@ -16,7 +15,7 @@ import {
 } from "@/lib/supabase";
 
 export default function AdminPostsPage() {
-  const [posts, setPosts] = useState<BlogPost[]>(FALLBACK_POSTS);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -30,7 +29,7 @@ export default function AdminPostsPage() {
   const loadData = async () => {
     try {
       const data = await getAdminPosts();
-      if (data) setPosts(data);
+      setPosts(data || []);
     } catch (err) {
       console.error("Error loading posts:", err);
     } finally {

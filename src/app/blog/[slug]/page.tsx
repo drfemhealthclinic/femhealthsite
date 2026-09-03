@@ -66,7 +66,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const displayDate = post.published_at || post.created_at;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FDFBFC]">
+    <div className="min-h-screen flex flex-col bg-[#FEFCFD]">
       <Navbar />
 
       <main className="flex-1 pt-28 pb-20">
@@ -87,7 +87,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           {/* Article Header */}
           <header className="space-y-6 mb-10">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="px-3.5 py-1 rounded-full bg-[#7B5A7E]/10 text-[#7B5A7E] text-xs font-bold uppercase tracking-wider">
+              <span className="px-3.5 py-1 rounded-full bg-[#F9E4EA] text-[#D46789] border border-[#E898A8]/30 text-xs font-bold uppercase tracking-wider">
                 {post.category}
               </span>
               <span className="text-xs text-[#878787] font-medium">
@@ -237,7 +237,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           <section className="max-w-7xl mx-auto px-5 md:px-12 mt-20 pt-16 border-t border-[#CFC3CC]/30">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-xs uppercase tracking-widest text-[#7B5A7E] font-bold">
+                <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">
                   Continue Reading
                 </span>
                 <h2 className="text-2xl md:text-3xl font-serif-display font-bold text-[#4E3953] mt-1">
@@ -256,7 +256,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedPosts.map((rel) => (
                 <Link key={rel.id} href={`/blog/${rel.slug}`} className="group block">
-                  <div className="bg-white rounded-2xl overflow-hidden border border-[#CFC3CC]/40 organic-shadow hover:shadow-lg hover:border-[#7B5A7E]/40 transition-all duration-300 flex flex-col h-full">
+                  <div className="bg-white rounded-2xl overflow-hidden border border-[#CFC3CC]/40 organic-shadow hover:shadow-lg hover:border-[#D46789]/40 transition-all duration-300 flex flex-col h-full">
                     <div className="relative h-44 w-full bg-[#F3EEF5]">
                       {rel.cover_image && (
                         <Image
@@ -267,7 +267,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       )}
-                      <div className="absolute top-2.5 left-2.5 bg-[#FDFBFC]/90 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold text-[#7B5A7E] uppercase">
+                      <div className="absolute top-2.5 left-2.5 bg-[#FDFBFC]/90 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold text-[#D46789] uppercase">
                         {rel.category}
                       </div>
                     </div>

@@ -11,12 +11,11 @@ import {
   BlogPost,
   BLOG_CATEGORIES,
   BlogCategory,
-  FALLBACK_POSTS,
 } from "@/lib/blog-fallback";
 import { getPublishedPosts } from "@/lib/supabase";
 
 export default function BlogIndexPage() {
-  const [posts, setPosts] = useState<BlogPost[]>(FALLBACK_POSTS);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<BlogCategory>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -25,9 +24,7 @@ export default function BlogIndexPage() {
     async function loadData() {
       try {
         const fetched = await getPublishedPosts();
-        if (fetched && fetched.length > 0) {
-          setPosts(fetched);
-        }
+        setPosts(fetched || []);
       } catch (err) {
         console.error("Error loading blog posts:", err);
       } finally {
@@ -60,7 +57,7 @@ export default function BlogIndexPage() {
   const featuredPost = posts.length > 0 ? posts[0] : null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FDFBFC]">
+    <div className="min-h-screen flex flex-col bg-[#FEFCFD]">
       <Navbar />
 
       <main className="flex-1 pt-28 pb-20">
@@ -138,7 +135,7 @@ export default function BlogIndexPage() {
           <section className="px-5 md:px-12 max-w-7xl mx-auto mb-16">
             <FadeIn direction="up">
               <Link href={`/blog/${featuredPost.slug}`} className="group block">
-                <div className="bg-white rounded-3xl overflow-hidden border border-[#CFC3CC]/50 organic-shadow hover:shadow-2xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-0">
+                <div className="bg-white rounded-3xl overflow-hidden border border-[#CFC3CC]/50 organic-shadow hover:shadow-2xl hover:border-[#D46789]/40 transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-0">
                   {/* Left Column: Image */}
                   <div className="lg:col-span-7 relative h-72 lg:h-[420px] bg-[#F3EEF5] overflow-hidden">
                     {featuredPost.cover_image && (
@@ -247,7 +244,7 @@ export default function BlogIndexPage() {
                     transition={{ duration: 0.25 }}
                   >
                     <Link href={`/blog/${post.slug}`} className="group block h-full">
-                      <article className="bg-white rounded-2xl overflow-hidden border border-[#CFC3CC]/40 organic-shadow hover:shadow-xl hover:border-[#7B5A7E]/40 transition-all duration-300 flex flex-col h-full hover:-translate-y-1.5">
+                      <article className="bg-white rounded-2xl overflow-hidden border border-[#CFC3CC]/40 organic-shadow hover:shadow-xl hover:border-[#D46789]/40 transition-all duration-300 flex flex-col h-full hover:-translate-y-1.5">
                         {/* Image Container */}
                         <div className="relative w-full h-52 bg-[#F3EEF5] overflow-hidden">
                           {post.cover_image ? (
@@ -263,7 +260,7 @@ export default function BlogIndexPage() {
                               <span className="material-symbols-outlined text-5xl">menu_book</span>
                             </div>
                           )}
-                          <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#7B5A7E] uppercase tracking-wider shadow-sm">
+                          <div className="absolute top-3 left-3 bg-[#FDFBFC]/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#D46789] uppercase tracking-wider shadow-sm">
                             {post.category}
                           </div>
                         </div>

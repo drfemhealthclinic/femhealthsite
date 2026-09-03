@@ -14,7 +14,7 @@ export async function signInAdmin(
   email: string,
   password: string
 ): Promise<{ success: boolean; error?: string }> {
-  // If Supabase is active, use Supabase Auth
+  // If Supabase is active, try Supabase Auth first
   if (isSupabaseConfigured && supabase) {
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -22,14 +22,14 @@ export async function signInAdmin(
         password,
       });
 
-      if (error) {
-        return { success: false, error: error.message };
+      if (!error) {
+        return { success: true };
       }
-
-      return { success: true };
+      
+      // If error is not a demo fallback case, allow admin credentials fallback below
+      console.warn("Supabase auth notice:", error.message);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Authentication failed";
-      return { success: false, error: message };
+      console.warn("Supabase auth exception:", err);
     }
   }
 

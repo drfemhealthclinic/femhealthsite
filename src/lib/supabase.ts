@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { BlogPost, FALLBACK_POSTS } from "./blog-fallback";
+import { BlogPost } from "./blog-fallback";
 
 const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL || "")
   .trim()
@@ -30,7 +30,7 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
         }
       }
     }
-    return FALLBACK_POSTS.filter((p) => p.published);
+    return [];
   }
 
   try {
@@ -40,14 +40,15 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
       .eq("published", true)
       .order("published_at", { ascending: false });
 
-    if (error || !data || data.length === 0) {
-      return FALLBACK_POSTS.filter((p) => p.published);
+    if (error || !data) {
+      console.error("Failed to fetch published posts from Supabase:", error);
+      return [];
     }
 
     return data as BlogPost[];
   } catch (err) {
     console.error("Failed to fetch published posts from Supabase:", err);
-    return FALLBACK_POSTS.filter((p) => p.published);
+    return [];
   }
 }
 
@@ -68,8 +69,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
         }
       }
     }
-    const found = FALLBACK_POSTS.find((p) => p.slug === slug);
-    return found || null;
+    return null;
   }
 
   try {
@@ -80,15 +80,13 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       .maybeSingle();
 
     if (error || !data) {
-      const fallbackFound = FALLBACK_POSTS.find((p) => p.slug === slug);
-      return fallbackFound || null;
+      return null;
     }
 
     return data as BlogPost;
   } catch (err) {
     console.error(`Failed to fetch post by slug '${slug}':`, err);
-    const fallbackFound = FALLBACK_POSTS.find((p) => p.slug === slug);
-    return fallbackFound || null;
+    return null;
   }
 }
 
@@ -109,8 +107,7 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
         }
       }
     }
-    const found = FALLBACK_POSTS.find((p) => p.id === id);
-    return found || null;
+    return null;
   }
 
   try {
@@ -121,13 +118,13 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
       .maybeSingle();
 
     if (error || !data) {
-      return FALLBACK_POSTS.find((p) => p.id === id) || null;
+      return null;
     }
 
     return data as BlogPost;
   } catch (err) {
     console.error(`Failed to fetch post by id '${id}':`, err);
-    return FALLBACK_POSTS.find((p) => p.id === id) || null;
+    return null;
   }
 }
 
@@ -168,9 +165,8 @@ export async function getAdminPosts(): Promise<BlogPost[]> {
           // ignore parsing error
         }
       }
-      localStorage.setItem("femhealth_admin_posts", JSON.stringify(FALLBACK_POSTS));
     }
-    return FALLBACK_POSTS;
+    return [];
   }
 
   try {
@@ -180,13 +176,13 @@ export async function getAdminPosts(): Promise<BlogPost[]> {
       .order("created_at", { ascending: false });
 
     if (error || !data) {
-      return FALLBACK_POSTS;
+      return [];
     }
 
     return data as BlogPost[];
   } catch (err) {
     console.error("Failed to fetch admin posts:", err);
-    return FALLBACK_POSTS;
+    return [];
   }
 }
 

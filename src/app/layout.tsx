@@ -46,7 +46,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#fbf9fa] text-[#1b1c1c] antialiased">
+      <body className="min-h-screen flex flex-col bg-[#fefcfd] text-[#1b1c1c] antialiased">
         {children}
         <FloatingContact />
       </body>

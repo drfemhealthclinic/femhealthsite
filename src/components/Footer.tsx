@@ -4,7 +4,7 @@ import { CLINIC } from "@/lib/clinic";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#EFEDEE] border-t border-[#CFC3CC]/40 text-[#464647] mt-auto">
+    <footer className="bg-[#F3F1F2] border-t border-[#CFC3CC]/30 text-[#464647] mt-auto">
       <div className="max-w-7xl mx-auto px-5 md:px-12 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand Column */}
         <div className="space-y-4 md:col-span-1">
@@ -87,7 +87,18 @@ export default function Footer() {
             <p className="font-semibold text-[#1B1C1C]">FemHealth Clinic (Hinjewadi):</p>
             <p>10:30 AM – 2:00 PM</p>
             <p>4:00 PM – 8:30 PM</p>
-            <p className="text-xs text-[#878787] pt-2">{CLINIC.addressFull}</p>
+            <a
+              href={CLINIC.directionsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-[#878787] pt-2 hover:text-[#7B5A7E] transition-colors flex items-start gap-1 group"
+              title="Open in Google Maps"
+            >
+              <span className="material-symbols-outlined text-sm text-[#7B5A7E] shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
+                location_on
+              </span>
+              <span>{CLINIC.addressFull}</span>
+            </a>
           </div>
         </div>
       </div>

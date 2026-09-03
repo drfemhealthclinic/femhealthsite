@@ -44,15 +44,15 @@ export default function ContactPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow bg-[#FDFBFC]">
+      <main className="flex-grow bg-[#FEFCFD]">
         {/* PAGE HEADER */}
         <section className="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-24 px-5 md:px-12 max-w-7xl mx-auto text-center">
           {/* Ambient background blurs */}
-          <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#C0A8C9]/10 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
-          <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-[#E898A8]/8 rounded-full blur-3xl translate-y-1/2 pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#D4A0C0]/15 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-[#E898A8]/18 rounded-full blur-3xl translate-y-1/2 pointer-events-none" />
 
           <FadeIn direction="down">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f1d7fa] text-[#614265] text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F9E4EA] text-[#D46789] border border-[#E898A8]/30 text-xs font-bold uppercase tracking-widest mb-6">
               Get In Touch
             </div>
           </FadeIn>
@@ -77,7 +77,7 @@ export default function ContactPage() {
             <div className="md:col-span-7 flex flex-col gap-8">
               {/* DIRECT CONTACT INFO CARD */}
               <FadeIn direction="up">
-                <div className="bg-white p-8 md:p-10 organic-shadow rounded-2xl border border-[#CFC3CC]/30 hover:border-[#C0A8C9] transition-colors">
+                <div className="bg-white p-8 md:p-10 organic-shadow rounded-2xl border border-[#CFC3CC]/30 hover:border-[#D46789]/40 hover:shadow-xl transition-all duration-300">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-xl bg-[#F3EEF5] flex items-center justify-center text-[#7B5A7E]">
                       <span className="material-symbols-outlined text-2xl">call</span>
@@ -91,7 +91,7 @@ export default function ContactPage() {
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="bg-[#FDFBFC] p-5 rounded-xl border border-[#CFC3CC]/40 hover:border-[#C0A8C9] transition-colors">
-                      <h3 className="text-xs font-bold text-[#7B5A7E] mb-1 uppercase tracking-wider">
+                      <h3 className="text-xs font-bold text-[#D46789] mb-1 uppercase tracking-wider">
                         Phone &amp; WhatsApp
                       </h3>
                       <a
@@ -102,7 +102,7 @@ export default function ContactPage() {
                       </a>
                     </div>
                     <div className="bg-[#FDFBFC] p-5 rounded-xl border border-[#CFC3CC]/40 hover:border-[#C0A8C9] transition-colors">
-                      <h3 className="text-xs font-bold text-[#7B5A7E] mb-1 uppercase tracking-wider">
+                      <h3 className="text-xs font-bold text-[#D46789] mb-1 uppercase tracking-wider">
                         Email Inquiries
                       </h3>
                       <a
@@ -126,7 +126,7 @@ export default function ContactPage() {
                     <h2 className="text-2xl font-serif-display text-[#4E3953] font-semibold">
                       Request an Appointment
                     </h2>
-                    <span className="bg-[#F3EEF5] text-[#7B5A7E] px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border border-[#C0A8C9]/40 self-start sm:self-auto">
+                    <span className="bg-[#F9E4EA] text-[#D46789] px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border border-[#E898A8]/30 self-start sm:self-auto">
                       Direct Clinic Booking
                     </span>
                   </div>
@@ -263,7 +263,7 @@ export default function ContactPage() {
 
                   <div className="space-y-4">
                     {/* Primary Clinic */}
-                    <div className="bg-white p-5 rounded-xl border border-[#CFC3CC]/30 space-y-2 hover:border-[#C0A8C9] transition-colors">
+                    <div className="bg-white p-5 rounded-xl border border-[#CFC3CC]/30 space-y-2 hover:border-[#D46789]/40 transition-colors">
                       <div className="flex items-center justify-between">
                         <h3 className="font-serif-display font-semibold text-lg text-[#1B1C1C]">
                           FemHealth Clinic
@@ -275,6 +275,15 @@ export default function ContactPage() {
                       <p className="text-xs font-medium text-[#7B5A7E]">
                         {CLINIC.addressFull}
                       </p>
+                      <a
+                        href={CLINIC.directionsHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#D46789] hover:text-[#7B5A7E] pt-1 transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-xs">location_on</span>
+                        <span>View on Google Maps ↗</span>
+                      </a>
                       <div className="pt-2 text-xs text-[#464647] space-y-1">
                         <div className="flex items-center gap-1.5">
                           <span className="material-symbols-outlined text-sm text-[#D46789]">

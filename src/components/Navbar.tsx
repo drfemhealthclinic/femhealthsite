@@ -114,7 +114,7 @@ export default function Navbar() {
           <div className="hidden md:block shrink-0">
             <Link
               href="/contact#book"
-              className="inline-flex items-center justify-center bg-[#7B5A7E] text-white font-semibold tracking-wider uppercase hover:bg-[#4E3953] transition-all duration-200 rounded-full px-5 lg:px-6 py-2.5 text-xs lg:text-[13px] organic-shadow hover:shadow-lg hover:shadow-[#7B5A7E]/20 active:scale-95"
+              className="inline-flex items-center justify-center bg-[#7B5A7E] text-white font-semibold tracking-wider uppercase hover:bg-[#4E3953] transition-all duration-200 rounded-full px-5 lg:px-6 py-2.5 text-xs lg:text-[13px] organic-shadow hover:shadow-lg hover:shadow-[#D46789]/20 active:scale-95"
             >
               Book an Appointment
             </Link>

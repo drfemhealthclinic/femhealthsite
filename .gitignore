@@ -45,3 +45,8 @@ CLINIC_INFO.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw camera video sources (>50MB)
+public/*.mov
+public/hero-video.mp4
+public/FemHealth Clinic Web Video 01.mp4
