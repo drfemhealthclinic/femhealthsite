@@ -97,26 +97,41 @@ export default function ServicesShowcase() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Automatically scroll the top pills so the active heading stays centered and in sync
+  // Automatically scroll the top pills horizontally ONLY so the active heading stays centered
   useEffect(() => {
     const activePill = pillRefs.current[activeTab];
-    if (activePill) {
-      activePill.scrollIntoView({
+    const pillContainer = activePill?.parentElement;
+    if (activePill && pillContainer) {
+      const containerRect = pillContainer.getBoundingClientRect();
+      const pillRect = activePill.getBoundingClientRect();
+      const offset =
+        pillRect.left -
+        containerRect.left -
+        (containerRect.width - pillRect.width) / 2;
+
+      pillContainer.scrollTo({
+        left: pillContainer.scrollLeft + offset,
         behavior: "smooth",
-        block: "nearest",
-        inline: "center",
       });
     }
   }, [activeTab]);
 
   const scrollToService = (idx: number) => {
     setActiveTab(idx);
+    const container = mobileCarouselRef.current;
     const card = cardRefs.current[idx];
-    if (card) {
-      card.scrollIntoView({
+    if (container && card) {
+      // Scroll strictly horizontally inside the container — ZERO vertical page jump
+      const containerRect = container.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const offset =
+        cardRect.left -
+        containerRect.left -
+        (containerRect.width - cardRect.width) / 2;
+
+      container.scrollTo({
+        left: container.scrollLeft + offset,
         behavior: "smooth",
-        block: "nearest",
-        inline: "center",
       });
     }
   };
