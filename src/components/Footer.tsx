@@ -1,8 +1,37 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { CLINIC } from "@/lib/clinic";
 
+const SPECIALTIES = [
+  { name: "Advanced Infertility & Reproductive Health", index: 0 },
+  { name: "Minimally Invasive / Laparoscopy", index: 1 },
+  { name: "High-Risk Obstetrics & Maternity", index: 2 },
+  { name: "Preventive & Adolescent Gynaecology", index: 3 },
+];
+
 export default function Footer() {
+  const handleSpecialtyClick = (e: React.MouseEvent, index: number) => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("femhealth:open-service-tab", { detail: { index } })
+      );
+
+      if (window.location.pathname === "/") {
+        e.preventDefault();
+        const isDesktop = window.innerWidth >= 1024;
+        const targetId = isDesktop ? `clinical-service-${index}` : "services";
+        const targetEl = document.getElementById(targetId) || document.getElementById("services");
+
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        window.history.replaceState(null, "", `/#services?service=${index}`);
+      }
+    }
+  };
+
   return (
     <footer className="bg-[#F3F1F2] border-t border-[#CFC3CC]/30 text-[#464647] mt-auto">
       <div className="max-w-7xl mx-auto px-5 md:px-12 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -71,10 +100,17 @@ export default function Footer() {
             Specialties
           </h4>
           <ul className="space-y-2 text-sm text-[#4C444C]">
-            <li>Advanced Infertility &amp; Reproductive Health</li>
-            <li>Minimally Invasive / Laparoscopy</li>
-            <li>High-Risk Obstetrics &amp; Maternity</li>
-            <li>Preventive &amp; Adolescent Gynaecology</li>
+            {SPECIALTIES.map((item) => (
+              <li key={item.name}>
+                <Link
+                  href={`/#services?service=${item.index}`}
+                  onClick={(e) => handleSpecialtyClick(e, item.index)}
+                  className="hover:text-[#7B5A7E] hover:underline transition-colors block py-0.5"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 

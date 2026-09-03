@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -95,8 +95,62 @@ export default function ServicesShowcase() {
   const [activeTab, setActiveTab] = useState(0);
   const selectedService = CLINICAL_SERVICES[activeTab];
 
+  useEffect(() => {
+    // 1. Listen for custom event dispatched by Footer or other components
+    const handleServiceTabEvent = (e: CustomEvent<{ index: number }>) => {
+      if (typeof e.detail?.index === "number") {
+        const idx = e.detail.index;
+        if (idx >= 0 && idx < CLINICAL_SERVICES.length) {
+          setActiveTab(idx);
+        }
+      }
+    };
+
+    // 2. Parse URL parameters or hash on mount/hashchange
+    const checkHashOrQuery = () => {
+      if (typeof window === "undefined") return;
+      const params = new URLSearchParams(window.location.search);
+      const hash = window.location.hash;
+      let targetIdx = -1;
+
+      if (params.has("service")) {
+        targetIdx = parseInt(params.get("service") || "-1", 10);
+      } else if (hash.startsWith("#service-")) {
+        targetIdx = parseInt(hash.replace("#service-", ""), 10);
+      }
+
+      if (targetIdx >= 0 && targetIdx < CLINICAL_SERVICES.length) {
+        setActiveTab(targetIdx);
+        setTimeout(() => {
+          const isDesktop = window.innerWidth >= 1024;
+          const targetId = isDesktop ? `clinical-service-${targetIdx}` : "services";
+          const el = document.getElementById(targetId) || document.getElementById("services");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 150);
+      }
+    };
+
+    window.addEventListener(
+      "femhealth:open-service-tab",
+      handleServiceTabEvent as EventListener
+    );
+    window.addEventListener("hashchange", checkHashOrQuery);
+
+    checkHashOrQuery();
+
+    return () => {
+      window.removeEventListener(
+        "femhealth:open-service-tab",
+        handleServiceTabEvent as EventListener
+      );
+      window.removeEventListener("hashchange", checkHashOrQuery);
+    };
+  }, []);
+
   return (
-    <section className="py-12 md:py-28 border-t border-[#CFC3CC]/30 bg-white">
+    <section id="services" className="py-12 md:py-28 border-t border-[#CFC3CC]/30 bg-white scroll-mt-24">
       <div className="px-5 md:px-12 max-w-7xl mx-auto">
         {/* Section Header */}
         <FadeIn direction="up">
@@ -210,7 +264,8 @@ export default function ServicesShowcase() {
             return (
               <FadeIn key={service.title} direction="up">
                 <div
-                  className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center ${
+                  id={`clinical-service-${idx}`}
+                  className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center scroll-mt-32 ${
                     idx !== CLINICAL_SERVICES.length - 1
                       ? "pb-16 md:pb-24 border-b border-[#CFC3CC]/25"
                       : ""
