@@ -199,25 +199,7 @@ export default function ServicesShowcase() {
 
         {/* MOBILE INTERACTIVE SWIPE CAROUSEL (lg:hidden) */}
         <div className="lg:hidden space-y-4">
-          {/* Scrollable Category Pills / Quick Switcher */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 -mx-5 px-5">
-            {CLINICAL_SERVICES.map((service, idx) => (
-              <button
-                key={service.title}
-                type="button"
-                onClick={() => scrollToService(idx)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                  activeTab === idx
-                    ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20"
-                    : "bg-[#F3EEF5] text-[#4E3953] hover:bg-[#EBDDE5]"
-                }`}
-              >
-                {service.title}
-              </button>
-            ))}
-          </div>
-
-          {/* Swipeable Cards Row */}
+          {/* Swipeable Cards Row with Title Fixed to Each Card */}
           <div
             ref={mobileCarouselRef}
             onScroll={handleMobileScroll}
@@ -229,8 +211,15 @@ export default function ServicesShowcase() {
                 ref={(el) => {
                   cardRefs.current[idx] = el;
                 }}
-                className="w-[85vw] sm:w-[70vw] shrink-0 snap-center flex flex-col bg-[#FAF7F8] rounded-3xl p-5 sm:p-6 border border-[#CFC3CC]/30 space-y-5"
+                className="w-[85vw] sm:w-[70vw] shrink-0 snap-center flex flex-col bg-[#FAF7F8] rounded-3xl p-5 sm:p-6 border border-[#CFC3CC]/30 space-y-4"
               >
+                {/* Service Title - Fixed at the top of each card so it slides in perfect sync */}
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-serif-display font-semibold text-[#4E3953] leading-snug">
+                    {service.title}
+                  </h3>
+                </div>
+
                 {/* Service Image */}
                 <div className="relative aspect-[16/10] rounded-2xl overflow-hidden shadow-md border border-[#CFC3CC]/40 bg-[#F3EEF5] shrink-0">
                   <Image
@@ -240,13 +229,6 @@ export default function ServicesShowcase() {
                     sizes="(max-width: 768px) 85vw, 50vw"
                     className="object-cover"
                   />
-                </div>
-
-                {/* Service Title */}
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-serif-display font-semibold text-[#4E3953] leading-snug">
-                    {service.title}
-                  </h3>
                 </div>
 
                 {/* Service Keypoints */}
