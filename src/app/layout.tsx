@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import FloatingContact from "@/components/FloatingContact";
+import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -58,6 +59,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col bg-[#fefcfd] text-[#1b1c1c] antialiased">
+        <ScrollToTop />
         {children}
         <FloatingContact />
       </body>

@@ -29,7 +29,10 @@ export default function Navbar() {
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
-    if (href === "/#services" && pathname === "/") {
+    if (href === "/" && pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    } else if (href === "/#services" && pathname === "/") {
       e.preventDefault();
       const el = document.getElementById("services");
       if (el) {
@@ -44,7 +47,10 @@ export default function Navbar() {
     href: string
   ) => {
     setMobileMenuOpen(false);
-    if (href === "/#services" && pathname === "/") {
+    if (href === "/" && pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    } else if (href === "/#services" && pathname === "/") {
       e.preventDefault();
       setTimeout(() => {
         const el = document.getElementById("services");
@@ -98,7 +104,11 @@ export default function Navbar() {
             }`}
         >
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center group shrink-0">
+          <Link
+            href="/"
+            onClick={(e) => handleNavClick(e, "/")}
+            className="flex items-center group shrink-0"
+          >
             <motion.div
               animate={{ width: scrolled ? 150 : 175 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
