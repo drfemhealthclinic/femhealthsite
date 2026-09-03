@@ -146,8 +146,13 @@ export default function AdminLayout({
         {/* User Profile & Logout */}
         <div className="pt-6 border-t border-[#CFC3CC]/40 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#7B5A7E] text-white flex items-center justify-center font-bold text-xs shadow-sm">
-              PW
+            <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-[#D46789]/30 shadow-sm bg-[#F3EEF5]">
+              <Image
+                src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                alt="Dr. Pooja Wadgaonkar"
+                fill
+                className="object-cover object-top"
+              />
             </div>
             <div className="overflow-hidden">
               <p className="text-xs font-bold text-[#4E3953] truncate">

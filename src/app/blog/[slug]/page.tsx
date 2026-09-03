@@ -125,8 +125,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
             {/* Author Badge & Share Bar */}
             <div className="pt-4 border-t border-[#CFC3CC]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-full bg-[#7B5A7E] text-white flex items-center justify-center font-bold text-sm shadow-md">
-                  PW
+                <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-[#D46789]/40 shadow-sm bg-[#F3EEF5]">
+                  <Image
+                    src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                    alt={post.author_name}
+                    fill
+                    className="object-cover object-top"
+                  />
                 </div>
                 <div>
                   <p className="text-sm font-bold text-[#4E3953]">
@@ -193,8 +198,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
           {/* Doctor Bio Card */}
           <div className="mt-14 bg-gradient-to-br from-[#FAF7F9] to-white rounded-3xl p-8 md:p-10 border border-[#CFC3CC]/40 organic-shadow space-y-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-              <div className="w-20 h-20 rounded-full bg-[#7B5A7E] text-white flex items-center justify-center text-xl font-bold shrink-0 shadow-lg">
-                PW
+              <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-[#D46789]/40 bg-[#F3EEF5]">
+                <Image
+                  src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                  alt="Dr. Pooja Wadgaonkar Patil"
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
               <div className="space-y-3">
                 <span className="text-[11px] font-bold text-[#D46789] uppercase tracking-widest">

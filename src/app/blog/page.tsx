@@ -13,6 +13,7 @@ import {
   BlogCategory,
 } from "@/lib/blog-fallback";
 import { getPublishedPosts } from "@/lib/supabase";
+import { CLINIC } from "@/lib/clinic";
 
 export default function BlogIndexPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -313,8 +314,13 @@ export default function BlogIndexPage() {
 
                     <div className="pt-6 border-t border-[#CFC3CC]/30 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#7B5A7E]/10 flex items-center justify-center text-[#7B5A7E] font-bold text-xs">
-                          PW
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-[#D46789]/30 shadow-xs bg-[#F3EEF5]">
+                          <Image
+                            src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                            alt={featuredPost.author_name}
+                            fill
+                            className="object-cover object-top"
+                          />
                         </div>
                         <div>
                           <p className="text-xs font-semibold text-[#4E3953]">
@@ -461,9 +467,19 @@ export default function BlogIndexPage() {
 
                           {/* Footer tags and link */}
                           <div className="pt-4 border-t border-[#CFC3CC]/20 flex items-center justify-between">
-                            <span className="text-[11px] font-semibold text-[#878787]">
-                              By {post.author_name}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0 border border-[#D46789]/30 bg-[#F3EEF5]">
+                                <Image
+                                  src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                                  alt={post.author_name}
+                                  fill
+                                  className="object-cover object-top"
+                                />
+                              </div>
+                              <span className="text-[11px] font-semibold text-[#878787]">
+                                By {post.author_name}
+                              </span>
+                            </div>
                             <span className="inline-flex items-center gap-1 text-xs font-bold text-[#7B5A7E] group-hover:translate-x-1 transition-transform">
                               <span>Read</span>
                               <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -503,7 +519,7 @@ export default function BlogIndexPage() {
                   Book Appointment
                 </Link>
                 <a
-                  href="https://wa.me/918446608581?text=Hello%20Dr.%20Pooja,%20I%20would%20like%20to%20inquire%20about%20a%20consultation"
+                  href={`${CLINIC.whatsappHref}?text=${encodeURIComponent("Hello Dr. Pooja, I would like to inquire about a consultation")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto text-center border border-white/40 hover:bg-white/10 text-white px-7 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all"

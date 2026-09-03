@@ -595,8 +595,13 @@ export default function NewPostPage() {
 
           {/* Author */}
           <div className="pt-8 border-t border-[#CFC3CC]/30 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-[#7B5A7E] text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              PW
+            <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-[#D46789]/30 shadow-sm bg-[#F3EEF5]">
+              <Image
+                src="/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"
+                alt="Dr. Pooja Wadgaonkar Patil"
+                fill
+                className="object-cover object-top"
+              />
             </div>
             <div>
               <p className="text-sm font-bold text-[#4E3953]">
