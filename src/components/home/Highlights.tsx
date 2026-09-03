@@ -76,11 +76,8 @@ function HighlightCard({
 
       <div className="absolute inset-0 bg-gradient-to-t from-[#231726]/90 via-[#231726]/30 to-transparent" />
 
-      {/* Top row: numeral + icon */}
-      <div className="absolute top-0 inset-x-0 flex items-center justify-between p-6">
-        <span className="text-xs font-mono font-bold tracking-[0.3em] text-white/90 drop-shadow">
-          {item.num}
-        </span>
+      {/* Top row: icon */}
+      <div className="absolute top-0 inset-x-0 flex items-center justify-end p-6">
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white">
           <span className="material-symbols-outlined text-base">{item.icon}</span>
         </span>
