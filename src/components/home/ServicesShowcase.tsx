@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -93,7 +93,35 @@ const CLINICAL_SERVICES: ClinicalService[] = [
 
 export default function ServicesShowcase() {
   const [activeTab, setActiveTab] = useState(0);
-  const selectedService = CLINICAL_SERVICES[activeTab];
+  const mobileCarouselRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const scrollToService = (idx: number) => {
+    setActiveTab(idx);
+    const card = cardRefs.current[idx];
+    if (card) {
+      card.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  };
+
+  const handleMobileScroll = () => {
+    const el = mobileCarouselRef.current;
+    if (!el) return;
+    const cardWidth = el.firstElementChild?.clientWidth || 300;
+    const gap = 16;
+    const scrollPos = el.scrollLeft + cardWidth / 2;
+    const newIdx = Math.min(
+      CLINICAL_SERVICES.length - 1,
+      Math.max(0, Math.floor(scrollPos / (cardWidth + gap)))
+    );
+    if (newIdx !== activeTab) {
+      setActiveTab(newIdx);
+    }
+  };
 
   useEffect(() => {
     // 1. Listen for custom event dispatched by Footer or other components
@@ -101,7 +129,7 @@ export default function ServicesShowcase() {
       if (typeof e.detail?.index === "number") {
         const idx = e.detail.index;
         if (idx >= 0 && idx < CLINICAL_SERVICES.length) {
-          setActiveTab(idx);
+          scrollToService(idx);
         }
       }
     };
@@ -120,7 +148,7 @@ export default function ServicesShowcase() {
       }
 
       if (targetIdx >= 0 && targetIdx < CLINICAL_SERVICES.length) {
-        setActiveTab(targetIdx);
+        scrollToService(targetIdx);
         setTimeout(() => {
           const isDesktop = window.innerWidth >= 1024;
           const targetId = isDesktop ? `clinical-service-${targetIdx}` : "services";
@@ -169,16 +197,16 @@ export default function ServicesShowcase() {
           </div>
         </FadeIn>
 
-        {/* MOBILE INTERACTIVE TAB SELECTOR (lg:hidden) */}
-        <div className="lg:hidden space-y-6">
-          {/* Scrollable Category Pills */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-none pb-2 -mx-5 px-5">
+        {/* MOBILE INTERACTIVE SWIPE CAROUSEL (lg:hidden) */}
+        <div className="lg:hidden space-y-4">
+          {/* Scrollable Category Pills / Quick Switcher */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 -mx-5 px-5">
             {CLINICAL_SERVICES.map((service, idx) => (
               <button
                 key={service.title}
                 type="button"
-                onClick={() => setActiveTab(idx)}
-                className={`px-4 py-2.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                onClick={() => scrollToService(idx)}
+                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   activeTab === idx
                     ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20"
                     : "bg-[#F3EEF5] text-[#4E3953] hover:bg-[#EBDDE5]"
@@ -189,70 +217,100 @@ export default function ServicesShowcase() {
             ))}
           </div>
 
-          {/* Active Service Card */}
-          <div className="bg-[#FAF7F8] rounded-3xl p-5 sm:p-6 border border-[#CFC3CC]/30 space-y-5">
-            {/* Service Image */}
-            <div className="relative aspect-[16/10] rounded-2xl overflow-hidden shadow-md border border-[#CFC3CC]/40 bg-[#F3EEF5]">
-              <Image
-                src={selectedService.image}
-                alt={selectedService.imageAlt}
-                fill
-                sizes="100vw"
-                className="object-cover"
+          {/* Swipeable Cards Row */}
+          <div
+            ref={mobileCarouselRef}
+            onScroll={handleMobileScroll}
+            className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-5 px-5 pb-2 gap-4"
+          >
+            {CLINICAL_SERVICES.map((service, idx) => (
+              <div
+                key={service.title}
+                ref={(el) => {
+                  cardRefs.current[idx] = el;
+                }}
+                className="w-[85vw] sm:w-[70vw] shrink-0 snap-center flex flex-col bg-[#FAF7F8] rounded-3xl p-5 sm:p-6 border border-[#CFC3CC]/30 space-y-5"
+              >
+                {/* Service Image */}
+                <div className="relative aspect-[16/10] rounded-2xl overflow-hidden shadow-md border border-[#CFC3CC]/40 bg-[#F3EEF5] shrink-0">
+                  <Image
+                    src={service.image}
+                    alt={service.imageAlt}
+                    fill
+                    sizes="(max-width: 768px) 85vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
+
+                {/* Service Title */}
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-serif-display font-semibold text-[#4E3953] leading-snug">
+                    {service.title}
+                  </h3>
+                </div>
+
+                {/* Service Keypoints */}
+                <div className="space-y-2 flex-grow">
+                  {service.points.map((point) => (
+                    <div
+                      key={point}
+                      className="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-[#CFC3CC]/25"
+                    >
+                      <span
+                        className="material-symbols-outlined text-[#D46789] text-base shrink-0 mt-0.5"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        check_circle
+                      </span>
+                      <span className="text-xs font-medium text-[#464647] leading-snug">
+                        {point}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="pt-2 flex flex-col gap-2.5 mt-auto">
+                  <Link
+                    href="/contact#book"
+                    className="w-full inline-flex items-center justify-center gap-2 bg-[#7B5A7E] text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider shadow-md shadow-[#7B5A7E]/15 text-center"
+                  >
+                    <span>{service.ctaLabel}</span>
+                    <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                  </Link>
+
+                  <a
+                    href={`https://wa.me/918446608581?text=${encodeURIComponent(
+                      service.whatsappMessage
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-full border border-[#CFC3CC]/50 bg-white text-[#4E3953] text-xs font-bold uppercase tracking-wider text-center"
+                  >
+                    <span className="material-symbols-outlined text-base text-[#D46789]">
+                      chat
+                    </span>
+                    <span>WhatsApp Inquiry</span>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Progress / Position Indicator */}
+          <div className="flex items-center justify-between px-2 pt-1">
+            <div className="w-24 h-1 bg-[#CFC3CC]/30 rounded-full overflow-hidden relative">
+              <div
+                className="absolute top-0 bottom-0 bg-[#D46789] rounded-full transition-all duration-150"
+                style={{
+                  width: "25%",
+                  left: `${(activeTab / (CLINICAL_SERVICES.length - 1 || 1)) * 75}%`,
+                }}
               />
             </div>
-
-            {/* Service Title */}
-            <div>
-              <h3 className="text-xl sm:text-2xl font-serif-display font-semibold text-[#4E3953] leading-snug">
-                {selectedService.title}
-              </h3>
-            </div>
-
-            {/* Service Keypoints */}
-            <div className="space-y-2">
-              {selectedService.points.map((point) => (
-                <div
-                  key={point}
-                  className="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-[#CFC3CC]/25"
-                >
-                  <span
-                    className="material-symbols-outlined text-[#D46789] text-base shrink-0 mt-0.5"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    check_circle
-                  </span>
-                  <span className="text-xs font-medium text-[#464647] leading-snug">
-                    {point}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/contact#book"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#7B5A7E] text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider shadow-md shadow-[#7B5A7E]/15 text-center"
-              >
-                <span>{selectedService.ctaLabel}</span>
-                <span className="material-symbols-outlined text-xs">arrow_forward</span>
-              </Link>
-
-              <a
-                href={`https://wa.me/918446608581?text=${encodeURIComponent(
-                  selectedService.whatsappMessage
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-full border border-[#CFC3CC]/50 bg-white text-[#4E3953] text-xs font-bold uppercase tracking-wider text-center"
-              >
-                <span className="material-symbols-outlined text-base text-[#D46789]">
-                  chat
-                </span>
-                <span>WhatsApp Inquiry</span>
-              </a>
-            </div>
+            <span className="text-[11px] font-medium text-[#7B5A7E] tracking-wider">
+              {activeTab + 1} of {CLINICAL_SERVICES.length} • Swipe to explore
+            </span>
           </div>
         </div>
 
