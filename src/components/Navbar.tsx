@@ -29,7 +29,8 @@ export default function Navbar() {
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
-    if (href === "/" && pathname === "/") {
+    // If clicking a link to the exact same page we're already on, smoothly scroll to top
+    if (href === pathname || (href === "/" && pathname === "/")) {
       e.preventDefault();
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } else if (href === "/#services" && pathname === "/") {
@@ -47,7 +48,8 @@ export default function Navbar() {
     href: string
   ) => {
     setMobileMenuOpen(false);
-    if (href === "/" && pathname === "/") {
+    // If clicking a link to the exact same page we're already on, smoothly scroll to top
+    if (href === pathname || (href === "/" && pathname === "/")) {
       e.preventDefault();
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } else if (href === "/#services" && pathname === "/") {
