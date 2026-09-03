@@ -10,6 +10,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +26,74 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Track which section is in view on the home page
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSection(null);
+      return;
+    }
+
+    const sectionIds = ["services"];
+    const visibleSections = new Set<string>();
+    let observer: IntersectionObserver | null = null;
+
+    const observe = () => {
+      sectionIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                visibleSections.add(id);
+              } else {
+                visibleSections.delete(id);
+              }
+            });
+            // Activate the first visible section, or clear
+            const first = sectionIds.find((s) => visibleSections.has(s));
+            setActiveSection(first ?? null);
+          },
+          { rootMargin: "-20% 0px -60% 0px" }
+        );
+        observer.observe(el);
+      });
+    };
+
+    // Small delay to ensure DOM is ready after mount
+    const raf = requestAnimationFrame(observe);
+
+    // Clear active section when scrolled back to top
+    const handleScroll = () => {
+      if (window.scrollY < 200) {
+        setActiveSection(null);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      observer?.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname]);
+
+  const scrollToServices = () => {
+    const el = document.getElementById("services");
+    if (!el) return;
+    const navOffset = window.innerWidth < 768 ? 75 : 95;
+    const rect = el.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = rect.top + scrollTop - navOffset;
+
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: "smooth",
+    });
+    window.history.replaceState(null, "", "/#services");
+  };
+
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
@@ -35,11 +104,7 @@ export default function Navbar() {
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } else if (href === "/#services" && pathname === "/") {
       e.preventDefault();
-      const el = document.getElementById("services");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      window.history.replaceState(null, "", "/#services");
+      scrollToServices();
     }
   };
 
@@ -54,13 +119,10 @@ export default function Navbar() {
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } else if (href === "/#services" && pathname === "/") {
       e.preventDefault();
+      // Wait for the mobile drawer closing animation (200ms) so layout stabilizes
       setTimeout(() => {
-        const el = document.getElementById("services");
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-        window.history.replaceState(null, "", "/#services");
-      }, 150);
+        scrollToServices();
+      }, 220);
     }
   };
 
@@ -130,7 +192,10 @@ export default function Navbar() {
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex gap-7 lg:gap-8 items-center">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive =
+                link.href === "/#services"
+                  ? pathname === "/" && activeSection === "services"
+                  : pathname === link.href;
               return (
                 <Link
                   key={link.name}
@@ -187,7 +252,10 @@ export default function Navbar() {
               className="md:hidden mt-2 bg-[#FDFBFC] border border-[#CFC3CC]/50 rounded-2xl px-6 py-5 space-y-3 shadow-xl max-w-xl mx-auto pointer-events-auto"
             >
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive =
+                  link.href === "/#services"
+                    ? pathname === "/" && activeSection === "services"
+                    : pathname === link.href;
                 return (
                   <Link
                     key={link.name}

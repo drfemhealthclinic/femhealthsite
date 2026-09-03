@@ -25,7 +25,12 @@ export default function Footer() {
         const targetEl = document.getElementById(targetId) || document.getElementById("services");
 
         if (targetEl) {
-          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          const navOffset = window.innerWidth < 768 ? 75 : 95;
+          const targetY = targetEl.getBoundingClientRect().top + window.scrollY - navOffset;
+          window.scrollTo({
+            top: Math.max(0, targetY),
+            behavior: "smooth",
+          });
         }
         window.history.replaceState(null, "", `/#services?service=${index}`);
       }

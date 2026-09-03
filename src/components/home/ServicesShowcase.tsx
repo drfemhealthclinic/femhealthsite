@@ -190,7 +190,12 @@ export default function ServicesShowcase() {
         setTimeout(() => {
           const el = document.getElementById("services");
           if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
+            const navOffset = window.innerWidth < 768 ? 75 : 95;
+            const targetY = el.getBoundingClientRect().top + window.scrollY - navOffset;
+            window.scrollTo({
+              top: Math.max(0, targetY),
+              behavior: "smooth",
+            });
           }
         }, 150);
       }
