@@ -38,8 +38,22 @@ export default function CustomVideoPlayer({
   const [showControls, setShowControls] = useState(!autoPlay);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const hideControlsTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Detect mobile / touch screens on client mount
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        window.innerWidth < 768 ||
+        ("ontouchstart" in window && window.innerWidth < 1024)
+      );
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Helper: Format seconds to MM:SS
   const formatTime = (seconds: number) => {
@@ -162,26 +176,37 @@ export default function CustomVideoPlayer({
     setProgress(seekFraction * 100);
   };
 
-  // Fullscreen toggle
+  // Fullscreen toggle with iOS webkitEnterFullscreen fallback
   const toggleFullscreen = (e: React.MouseEvent) => {
     e.stopPropagation();
     const container = containerRef.current;
+    const video = videoRef.current as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null;
     if (!container) return;
 
     if (!document.fullscreenElement) {
-      container.requestFullscreen().catch(() => {});
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(() => {
+          if (video?.webkitEnterFullscreen) video.webkitEnterFullscreen();
+        });
+      } else if (video?.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      }
     } else {
-      document.exitFullscreen().catch(() => {});
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
     }
   };
 
   return (
     <div
       ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={togglePlay}
-      className={`relative w-full overflow-hidden rounded-3xl bg-black border border-[#CFC3CC]/40 shadow-2xl shadow-[#7B5A7E]/10 select-none group cursor-pointer ${aspectRatioClass} ${className}`}
+      onMouseMove={isMobile ? undefined : handleMouseMove}
+      onMouseLeave={isMobile ? undefined : handleMouseLeave}
+      onClick={isMobile ? undefined : togglePlay}
+      className={`relative w-full overflow-hidden rounded-3xl bg-black border border-[#CFC3CC]/40 shadow-2xl shadow-[#7B5A7E]/10 select-none group ${
+        isMobile ? "" : "cursor-pointer"
+      } ${aspectRatioClass} ${className}`}
     >
       {/* Video Element */}
       <video
@@ -189,8 +214,11 @@ export default function CustomVideoPlayer({
         src={src}
         poster={poster}
         playsInline
+        controls={isMobile}
         loop={loop}
         preload="metadata"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={() => {
@@ -201,7 +229,7 @@ export default function CustomVideoPlayer({
       />
 
       {/* Optional Badge (e.g. "FemHealth Tour" or "Walkthrough") */}
-      {badge && (
+      {badge && !isPlaying && (
         <div className="absolute top-4 left-4 z-20 pointer-events-none">
           <div className="bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full text-white text-[11px] font-semibold flex items-center gap-2 border border-white/10 shadow-lg">
             <span className="w-2 h-2 rounded-full bg-[#D46789] animate-pulse" />
@@ -210,8 +238,8 @@ export default function CustomVideoPlayer({
         </div>
       )}
 
-      {/* Sound Indicator Pill for Autoplaying Videos */}
-      {autoPlay && (
+      {/* Sound Indicator Pill for Autoplaying Videos (Desktop only) */}
+      {!isMobile && autoPlay && (
         <button
           type="button"
           onClick={toggleMute}
@@ -225,8 +253,8 @@ export default function CustomVideoPlayer({
         </button>
       )}
 
-      {/* Center Big Play Button (when paused) */}
-      {showCenterPlayButton && !isPlaying && (
+      {/* Center Big Play Button (Desktop only, when paused) */}
+      {!isMobile && showCenterPlayButton && !isPlaying && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/35 backdrop-blur-[1px] transition-all z-10">
           <button
             type="button"
@@ -250,13 +278,14 @@ export default function CustomVideoPlayer({
         </div>
       )}
 
-      {/* LUXURY CUSTOM CONTROL BAR (Auto-hiding Glassmorphism) */}
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className={`absolute bottom-0 left-0 right-0 z-30 p-3 sm:p-4 bg-gradient-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-300 cursor-default ${
-          showControls || !isPlaying || isHovered ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      >
+      {/* LUXURY CUSTOM CONTROL BAR (Desktop only - Auto-hiding Glassmorphism) */}
+      {!isMobile && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className={`absolute bottom-0 left-0 right-0 z-30 p-3 sm:p-4 bg-gradient-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-300 cursor-default ${
+            showControls || !isPlaying || isHovered ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+        >
         <div className="bg-black/50 backdrop-blur-xl border border-white/15 rounded-2xl p-2.5 sm:p-3 shadow-2xl flex flex-col gap-2">
           {/* Interactive Progress Bar */}
           <div
@@ -326,6 +355,7 @@ export default function CustomVideoPlayer({
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }
