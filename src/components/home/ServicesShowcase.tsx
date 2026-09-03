@@ -95,6 +95,19 @@ export default function ServicesShowcase() {
   const [activeTab, setActiveTab] = useState(0);
   const mobileCarouselRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Automatically scroll the top pills so the active heading stays centered and in sync
+  useEffect(() => {
+    const activePill = pillRefs.current[activeTab];
+    if (activePill) {
+      activePill.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [activeTab]);
 
   const scrollToService = (idx: number) => {
     setActiveTab(idx);
@@ -199,6 +212,27 @@ export default function ServicesShowcase() {
 
         {/* MOBILE INTERACTIVE SWIPE CAROUSEL (lg:hidden) */}
         <div className="lg:hidden space-y-4">
+          {/* Scrollable Category Pills / Synced Top Headings */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 -mx-5 px-5">
+            {CLINICAL_SERVICES.map((service, idx) => (
+              <button
+                key={service.title}
+                ref={(el) => {
+                  pillRefs.current[idx] = el;
+                }}
+                type="button"
+                onClick={() => scrollToService(idx)}
+                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  activeTab === idx
+                    ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20"
+                    : "bg-[#F3EEF5] text-[#4E3953] hover:bg-[#EBDDE5]"
+                }`}
+              >
+                {service.title}
+              </button>
+            ))}
+          </div>
+
           {/* Swipeable Cards Row with Title Fixed to Each Card */}
           <div
             ref={mobileCarouselRef}
