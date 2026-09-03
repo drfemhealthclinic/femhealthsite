@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -91,13 +92,16 @@ const CLINICAL_SERVICES: ClinicalService[] = [
 ];
 
 export default function ServicesShowcase() {
+  const [activeTab, setActiveTab] = useState(0);
+  const selectedService = CLINICAL_SERVICES[activeTab];
+
   return (
-    <section className="py-20 md:py-32 border-t border-[#CFC3CC]/30 bg-white">
+    <section className="py-12 md:py-28 border-t border-[#CFC3CC]/30 bg-white">
       <div className="px-5 md:px-12 max-w-7xl mx-auto">
         {/* Section Header */}
         <FadeIn direction="up">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[#CFC3CC]/30 mb-16 md:mb-20">
-            <div className="space-y-3">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 md:pb-8 border-b border-[#CFC3CC]/30 mb-8 md:mb-16">
+            <div className="space-y-2 md:space-y-3">
               <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold block">
                 Clinical Offerings
               </span>
@@ -111,8 +115,98 @@ export default function ServicesShowcase() {
           </div>
         </FadeIn>
 
-        {/* Alternating Editorial Showcase Rows */}
-        <div className="space-y-16 md:space-y-24">
+        {/* MOBILE INTERACTIVE TAB SELECTOR (lg:hidden) */}
+        <div className="lg:hidden space-y-6">
+          {/* Scrollable Category Pills */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-none pb-2 -mx-5 px-5">
+            {CLINICAL_SERVICES.map((service, idx) => (
+              <button
+                key={service.title}
+                type="button"
+                onClick={() => setActiveTab(idx)}
+                className={`px-4 py-2.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  activeTab === idx
+                    ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20"
+                    : "bg-[#F3EEF5] text-[#4E3953] hover:bg-[#EBDDE5]"
+                }`}
+              >
+                {service.category}
+              </button>
+            ))}
+          </div>
+
+          {/* Active Service Card */}
+          <div className="bg-[#FAF7F8] rounded-3xl p-5 sm:p-6 border border-[#CFC3CC]/30 space-y-5">
+            {/* Service Image */}
+            <div className="relative aspect-[16/10] rounded-2xl overflow-hidden shadow-md border border-[#CFC3CC]/40 bg-[#F3EEF5]">
+              <Image
+                src={selectedService.image}
+                alt={selectedService.imageAlt}
+                fill
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+
+            {/* Service Title */}
+            <div className="space-y-1">
+              <span className="text-[11px] uppercase tracking-wider font-bold text-[#D46789]">
+                {selectedService.indexStr} • {selectedService.category}
+              </span>
+              <h3 className="text-xl sm:text-2xl font-serif-display font-semibold text-[#4E3953] leading-snug">
+                {selectedService.title}
+              </h3>
+            </div>
+
+            {/* Service Keypoints */}
+            <div className="space-y-2">
+              {selectedService.points.map((point) => (
+                <div
+                  key={point}
+                  className="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-[#CFC3CC]/25"
+                >
+                  <span
+                    className="material-symbols-outlined text-[#D46789] text-base shrink-0 mt-0.5"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    check_circle
+                  </span>
+                  <span className="text-xs font-medium text-[#464647] leading-snug">
+                    {point}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/contact#book"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#7B5A7E] text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider shadow-md shadow-[#7B5A7E]/15 text-center"
+              >
+                <span>{selectedService.ctaLabel}</span>
+                <span className="material-symbols-outlined text-xs">arrow_forward</span>
+              </Link>
+
+              <a
+                href={`https://wa.me/918446608581?text=${encodeURIComponent(
+                  selectedService.whatsappMessage
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-full border border-[#CFC3CC]/50 bg-white text-[#4E3953] text-xs font-bold uppercase tracking-wider text-center"
+              >
+                <span className="material-symbols-outlined text-base text-[#D46789]">
+                  chat
+                </span>
+                <span>WhatsApp Inquiry</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* DESKTOP ALTERNATING EDITORIAL ROWS (hidden lg:block) */}
+        <div className="hidden lg:block space-y-24">
           {CLINICAL_SERVICES.map((service, idx) => {
             const isEven = idx % 2 === 1;
 
