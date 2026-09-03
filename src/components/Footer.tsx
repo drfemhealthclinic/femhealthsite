@@ -51,7 +51,7 @@ export default function Footer() {
             Personalised, compassionate, and evidence-based healthcare for women across all stages of life.
           </p>
           <p className="text-xs text-[#878787] pt-2">
-            © {new Date().getFullYear()} FemHealth Clinic. Dr. Pooja Wadgaonkar Patil. All rights reserved.
+            © FemHealth Clinic. Dr. Pooja Wadgaonkar Patil. All rights reserved.
           </p>
           <p className="text-xs text-[#878787]">
             <Link href="/privacy" className="hover:text-[#7B5A7E] transition-colors underline">
