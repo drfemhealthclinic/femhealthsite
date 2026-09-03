@@ -25,6 +25,37 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    if (href === "/#services" && pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById("services");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      window.history.replaceState(null, "", "/#services");
+    }
+  };
+
+  const handleMobileNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    setMobileMenuOpen(false);
+    if (href === "/#services" && pathname === "/") {
+      e.preventDefault();
+      setTimeout(() => {
+        const el = document.getElementById("services");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        window.history.replaceState(null, "", "/#services");
+      }, 150);
+    }
+  };
+
   return (
     <motion.header
       initial={false}
@@ -92,6 +123,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className={`text-[13px] font-semibold tracking-wider uppercase transition-colors duration-200 relative py-1 ${isActive
                       ? "text-[#7B5A7E] font-bold"
                       : "text-[#464647] hover:text-[#7B5A7E]"
@@ -148,7 +180,7 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => handleMobileNavClick(e, link.href)}
                     className={`block text-sm font-semibold uppercase tracking-wider py-2 transition-colors ${isActive ? "text-[#7B5A7E] font-bold" : "text-[#464647] hover:text-[#7B5A7E]"
                       }`}
                   >
@@ -175,6 +207,7 @@ export default function Navbar() {
 
 const navLinks = [
   { name: "Home", href: "/" },
+  { name: "Services", href: "/#services" },
   { name: "About", href: "/about" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },

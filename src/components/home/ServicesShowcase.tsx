@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/Motion";
+import { CLINIC } from "@/lib/clinic";
 
 interface ClinicalService {
   indexStr: string;
@@ -185,6 +186,13 @@ export default function ServicesShowcase() {
             el.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         }, 150);
+      } else if (hash === "#services") {
+        setTimeout(() => {
+          const el = document.getElementById("services");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 150);
       }
     };
 
@@ -311,7 +319,7 @@ export default function ServicesShowcase() {
                   </Link>
 
                   <a
-                    href={`https://wa.me/918446608581?text=${encodeURIComponent(
+                    href={`${CLINIC.whatsappHref}?text=${encodeURIComponent(
                       service.whatsappMessage
                     )}`}
                     target="_blank"
@@ -424,7 +432,7 @@ export default function ServicesShowcase() {
                       </Link>
 
                       <a
-                        href={`https://wa.me/918446608581?text=${encodeURIComponent(
+                        href={`${CLINIC.whatsappHref}?text=${encodeURIComponent(
                           service.whatsappMessage
                         )}`}
                         target="_blank"
