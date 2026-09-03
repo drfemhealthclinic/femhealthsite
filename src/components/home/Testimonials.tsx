@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { FadeIn } from "@/components/ui/Motion";
 
 interface Story {
   id: string;
@@ -76,8 +77,46 @@ const marqueeStories = [...stories, ...stories, ...stories, ...stories];
 export default function Testimonials() {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Temporarily pause auto-scroll during user interaction, resumes after 4s
+  const triggerUserPause = () => {
+    setIsPaused(true);
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resumeTimeoutRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, 4500);
+  };
+
+  // Continuous auto-scroll loop
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    let animationFrameId: number;
+
+    const step = () => {
+      if (!isPaused && !selectedStory && el) {
+        el.scrollLeft += 0.8;
+        const halfWidth = el.scrollWidth / 2;
+        if (el.scrollLeft >= halfWidth) {
+          el.scrollLeft -= halfWidth;
+        }
+      }
+      animationFrameId = requestAnimationFrame(step);
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+  }, [isPaused, selectedStory]);
+
   // Manual next/prev scroll handler
   const handleManualScroll = (direction: "left" | "right") => {
+    triggerUserPause();
     const el = scrollRef.current;
     if (!el) return;
 
@@ -121,43 +160,45 @@ export default function Testimonials() {
     <section className="w-full bg-white border-y border-[#CFC3CC]/20 py-20 md:py-28 overflow-hidden relative">
       {/* Header with Title & Manual Navigation Controls */}
       <div className="max-w-7xl mx-auto px-5 md:px-12 mb-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-3 text-center md:text-left">
-            <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">
-              Kind Words
-            </span>
-            <h2 className="text-3xl md:text-4xl font-serif-display text-[#4E3953]">
-              Patient Stories
-            </h2>
-            <p className="text-sm md:text-base text-[#464647] max-w-xl">
-              Real experiences from women who found compassionate, personalized healthcare with Dr. Pooja Wadgaonkar Patil.
-            </p>
-          </div>
+        <FadeIn direction="up">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 text-center md:text-left">
+              <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">
+                Kind Words
+              </span>
+              <h2 className="text-3xl md:text-4xl font-serif-display text-[#4E3953]">
+                Patient Stories
+              </h2>
+              <p className="text-sm md:text-base text-[#464647] max-w-xl">
+                Real experiences from women who found compassionate, personalized healthcare with Dr. Pooja Wadgaonkar Patil.
+              </p>
+            </div>
 
-          {/* Manual Scroll Controls (Arrows) */}
-          <div className="flex items-center justify-center md:justify-end gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={() => handleManualScroll("left")}
-              aria-label="Scroll to previous testimonial"
-              className="w-11 h-11 rounded-full border border-[#CFC3CC]/50 bg-white hover:bg-[#F9E4EA] hover:border-[#D46789] text-[#4E3953] flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
-            >
-              <span className="material-symbols-outlined text-lg">arrow_back</span>
-            </button>
+            {/* Manual Scroll Controls (Arrows + Pause indicator) */}
+            <div className="flex items-center justify-center md:justify-end gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => handleManualScroll("left")}
+                aria-label="Scroll to previous testimonial"
+                className="w-11 h-11 rounded-full border border-[#CFC3CC]/50 bg-white hover:bg-[#F9E4EA] hover:border-[#D46789] text-[#4E3953] flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+              >
+                <span className="material-symbols-outlined text-lg">arrow_back</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => handleManualScroll("right")}
-              aria-label="Scroll to next testimonial"
-              className="w-11 h-11 rounded-full border border-[#CFC3CC]/50 bg-white hover:bg-[#F9E4EA] hover:border-[#D46789] text-[#4E3953] flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
-            >
-              <span className="material-symbols-outlined text-lg">arrow_forward</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => handleManualScroll("right")}
+                aria-label="Scroll to next testimonial"
+                className="w-11 h-11 rounded-full border border-[#CFC3CC]/50 bg-white hover:bg-[#F9E4EA] hover:border-[#D46789] text-[#4E3953] flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+              >
+                <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              </button>
+            </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
 
-      {/* Horizontal Carousel Track with Native Touch/Swipe and Arrow Controls */}
+      {/* Infinite Horizontal Marquee Track with Manual Touch/Wheel/Drag capability */}
       <div className="relative w-full overflow-hidden">
         {/* Left edge fade gradient */}
         <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-white to-transparent z-10" />
@@ -168,7 +209,11 @@ export default function Testimonials() {
         {/* Scrollable Track */}
         <div
           ref={scrollRef}
-          className="flex gap-6 sm:gap-8 overflow-x-auto py-4 px-6 md:px-12 focus:outline-hidden select-none cursor-grab active:cursor-grabbing"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={triggerUserPause}
+          onWheel={triggerUserPause}
+          className="flex gap-6 sm:gap-8 overflow-x-auto scroll-smooth py-4 px-6 md:px-12 focus:outline-hidden select-none cursor-grab active:cursor-grabbing"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
