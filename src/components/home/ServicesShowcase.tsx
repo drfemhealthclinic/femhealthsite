@@ -130,7 +130,7 @@ export default function ServicesShowcase() {
                     : "bg-[#F3EEF5] text-[#4E3953] hover:bg-[#EBDDE5]"
                 }`}
               >
-                {service.category}
+                {service.title}
               </button>
             ))}
           </div>
@@ -149,10 +149,7 @@ export default function ServicesShowcase() {
             </div>
 
             {/* Service Title */}
-            <div className="space-y-1">
-              <span className="text-[11px] uppercase tracking-wider font-bold text-[#D46789]">
-                {selectedService.indexStr} • {selectedService.category}
-              </span>
+            <div>
               <h3 className="text-xl sm:text-2xl font-serif-display font-semibold text-[#4E3953] leading-snug">
                 {selectedService.title}
               </h3>
