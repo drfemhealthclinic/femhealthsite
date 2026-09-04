@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { signInAdmin } from "@/lib/auth";
+import { signInAdmin, checkAdminSession } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase";
 
 export default function AdminLoginPage() {
@@ -16,6 +16,14 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    checkAdminSession().then((session) => {
+      if (session) {
+        window.location.href = "/admin";
+      }
+    });
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -24,8 +32,7 @@ export default function AdminLoginPage() {
     try {
       const res = await signInAdmin(email, password);
       if (res.success) {
-        router.push("/admin");
-        router.refresh();
+        window.location.href = "/admin";
       } else {
         setErrorMessage(res.error || "Authentication failed. Please try again.");
       }
@@ -53,7 +60,7 @@ export default function AdminLoginPage() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 border border-[#CFC3CC]/50 shadow-2xl shadow-[#7B5A7E]/10 space-y-8"
+        className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-10 border border-[#CFC3CC]/50 shadow-2xl shadow-[#7B5A7E]/10 space-y-6"
       >
         {/* Header / Logo */}
         <div className="text-center space-y-3">

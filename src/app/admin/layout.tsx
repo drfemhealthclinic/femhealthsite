@@ -20,27 +20,43 @@ export default function AdminLayout({
   const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
+    let isMounted = true;
+
     async function verifyAuth() {
       if (isLoginPage) {
-        setIsAuthenticated(true);
         return;
       }
 
-      const session = await checkAdminSession();
-      if (!session) {
-        setIsAuthenticated(false);
-        router.push("/admin/login");
-      } else {
-        setIsAuthenticated(true);
+      setIsAuthenticated(null);
+
+      try {
+        const session = await checkAdminSession();
+        if (!isMounted) return;
+
+        if (!session) {
+          setIsAuthenticated(false);
+          router.replace("/admin/login");
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch {
+        if (isMounted) {
+          setIsAuthenticated(false);
+          router.replace("/admin/login");
+        }
       }
     }
 
     verifyAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [pathname, isLoginPage, router]);
 
   const handleLogout = async () => {
     await signOutAdmin();
-    router.push("/admin/login");
+    window.location.href = "/admin/login";
   };
 
   // If on login page, render directly
@@ -49,7 +65,7 @@ export default function AdminLayout({
   }
 
   // Loading state while checking session
-  if (isAuthenticated === null) {
+  if (isAuthenticated === null || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAF7F9]">
         <div className="flex flex-col items-center gap-3">

@@ -80,18 +80,28 @@ export async function signOutAdmin(): Promise<void> {
 export async function checkAdminSession(): Promise<AdminUser | null> {
   if (isSupabaseConfigured && supabase) {
     try {
-      const { data, error } = await supabase.auth.getUser();
-      if (error || !data?.user?.email) {
-        if (typeof window !== "undefined") {
-          sessionStorage.removeItem(LOCAL_AUTH_KEY);
-        }
-        return null;
+      // 1. Check local session from browser client first (fast & reliable)
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData?.session?.user?.email) {
+        return {
+          email: sessionData.session.user.email,
+          role: "admin",
+        };
       }
 
-      return {
-        email: data.user.email,
-        role: "admin",
-      };
+      // 2. Validate directly with Supabase server
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (!userError && userData?.user?.email) {
+        return {
+          email: userData.user.email,
+          role: "admin",
+        };
+      }
+
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem(LOCAL_AUTH_KEY);
+      }
+      return null;
     } catch (e) {
       console.error("Session check error:", e);
       return null;
