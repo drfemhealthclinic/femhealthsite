@@ -23,8 +23,8 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     indexStr: "01",
     category: "Reproductive Medicine",
     title: "Advanced Infertility & Reproductive Health",
-    image: "/infertility.webp",
-    imageAlt: "Advanced Fertility and Reproductive Health Consultation",
+    image: "/IMG_4218.JPG",
+    imageAlt: "Advanced Infertility and Reproductive Health Consultation",
     points: [
       "Comprehensive Fertility Evaluation (Male & Female)",
       "Ovulation Induction & Follicular Monitoring",
