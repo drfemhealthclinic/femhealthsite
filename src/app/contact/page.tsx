@@ -16,29 +16,63 @@ export default function ContactPage() {
     service: "",
     notes: "",
   });
+  const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
+
+  const validate = () => {
+    const errs: { name?: string; phone?: string } = {};
+    const trimmedName = formData.name.trim();
+    if (!trimmedName || trimmedName.length < 2) {
+      errs.name = "Please enter your full name (at least 2 characters)";
+    }
+
+    const cleanPhone = formData.phone.replace(/[\s\-\(\)\+]/g, "");
+    if (!cleanPhone || cleanPhone.length < 10) {
+      errs.phone = "Please enter a valid 10-digit phone number";
+    }
+
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
+
+    const patientName = formData.name.trim();
     const subject = encodeURIComponent(
-      `Appointment Request - ${formData.name || "New Patient"}`
+      `Appointment Request - ${patientName}`
     );
     const body = encodeURIComponent(
       [
-        `Name: ${formData.name}`,
-        `Phone: ${formData.phone}`,
-        `Preferred Date: ${formData.date || "Not specified"}`,
-        `Service: ${formData.service || "Not specified"}`,
+        `Patient Name: ${patientName}`,
+        `Contact Phone: ${formData.phone.trim()}`,
+        `Preferred Appointment Date: ${formData.date || "Flexible / Not specified"}`,
+        `Service / Care Required: ${formData.service || "General Consultation"}`,
         "",
-        "Notes:",
-        formData.notes || "None",
+        "Clinical Notes / Symptoms:",
+        formData.notes.trim() || "None provided",
       ].join("\n")
     );
+
     const mailtoUrl = `${CLINIC.emailHref}?subject=${subject}&body=${body}`;
-    const anchor = document.createElement("a");
-    anchor.href = mailtoUrl;
-    anchor.click();
+
+    // Pure openmail client launch — no server SMTP / nodemailer
+    try {
+      window.location.href = mailtoUrl;
+    } catch {
+      const a = document.createElement("a");
+      a.href = mailtoUrl;
+      a.click();
+    }
+
     setFormSubmitted(true);
   };
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const whatsappBookingUrl = `${CLINIC.whatsappHref}?text=${encodeURIComponent(
+    `Hello Dr. Pooja Patil,\n\nI would like to request an appointment at FemHealth Clinic.\n\n• *Name:* ${formData.name.trim() || "Patient"}\n• *Phone:* ${formData.phone.trim() || "-"}\n• *Preferred Date:* ${formData.date || "Flexible"}\n• *Service:* ${formData.service || "General Consultation"}${formData.notes.trim() ? `\n• *Notes:* ${formData.notes.trim()}` : ""}`
+  )}`;
 
   return (
     <>
@@ -135,26 +169,61 @@ export default function ContactPage() {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="bg-[#F3EEF5]/60 border border-[#C0A8C9] rounded-2xl p-8 text-center space-y-3"
+                      className="bg-[#F3EEF5]/60 border border-[#C0A8C9] rounded-2xl p-8 text-center space-y-4"
                     >
                       <span className="material-symbols-outlined text-4xl text-[#7B5A7E]">
                         check_circle
                       </span>
                       <h3 className="text-xl font-serif-display text-[#4E3953] font-semibold">
-                        Appointment Request Received
+                        Appointment Email Prepared
                       </h3>
-                      <p className="text-sm text-[#464647] max-w-md mx-auto font-light">
-                        Your appointment request has been drafted in your email app — just press Send to deliver it to <strong>{CLINIC.email}</strong>. You can also call us directly at <strong>{CLINIC.phoneDisplay}</strong> to book faster.
+                      <p className="text-sm text-[#464647] max-w-md mx-auto font-light leading-relaxed">
+                        Your appointment request has been drafted in your device&apos;s email app addressed directly to <strong>{CLINIC.email}</strong>. Simply tap <strong>Send</strong> to deliver it.
                       </p>
-                      <button
-                        onClick={() => setFormSubmitted(false)}
-                        className="mt-4 text-xs font-bold uppercase tracking-widest text-[#7B5A7E] hover:text-[#4E3953] underline transition-colors"
-                      >
-                        Submit Another Request
-                      </button>
+
+                      <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <a
+                          href={`${CLINIC.emailHref}?subject=${encodeURIComponent(`Appointment Request - ${formData.name.trim()}`)}&body=${encodeURIComponent([
+                            `Patient Name: ${formData.name.trim()}`,
+                            `Contact Phone: ${formData.phone.trim()}`,
+                            `Preferred Date: ${formData.date || "Flexible / Not specified"}`,
+                            `Service: ${formData.service || "General Consultation"}`,
+                            "",
+                            "Notes:",
+                            formData.notes.trim() || "None",
+                          ].join("\n"))}`}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#7B5A7E] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#4E3953] transition-colors shadow-sm"
+                        >
+                          <span className="material-symbols-outlined text-base">mail</span>
+                          <span>Re-open Email App</span>
+                        </a>
+
+                        <a
+                          href={whatsappBookingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#1EBE5D] transition-colors shadow-sm"
+                        >
+                          <span>Send via WhatsApp</span>
+                        </a>
+                      </div>
+
+                      <div className="pt-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({ name: "", phone: "", date: "", service: "", notes: "" });
+                            setErrors({});
+                            setFormSubmitted(false);
+                          }}
+                          className="text-xs font-bold uppercase tracking-widest text-[#7B5A7E] hover:text-[#4E3953] underline transition-colors cursor-pointer"
+                        >
+                          Submit Another Request
+                        </button>
+                      </div>
                     </motion.div>
                   ) : (
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} noValidate className="space-y-5">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                           <label className="block text-xs font-bold text-[#464647] uppercase tracking-wider mb-2" htmlFor="name">
@@ -164,11 +233,17 @@ export default function ContactPage() {
                             id="name"
                             required
                             value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="medical-input"
+                            onChange={(e) => {
+                              setFormData({ ...formData, name: e.target.value });
+                              if (errors.name) setErrors({ ...errors, name: undefined });
+                            }}
+                            className={`medical-input ${errors.name ? "border-red-400 focus:border-red-500" : ""}`}
                             placeholder="e.g. Ananya Sharma"
                             type="text"
                           />
+                          {errors.name && (
+                            <p className="text-red-500 text-[11px] mt-1 font-medium">{errors.name}</p>
+                          )}
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-[#464647] uppercase tracking-wider mb-2" htmlFor="phone">
@@ -178,21 +253,28 @@ export default function ContactPage() {
                             id="phone"
                             required
                             value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="medical-input"
+                            onChange={(e) => {
+                              setFormData({ ...formData, phone: e.target.value });
+                              if (errors.phone) setErrors({ ...errors, phone: undefined });
+                            }}
+                            className={`medical-input ${errors.phone ? "border-red-400 focus:border-red-500" : ""}`}
                             placeholder="+91 92723 79105"
                             type="tel"
                           />
+                          {errors.phone && (
+                            <p className="text-red-500 text-[11px] mt-1 font-medium">{errors.phone}</p>
+                          )}
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                           <label className="block text-xs font-bold text-[#464647] uppercase tracking-wider mb-2" htmlFor="date">
-                            Preferred Date
+                            Preferred Date (Optional)
                           </label>
                           <input
                             id="date"
+                            min={today}
                             value={formData.date}
                             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                             className="medical-input"
@@ -201,7 +283,7 @@ export default function ContactPage() {
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-[#464647] uppercase tracking-wider mb-2" htmlFor="service">
-                            Service Type
+                            Service Type (Optional)
                           </label>
                           <select
                             id="service"
@@ -210,11 +292,11 @@ export default function ContactPage() {
                             className="medical-input text-[#464647]"
                           >
                             <option value="">Select a service...</option>
-                            <option value="infertility">Advanced Infertility &amp; Reproductive Health</option>
-                            <option value="laparoscopic">Minimally Invasive / Laparoscopic Surgery</option>
-                            <option value="obstetrics">Comprehensive Obstetrics (Maternity Care)</option>
-                            <option value="gynaecology">General &amp; Preventive Gynaecology</option>
-                            <option value="routine">Routine Consultation / Second Opinion</option>
+                            <option value="Advanced Infertility & Reproductive Health">Advanced Infertility &amp; Reproductive Health</option>
+                            <option value="Minimally Invasive / Laparoscopic Surgery">Minimally Invasive / Laparoscopic Surgery</option>
+                            <option value="High-Risk Obstetrics & Maternity Care">Comprehensive Obstetrics (Maternity Care)</option>
+                            <option value="Preventive & Adolescent Gynaecology">General &amp; Preventive Gynaecology</option>
+                            <option value="Routine Consultation / Second Opinion">Routine Consultation / Second Opinion</option>
                           </select>
                         </div>
                       </div>
@@ -233,14 +315,21 @@ export default function ContactPage() {
                         />
                       </div>
 
-                      <motion.button
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
-                        type="submit"
-                        className="w-full bg-[#7B5A7E] text-white py-4 rounded-xl text-xs font-semibold uppercase tracking-widest hover:bg-[#4E3953] transition-colors organic-shadow"
-                      >
-                        Confirm Appointment Request
-                      </motion.button>
+                      <div className="space-y-3">
+                        <motion.button
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                          type="submit"
+                          className="w-full bg-[#7B5A7E] text-white py-4 rounded-xl text-xs font-semibold uppercase tracking-widest hover:bg-[#4E3953] transition-colors organic-shadow cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          <span className="material-symbols-outlined text-sm">mail</span>
+                          <span>Send Appointment Request via Email</span>
+                        </motion.button>
+                        
+                        <p className="text-[11px] text-[#878787] text-center font-light">
+                          Directly opens your device&apos;s email client with pre-filled details addressed to {CLINIC.email}.
+                        </p>
+                      </div>
                     </form>
                   )}
                 </div>
