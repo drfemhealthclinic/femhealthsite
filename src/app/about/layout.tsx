@@ -3,15 +3,15 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Dr. Pooja Wadgaonkar Patil | Obstetrician & Laparoscopic Surgeon",
   description:
-    "Meet Dr. Pooja Wadgaonkar Patil (MBBS, MS OBGY, FMAS, DNB), leading Obstetrician, Gynaecologist & Laparoscopic Surgeon in Hinjawadi, Pune. Dedicated to compassionate, evidence-based women's healthcare.",
+    "Meet Dr. Pooja Wadgaonkar Patil (MBBS, MS OBGY, FMAS, DNB), leading Obstetrician, Gynaecologist & Laparoscopic Surgeon in Hinjewadi, Pune. Dedicated to compassionate, evidence-based women's healthcare.",
   keywords: [
     "Dr Pooja Wadgaonkar Patil",
     "Dr Pooja Wadgaonkar",
     "Dr Pooja Patil",
-    "Gynecologist Hinjawadi",
+    "Gynecologist Hinjewadi",
     "Obstetrician Pune",
     "Laparoscopic Surgeon Pune",
-    "Infertility Specialist Hinjawadi",
+    "Infertility Specialist Hinjewadi",
     "FemHealth Clinic Doctor",
   ],
   alternates: {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "About Dr. Pooja Wadgaonkar Patil | FemHealth Clinic Pune",
     description:
-      "Consultant Obstetrician, Gynaecologist & Minimal Access Surgeon in Hinjawadi, Pune.",
+      "Consultant Obstetrician, Gynaecologist & Minimal Access Surgeon in Hinjewadi, Pune.",
     images: ["/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"],
   },
 };

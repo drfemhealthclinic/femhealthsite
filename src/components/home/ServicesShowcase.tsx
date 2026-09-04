@@ -43,7 +43,7 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     title: "Minimally Invasive / Laparoscopic Surgery",
     image: "/laparoscopic-surgery.jpg",
     imageAlt:
-      "Advanced Laparoscopic Gynaecological Surgery and Minimal Access Procedures by Dr. Pooja Wadgaonkar Patil Hinjawadi",
+      "Advanced Laparoscopic Gynaecological Surgery and Minimal Access Procedures by Dr. Pooja Wadgaonkar Patil Hinjewadi",
     points: [
       "Keyhole Surgeries for Faster Recovery & Minimal Pain",
       "Laparoscopic Hysterectomy (Uterus Removal)",
@@ -64,7 +64,7 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     title: "Comprehensive Obstetrics (Maternity Care)",
     image: "/maternity-care.jpg",
     imageAlt:
-      "Comprehensive Obstetrics, Maternity Care and Antenatal Guidance at FemHealth Clinic Hinjawadi Pune",
+      "Comprehensive Obstetrics, Maternity Care and Antenatal Guidance at FemHealth Clinic Hinjewadi Pune",
     points: [
       "Pre-conception Counseling & Health Optimization",
       "Antenatal (Pregnancy) Care & Routine Screenings",

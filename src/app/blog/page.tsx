@@ -507,7 +507,7 @@ export default function BlogIndexPage() {
                   Have questions about your specific condition?
                 </h3>
                 <p className="text-sm md:text-base text-[#FDFBFC]/90 font-light leading-relaxed">
-                  Book a confidential, one-on-one consultation with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjawadi or partner hospitals.
+                  Book a confidential, one-on-one consultation with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjewadi or partner hospitals.
                 </p>
               </div>
 

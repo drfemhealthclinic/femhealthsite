@@ -25,18 +25,18 @@ export const metadata: Metadata = {
     template: "%s | FemHealth Clinic",
   },
   description:
-    "FemHealth Clinic in Hinjawadi, Pune, led by Dr. Pooja Wadgaonkar Patil (MBBS, MS OBGY, FMAS, DNB). Specializing in High-Risk Pregnancy, Laparoscopic Surgery, Infertility Solutions, and Comprehensive Gynaecological Care.",
+    "FemHealth Clinic in Hinjewadi, Pune, led by Dr. Pooja Wadgaonkar Patil (MBBS, MS OBGY, FMAS, DNB). Specializing in High-Risk Pregnancy, Laparoscopic Surgery, Infertility Solutions, and Comprehensive Gynaecological Care.",
   keywords: [
     "Dr Pooja Wadgaonkar Patil",
     "Dr Pooja Wadgaonkar",
     "Dr Pooja Patil",
     "FemHealth Clinic",
-    "Gynecologist in Hinjawadi Pune",
+    "Gynecologist in Hinjewadi Pune",
     "Best Gynecologist in Pune",
     "Obstetrician Pune",
-    "Maternity Hospital Hinjawadi",
+    "Maternity Hospital Hinjewadi",
     "Laparoscopic Surgeon Pune",
-    "Infertility Specialist Hinjawadi",
+    "Infertility Specialist Hinjewadi",
     "High Risk Pregnancy Doctor Pune",
     "PCOS Treatment Pune",
     "Endometriosis Specialist Pune",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FemHealth Clinic | Dr. Pooja Wadgaonkar Patil",
     description:
-      "Advanced Maternity, Gynaecological Care, Minimal Access Laparoscopic Surgery & Complete Infertility Solutions in Hinjawadi, Pune.",
+      "Advanced Maternity, Gynaecological Care, Minimal Access Laparoscopic Surgery & Complete Infertility Solutions in Hinjewadi, Pune.",
     url: "https://femhealthclinic.in",
     siteName: "FemHealth Clinic",
     locale: "en_IN",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "FemHealth Clinic | Dr. Pooja Wadgaonkar Patil",
     description:
-      "Consultant Obstetrician, Gynaecologist & Laparoscopic Surgeon in Hinjawadi, Pune.",
+      "Consultant Obstetrician, Gynaecologist & Laparoscopic Surgeon in Hinjewadi, Pune.",
     images: ["/dr-pooja-patil-obstetrician-laparoscopic-surgeon.jpg"],
   },
   robots: {
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
   },
   other: {
     "geo.region": "IN-MH",
-    "geo.placename": "Pune, Hinjawadi",
+    "geo.placename": "Pune, Hinjewadi",
     "geo.position": "18.5873025;73.7010871",
     ICBM: "18.5873025, 73.7010871",
   },
@@ -115,8 +115,8 @@ const clinicJsonLd = {
       address: {
         "@type": "PostalAddress",
         streetAddress:
-          "Shop No. 85, 1st Floor, VJ Happiness Street, Hinjawadi Phase 2 Road, Rajiv Gandhi Infotech Park, Maan",
-        addressLocality: "Hinjawadi, Pune",
+          "Shop No. 85, 1st Floor, VJ Happiness Street, Hinjewadi Phase 2 Road, Rajiv Gandhi Infotech Park, Maan",
+        addressLocality: "Hinjewadi, Pune",
         addressRegion: "Maharashtra",
         postalCode: "411057",
         addressCountry: "IN",
