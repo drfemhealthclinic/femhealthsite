@@ -24,7 +24,8 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     category: "Reproductive Medicine",
     title: "Advanced Infertility & Reproductive Health",
     image: "/IMG_4218.JPG",
-    imageAlt: "Advanced Infertility and Reproductive Health Consultation",
+    imageAlt:
+      "Advanced Infertility and Reproductive Health Consultation by Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Pune",
     points: [
       "Comprehensive Fertility Evaluation (Male & Female)",
       "Ovulation Induction & Follicular Monitoring",
@@ -41,7 +42,8 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     category: "Minimally Invasive Surgery",
     title: "Minimally Invasive / Laparoscopic Surgery",
     image: "/laparoscopic-surgery.jpg",
-    imageAlt: "Advanced Laparoscopic Gynaecological Surgery Suite",
+    imageAlt:
+      "Advanced Laparoscopic Gynaecological Surgery and Minimal Access Procedures by Dr. Pooja Wadgaonkar Patil Hinjawadi",
     points: [
       "Keyhole Surgeries for Faster Recovery & Minimal Pain",
       "Laparoscopic Hysterectomy (Uterus Removal)",
@@ -61,7 +63,8 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     category: "Maternal & Fetal Care",
     title: "Comprehensive Obstetrics (Maternity Care)",
     image: "/maternity-care.jpg",
-    imageAlt: "Compassionate Maternity Care and Antenatal Guidance",
+    imageAlt:
+      "Comprehensive Obstetrics, Maternity Care and Antenatal Guidance at FemHealth Clinic Hinjawadi Pune",
     points: [
       "Pre-conception Counseling & Health Optimization",
       "Antenatal (Pregnancy) Care & Routine Screenings",
@@ -78,7 +81,8 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     category: "Women's Wellness",
     title: "General & Preventive Gynaecology",
     image: "/preventive-gynaecology.jpg",
-    imageAlt: "Women's Preventive Healthcare and Hormonal Wellness",
+    imageAlt:
+      "General and Preventive Gynaecology Healthcare and Hormonal Wellness by Dr. Pooja Wadgaonkar Patil",
     points: [
       "Treatment for Abnormal Uterine Bleeding (AUB) & Irregular Cycles",
       "Adolescent Gynaecology & Menstrual Disorders",

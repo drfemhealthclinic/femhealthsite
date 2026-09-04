@@ -37,6 +37,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title,
     description,
     keywords: post.tags,
+    alternates: {
+      canonical: `/blog/${post.slug}`,
+    },
     openGraph: {
       title,
       description,
@@ -65,8 +68,46 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const relatedPosts = await getRelatedPosts(post.category, post.slug, 3);
   const displayDate = post.published_at || post.created_at;
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    headline: post.title,
+    description: post.meta_description || post.excerpt,
+    url: `https://femhealthclinic.in/blog/${post.slug}`,
+    datePublished: post.published_at || post.created_at,
+    dateModified: post.updated_at || post.published_at || post.created_at,
+    author: {
+      "@type": "Person",
+      name: post.author_name || "Dr. Pooja Wadgaonkar Patil",
+      jobTitle: "Consultant Obstetrician & Gynaecologist",
+      url: "https://femhealthclinic.in/about",
+    },
+    publisher: {
+      "@type": "MedicalOrganization",
+      name: "FemHealth Clinic",
+      url: "https://femhealthclinic.in",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://femhealthclinic.in/logo-desktop.png",
+      },
+    },
+    image: post.cover_image
+      ? [
+          post.cover_image.startsWith("http")
+            ? post.cover_image
+            : `https://femhealthclinic.in${post.cover_image.startsWith("/") ? post.cover_image : `/${post.cover_image}`}`,
+        ]
+      : undefined,
+    keywords: post.tags?.join(", "),
+    mainEntityOfPage: `https://femhealthclinic.in/blog/${post.slug}`,
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#FEFCFD]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <Navbar />
 
       <main className="flex-1 pt-28 pb-20">
