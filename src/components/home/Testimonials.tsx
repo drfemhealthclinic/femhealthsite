@@ -245,9 +245,9 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section className="w-full bg-white border-y border-[#CFC3CC]/20 py-20 md:py-28 overflow-hidden relative">
+    <section className="w-full bg-white border-y border-[#CFC3CC]/20 py-12 md:py-28 overflow-hidden relative">
       {/* Header with Title & Manual Navigation Controls */}
-      <div className="max-w-7xl mx-auto px-5 md:px-12 mb-12">
+      <div className="max-w-7xl mx-auto px-5 md:px-12 mb-8 md:mb-12">
         <FadeIn direction="up">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 text-center md:text-left">

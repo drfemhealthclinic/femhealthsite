@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function WelcomeQuote() {
   return (
     <section className="bg-[#F9E4EA] border-y border-[#E898A8]/25 overflow-hidden">
-      <div className="px-5 md:px-12 py-16 md:py-24 max-w-4xl mx-auto text-center space-y-6">
+      <div className="px-5 md:px-12 py-10 md:py-24 max-w-4xl mx-auto text-center space-y-5">
         <motion.span
           initial={{ scale: 0.5, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 0.9 }}

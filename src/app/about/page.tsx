@@ -104,7 +104,7 @@ export default function AboutPage() {
 
       <main className="flex-grow bg-[#FEFCFD]">
         {/* PAGE HEADER */}
-        <section className="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-24 px-5 md:px-12 max-w-7xl mx-auto text-center">
+        <section className="relative overflow-hidden pt-10 pb-12 md:pt-16 md:pb-24 px-5 md:px-12 max-w-7xl mx-auto text-center">
           {/* Ambient background blurs */}
           <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#D4A0C0]/15 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
           <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-[#E898A8]/18 rounded-full blur-3xl translate-y-1/2 pointer-events-none" />
@@ -135,7 +135,7 @@ export default function AboutPage() {
         </section>
 
         {/* DOCTOR PROFILE SECTION */}
-        <section className="px-5 md:px-12 py-12 md:py-20 max-w-7xl mx-auto">
+        <section className="px-5 md:px-12 py-10 md:py-20 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left: Doctor Portrait Card */}
             <div className="md:col-span-5">
@@ -239,7 +239,7 @@ export default function AboutPage() {
         </section>
 
         {/* QUALIFICATIONS & ACCREDITATIONS */}
-        <section className="bg-[#F5F3F4] py-12 md:py-20 px-5 md:px-12 border-y border-[#CFC3CC]/30">
+        <section className="bg-[#F5F3F4] py-10 md:py-20 px-5 md:px-12 border-y border-[#CFC3CC]/30">
           <div className="max-w-7xl mx-auto">
             <FadeIn direction="up">
               <div className="text-center mb-10 md:mb-14 space-y-2 md:space-y-3">
@@ -489,7 +489,7 @@ export default function AboutPage() {
         </section>
 
         {/* OUR CLINIC INTERIOR SECTION */}
-        <section id="facilities" className="py-20 px-5 md:px-12 max-w-7xl mx-auto scroll-mt-24 space-y-8">
+        <section id="facilities" className="py-12 md:py-20 px-5 md:px-12 max-w-7xl mx-auto scroll-mt-24 space-y-6 md:space-y-8">
           <FadeIn direction="up">
             <div className="text-center mb-10 space-y-2">
               <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">
@@ -594,7 +594,7 @@ export default function AboutPage() {
         </section>
 
         {/* HYGIENE & SAFETY REASSURANCE */}
-        <section className="px-5 md:px-12 py-16 max-w-7xl mx-auto">
+        <section className="px-5 md:px-12 py-12 md:py-16 max-w-7xl mx-auto">
           <FadeIn direction="up">
             <div className="bg-white p-10 md:p-14 rounded-2xl organic-shadow border border-[#CFC3CC]/30 flex flex-col items-center text-center max-w-4xl mx-auto">
               <div className="w-16 h-16 bg-[#F3EEF5] rounded-full flex items-center justify-center text-[#D46789] mb-4">
@@ -616,7 +616,7 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#4E3953] text-white py-20 px-5 md:px-12 text-center">
+        <section className="bg-[#4E3953] text-white py-12 md:py-20 px-5 md:px-12 text-center">
           <FadeIn direction="up">
             <div className="max-w-2xl mx-auto space-y-6">
               <h2 className="text-3xl md:text-4xl font-serif-display font-semibold">

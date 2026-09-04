@@ -254,7 +254,7 @@ export default function EditPostPage() {
   /* ── Loading & Not Found states ────────── */
   if (loading) {
     return (
-      <div className="py-24 text-center space-y-3">
+      <div className="py-12 text-center space-y-3">
         <div className="w-8 h-8 border-3 border-[#7B5A7E] border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-xs text-[#878787] uppercase tracking-wider font-semibold">
           Loading article…
@@ -265,7 +265,7 @@ export default function EditPostPage() {
 
   if (!post) {
     return (
-      <div className="bg-white p-8 rounded-3xl border border-[#CFC3CC]/40 text-center space-y-4 max-w-md mx-auto my-12">
+      <div className="bg-white p-6 rounded-3xl border border-[#CFC3CC]/40 text-center space-y-4 max-w-md mx-auto my-6">
         <h2 className="text-xl font-serif-display font-bold text-[#4E3953]">
           Article Not Found
         </h2>

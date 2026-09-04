@@ -129,7 +129,7 @@ export default function BlogIndexPage() {
     <div className="min-h-screen flex flex-col bg-[#FEFCFD]">
       <Navbar />
 
-      <main className="flex-1 pt-28 pb-20">
+      <main className="flex-1 pt-20 md:pt-28 pb-12 md:pb-20">
         {/* Hero Section */}
         <section className="px-5 md:px-12 py-12 md:py-16 max-w-7xl mx-auto text-center space-y-5">
           <FadeIn direction="up">
@@ -240,7 +240,7 @@ export default function BlogIndexPage() {
 
         {/* Featured Spotlight (Only if No Search Query and "All" category is selected) */}
         {!searchQuery && selectedCategory === "All" && featuredPost && (
-          <section className="px-5 md:px-12 max-w-7xl mx-auto mb-16">
+          <section className="px-5 md:px-12 max-w-7xl mx-auto mb-10 md:mb-16">
             <FadeIn direction="up">
               <Link href={`/blog/${featuredPost.slug}`} className="group block">
                 <div className="bg-white rounded-3xl overflow-hidden border border-[#CFC3CC]/50 organic-shadow hover:shadow-2xl hover:border-[#D46789]/40 transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-0">
@@ -355,7 +355,7 @@ export default function BlogIndexPage() {
           </div>
 
           {filteredPosts.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-[#CFC3CC]/30 p-8 space-y-4">
+            <div className="text-center py-12 md:py-20 bg-white rounded-2xl border border-[#CFC3CC]/30 p-8 space-y-4">
               <span className="material-symbols-outlined text-5xl text-[#C0A8C9]">
                 article_shortcut
               </span>

@@ -36,10 +36,10 @@ export default function Hero() {
       />
 
       {/* ── Main Hero Content ────────────────────────────────────── */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-12 pt-8 pb-14 md:pt-12 md:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-12 pt-8 pb-10 md:pt-12 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Headline & Clinical Actions (6 cols) */}
-          <div className="lg:col-span-6 space-y-8 md:space-y-10">
+          <div className="lg:col-span-6 space-y-6 md:space-y-10">
             {/* Doctor Name + Credentials */}
             <FadeIn direction="down" delay={0.1}>
               <div className="flex flex-wrap items-center gap-3 sm:gap-4">

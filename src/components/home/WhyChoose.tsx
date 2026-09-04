@@ -43,9 +43,9 @@ export default function WhyChoose() {
   };
 
   return (
-    <section className="px-5 md:px-12 py-20 md:py-28 max-w-7xl mx-auto bg-gradient-to-b from-[#FDFBFC] to-[#F7F3F5] rounded-3xl my-12">
+    <section className="px-5 md:px-12 py-12 md:py-28 max-w-7xl mx-auto bg-gradient-to-b from-[#FDFBFC] to-[#F7F3F5] rounded-3xl my-6 md:my-12">
       <FadeIn direction="up">
-        <div className="text-center mb-16 space-y-3">
+        <div className="text-center mb-8 md:mb-16 space-y-3">
           <span className="text-xs uppercase tracking-widest text-[#7B5A7E] font-bold">
             Our Patient Promise
           </span>

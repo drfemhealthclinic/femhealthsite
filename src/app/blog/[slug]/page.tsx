@@ -139,7 +139,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
       />
       <Navbar />
 
-      <main className="flex-1 pt-28 pb-20">
+      <main className="flex-1 pt-20 md:pt-28 pb-12 md:pb-20">
         <article className="max-w-4xl mx-auto px-5 md:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-[#878787] mb-8 font-medium">

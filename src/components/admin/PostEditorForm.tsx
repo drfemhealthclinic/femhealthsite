@@ -368,7 +368,7 @@ export default function PostEditorForm({
      RENDER
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   return (
-    <div className="max-w-3xl mx-auto space-y-5 pb-24">
+    <div className="max-w-3xl mx-auto space-y-5 pb-12">
       {/* ───── Sticky Top Bar ───── */}
       <div className="sticky top-2 z-30 bg-white/95 backdrop-blur-md px-5 py-3 rounded-2xl border border-[#CFC3CC]/40 shadow-lg shadow-[#7B5A7E]/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <Link

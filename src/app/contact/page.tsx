@@ -91,7 +91,7 @@ export default function ContactPage() {
 
       <main className="flex-grow bg-[#FEFCFD]">
         {/* PAGE HEADER */}
-        <section className="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-24 px-5 md:px-12 max-w-7xl mx-auto text-center">
+        <section className="relative overflow-hidden pt-10 pb-12 md:pt-16 md:pb-24 px-5 md:px-12 max-w-7xl mx-auto text-center">
           {/* Ambient background blurs */}
           <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#D4A0C0]/15 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
           <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-[#E898A8]/18 rounded-full blur-3xl translate-y-1/2 pointer-events-none" />
@@ -116,7 +116,7 @@ export default function ContactPage() {
         </section>
 
         {/* MAIN BENTO GRID */}
-        <section className="px-5 md:px-12 pb-24 max-w-7xl mx-auto">
+        <section className="px-5 md:px-12 pb-16 md:pb-24 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* LEFT COLUMN: CONTACT & BOOKING FORM */}
             <div className="md:col-span-7 flex flex-col gap-8">
@@ -532,7 +532,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="editorial-divider my-16"></div>
+          <div className="editorial-divider my-10 md:my-16"></div>
 
           {/* FIRST VISIT & EMERGENCY GUIDANCE */}
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">

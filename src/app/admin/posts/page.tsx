@@ -110,7 +110,7 @@ export default function AdminPostsPage() {
   }, [posts, selectedCategory, statusFilter, searchQuery]);
 
   return (
-    <div className="space-y-8 relative">
+    <div className="space-y-6 relative">
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -221,11 +221,11 @@ export default function AdminPostsPage() {
       {/* Posts Table */}
       <div className="bg-white rounded-3xl border border-[#CFC3CC]/40 organic-shadow overflow-hidden">
         {loading ? (
-          <div className="py-20 text-center text-xs text-[#878787]">
+          <div className="py-12 text-center text-xs text-[#878787]">
             Loading articles...
           </div>
         ) : filteredPosts.length === 0 ? (
-          <div className="py-20 text-center space-y-3 p-6">
+          <div className="py-12 text-center space-y-3 p-6">
             <span className="material-symbols-outlined text-4xl text-[#C0A8C9]">
               search_off
             </span>

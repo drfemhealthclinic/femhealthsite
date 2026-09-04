@@ -261,7 +261,7 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     onClick={(e) => handleMobileNavClick(e, link.href)}
-                    className={`block text-sm font-semibold uppercase tracking-wider py-2 transition-colors ${isActive ? "text-[#7B5A7E] font-bold" : "text-[#464647] hover:text-[#7B5A7E]"
+                    className={`block text-sm font-semibold uppercase tracking-wider py-3 transition-colors ${isActive ? "text-[#7B5A7E] font-bold" : "text-[#464647] hover:text-[#7B5A7E]"
                       }`}
                   >
                     {link.name}

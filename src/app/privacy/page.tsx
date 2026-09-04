@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
       <Navbar />
 
       <main className="flex-grow bg-[#FEFCFD]">
-        <section className="px-5 md:px-12 py-16 md:py-24 max-w-4xl mx-auto">
+        <section className="px-5 md:px-12 py-12 md:py-24 max-w-4xl mx-auto">
           <div className="space-y-10">
             <div className="space-y-3">
               <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">

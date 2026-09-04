@@ -6,9 +6,9 @@ import CustomVideoPlayer from "@/components/ui/CustomVideoPlayer";
 
 export default function DoctorTeaser() {
   return (
-    <section id="clinic-tour" className="px-4 sm:px-8 md:px-12 py-16 md:py-24 max-w-7xl mx-auto my-12 scroll-mt-24">
+    <section id="clinic-tour" className="px-4 sm:px-8 md:px-12 py-10 md:py-24 max-w-7xl mx-auto my-6 md:my-12 scroll-mt-24">
       <FadeIn direction="up">
-        <div className="bg-[#F9F5F6] rounded-3xl p-5 sm:p-8 md:p-12 border border-[#CFC3CC]/30 overflow-hidden space-y-8 md:space-y-10">
+        <div className="bg-[#F9F5F6] rounded-3xl p-5 sm:p-8 md:p-12 border border-[#CFC3CC]/30 overflow-hidden space-y-6 md:space-y-10">
           {/* Header Row: Title & Verbatim Bio */}
           <div className="max-w-4xl space-y-3">
             <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold block">

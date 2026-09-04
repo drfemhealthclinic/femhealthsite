@@ -35,9 +35,9 @@ export default function PatientEducation() {
   }, []);
 
   return (
-    <section className="px-5 md:px-12 py-20 md:py-28 max-w-7xl mx-auto">
+    <section className="px-5 md:px-12 py-12 md:py-28 max-w-7xl mx-auto">
       <FadeIn direction="up">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-6">
           <div className="space-y-3">
             <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">
               Learn &amp; Empower

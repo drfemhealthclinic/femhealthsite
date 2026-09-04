@@ -38,7 +38,7 @@ export default function FloatingContact() {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col-reverse items-end gap-3">
+    <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 sm:right-6 z-50 flex flex-col-reverse items-end gap-3">
       {actions.map((action) => (
         <div key={action.id} className="relative flex items-center">
           {/* Tooltip */}
@@ -65,7 +65,7 @@ export default function FloatingContact() {
             onMouseLeave={() => setShowTooltip(null)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className={`w-14 h-14 rounded-full ${action.bg} ${action.hoverBg} text-white flex items-center justify-center shadow-lg ${action.shadow} transition-colors duration-200`}
+            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full ${action.bg} ${action.hoverBg} text-white flex items-center justify-center shadow-lg ${action.shadow} transition-colors duration-200`}
             aria-label={action.label}
           >
             {action.icon ? (

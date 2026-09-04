@@ -226,7 +226,7 @@ export default function ServicesShowcase() {
       <div className="px-5 md:px-12 max-w-7xl mx-auto">
         {/* Section Header */}
         <FadeIn direction="up">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 md:pb-8 border-b border-[#CFC3CC]/30 mb-8 md:mb-16">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 md:pb-8 border-b border-[#CFC3CC]/30 mb-6 md:mb-16">
             <div className="space-y-2 md:space-y-3">
               <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold block">
                 Clinical Offerings
@@ -242,7 +242,7 @@ export default function ServicesShowcase() {
         </FadeIn>
 
         {/* MOBILE INTERACTIVE SWIPE CAROUSEL (lg:hidden) */}
-        <div className="lg:hidden space-y-4">
+        <div className="lg:hidden space-y-3">
           {/* Scrollable Category Pills / Synced Top Headings */}
           <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 -mx-5 px-5">
             {CLINICAL_SERVICES.map((service, idx) => (
@@ -267,7 +267,7 @@ export default function ServicesShowcase() {
           <div
             ref={mobileCarouselRef}
             onScroll={handleMobileScroll}
-            className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-5 px-5 pb-2 gap-4"
+            className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-5 px-5 pb-2 gap-3"
           >
             {CLINICAL_SERVICES.map((service, idx) => (
               <div
@@ -275,7 +275,7 @@ export default function ServicesShowcase() {
                 ref={(el) => {
                   cardRefs.current[idx] = el;
                 }}
-                className="w-[85vw] sm:w-[70vw] shrink-0 snap-center flex flex-col bg-[#FAF7F8] rounded-3xl p-5 sm:p-6 border border-[#CFC3CC]/30 space-y-4"
+                className="w-[85vw] sm:w-[70vw] shrink-0 snap-center flex flex-col bg-[#FAF7F8] rounded-3xl p-4 sm:p-6 border border-[#CFC3CC]/30 space-y-3"
               >
                 {/* Service Title - Fixed at the top of each card so it slides in perfect sync */}
                 <div>
