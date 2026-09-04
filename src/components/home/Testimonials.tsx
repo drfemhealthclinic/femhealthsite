@@ -78,6 +78,7 @@ export default function Testimonials() {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const isPausedRef = useRef(false);
+  const touchActiveRef = useRef(false);
   const [isPaused, setIsPaused] = useState(false);
   const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const oneSetWidthRef = useRef(0);
@@ -87,25 +88,55 @@ export default function Testimonials() {
     isPausedRef.current = isPaused;
   }, [isPaused]);
 
-  // Temporarily pause auto-scroll during user interaction, resumes after 4s
+  // Temporarily pause auto-scroll during user interaction, resumes after 4.5s
   const triggerUserPause = () => {
     setIsPaused(true);
     if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     resumeTimeoutRef.current = setTimeout(() => {
-      setIsPaused(false);
+      if (!touchActiveRef.current) {
+        setIsPaused(false);
+      }
     }, 4500);
   };
 
-  // Measure one complete set of stories for precise loop reset
+  const handleTouchStart = () => {
+    touchActiveRef.current = true;
+    setIsPaused(true);
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+  };
+
+  const handleTouchEnd = () => {
+    touchActiveRef.current = false;
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resumeTimeoutRef.current = setTimeout(() => {
+      if (!touchActiveRef.current) {
+        setIsPaused(false);
+      }
+    }, 4500);
+  };
+
+  // Measure one complete set of stories precisely and initialize middle runway
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el || el.children.length === 0) return;
-    const firstCard = el.children[0] as HTMLElement;
-    const gap = parseFloat(getComputedStyle(el).gap) || 0;
-    oneSetWidthRef.current = firstCard.offsetWidth * stories.length + gap * (stories.length - 1);
+    const measureAndInit = () => {
+      const el = scrollRef.current;
+      if (!el || el.children.length <= stories.length) return;
+      const cards = Array.from(el.children) as HTMLElement[];
+      const setWidth = cards[stories.length].offsetLeft - cards[0].offsetLeft;
+      if (setWidth > 0) {
+        oneSetWidthRef.current = setWidth;
+        // Start in middle set so left arrow has immediate runway
+        if (el.scrollLeft === 0) {
+          el.scrollLeft = setWidth;
+        }
+      }
+    };
+
+    measureAndInit();
+    window.addEventListener("resize", measureAndInit);
+    return () => window.removeEventListener("resize", measureAndInit);
   }, []);
 
-  // Continuous auto-scroll loop — runs once, reads isPausedRef.current each frame
+  // Continuous auto-scroll loop — runs smoothly without CSS scroll-behavior conflict
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -114,10 +145,10 @@ export default function Testimonials() {
 
     const step = () => {
       if (!isPausedRef.current && !selectedStory && el) {
-        el.scrollLeft += 0.8;
-        const resetPoint = oneSetWidthRef.current;
-        if (resetPoint > 0 && el.scrollLeft >= resetPoint) {
-          el.scrollLeft -= resetPoint;
+        el.scrollLeft += 0.75;
+        const setWidth = oneSetWidthRef.current;
+        if (setWidth > 0 && el.scrollLeft >= setWidth * 2) {
+          el.scrollLeft -= setWidth;
         }
       }
       animationFrameId = requestAnimationFrame(step);
@@ -130,23 +161,64 @@ export default function Testimonials() {
     };
   }, [selectedStory]);
 
-  // Manual next/prev scroll handler
+  // Manual next/prev scroll handler — brings the review EXACTLY centered on phone & desktop
   const handleManualScroll = (direction: "left" | "right") => {
     triggerUserPause();
     const el = scrollRef.current;
     if (!el) return;
 
-    const cardWidth = el.clientWidth < 640 ? 320 : 390;
+    const cards = Array.from(el.children) as HTMLElement[];
+    if (cards.length === 0) return;
 
-    // Wrap around gracefully if scrolling left at the boundary
-    if (direction === "left" && el.scrollLeft <= 20 && oneSetWidthRef.current > 0) {
-      el.scrollLeft += oneSetWidthRef.current;
+    const containerWidth = el.clientWidth;
+    const currentScroll = el.scrollLeft;
+    const currentCenter = currentScroll + containerWidth / 2;
+    const threshold = 15;
+    const setWidth = oneSetWidthRef.current;
+
+    let targetCard: HTMLElement | null = null;
+
+    if (direction === "right") {
+      // Find first card whose center is ahead of current viewport center
+      for (const card of cards) {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        if (cardCenter > currentCenter + threshold) {
+          targetCard = card;
+          break;
+        }
+      }
+    } else {
+      // Find last card whose center is behind current viewport center
+      for (let i = cards.length - 1; i >= 0; i--) {
+        const card = cards[i];
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        if (cardCenter < currentCenter - threshold) {
+          targetCard = card;
+          break;
+        }
+      }
     }
 
-    el.scrollBy({
-      left: direction === "left" ? -cardWidth : cardWidth,
-      behavior: "smooth",
-    });
+    if (targetCard) {
+      const cardCenter = targetCard.offsetLeft + targetCard.offsetWidth / 2;
+      let targetScroll = cardCenter - containerWidth / 2;
+
+      // Infinite loop wrap-around protection:
+      if (setWidth > 0) {
+        if (targetScroll < setWidth * 0.5) {
+          el.scrollLeft += setWidth;
+          targetScroll += setWidth;
+        } else if (targetScroll > setWidth * 2.5) {
+          el.scrollLeft -= setWidth;
+          targetScroll -= setWidth;
+        }
+      }
+
+      el.scrollTo({
+        left: Math.max(0, targetScroll),
+        behavior: "smooth",
+      });
+    }
   };
 
   // Lock body scroll when modal is open
@@ -227,9 +299,11 @@ export default function Testimonials() {
           ref={scrollRef}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={triggerUserPause}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
           onWheel={triggerUserPause}
-          className="flex gap-6 sm:gap-8 overflow-x-auto scroll-smooth py-4 px-6 md:px-12 focus:outline-hidden select-none cursor-grab active:cursor-grabbing"
+          className="flex gap-6 sm:gap-8 overflow-x-auto py-4 px-6 md:px-12 focus:outline-hidden select-none cursor-grab active:cursor-grabbing"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
