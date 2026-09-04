@@ -40,7 +40,7 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     indexStr: "02",
     category: "Minimally Invasive Surgery",
     title: "Minimally Invasive / Laparoscopic Surgery",
-    image: "/idk.jpg",
+    image: "/laparoscopic-surgery.jpg",
     imageAlt: "Advanced Laparoscopic Gynaecological Surgery Suite",
     points: [
       "Keyhole Surgeries for Faster Recovery & Minimal Pain",
