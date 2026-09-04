@@ -60,8 +60,7 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     indexStr: "03",
     category: "Maternal & Fetal Care",
     title: "Comprehensive Obstetrics (Maternity Care)",
-    image:
-      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop",
+    image: "/maternity-care.jpg",
     imageAlt: "Compassionate Maternity Care and Antenatal Guidance",
     points: [
       "Pre-conception Counseling & Health Optimization",
@@ -78,7 +77,7 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     indexStr: "04",
     category: "Women's Wellness",
     title: "General & Preventive Gynaecology",
-    image: "/preventive.jpg",
+    image: "/preventive-gynaecology.jpg",
     imageAlt: "Women's Preventive Healthcare and Hormonal Wellness",
     points: [
       "Treatment for Abnormal Uterine Bleeding (AUB) & Irregular Cycles",
