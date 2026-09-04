@@ -97,7 +97,7 @@ export default function FinalCTA() {
             <div className="w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/3] rounded-2xl overflow-hidden border border-[#C0A8C9]/30 relative shadow-2xl shadow-[#4E3953]/50 group">
               {/* Google Maps Embed */}
               <iframe
-                title="FemHealth Clinic Hinjewadi Location Map"
+                title="FemHealth Clinic Hinjawadi Location Map"
                 src={CLINIC.mapEmbedSrc}
                 width="100%"
                 height="100%"
@@ -112,7 +112,7 @@ export default function FinalCTA() {
               <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 bg-[#4E3953]/90 backdrop-blur-md p-3 sm:p-4 rounded-xl border border-[#C0A8C9]/30 text-white z-10 flex items-center justify-between gap-3 shadow-xl">
                 <div>
                   <p className="font-serif-display text-sm sm:text-base font-semibold text-white">
-                    FemHealth Clinic Hinjewadi
+                    FemHealth Clinic Hinjawadi
                   </p>
                   <p className="text-[11px] sm:text-xs text-[#C0A8C9] mt-0.5">
                     {CLINIC.addressShort}, Pune - 411057

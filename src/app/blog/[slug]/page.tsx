@@ -93,13 +93,38 @@ export default async function BlogDetailPage({ params }: PageProps) {
     },
     image: post.cover_image
       ? [
-          post.cover_image.startsWith("http")
-            ? post.cover_image
-            : `https://femhealthclinic.in${post.cover_image.startsWith("/") ? post.cover_image : `/${post.cover_image}`}`,
-        ]
+        post.cover_image.startsWith("http")
+          ? post.cover_image
+          : `https://femhealthclinic.in${post.cover_image.startsWith("/") ? post.cover_image : `/${post.cover_image}`}`,
+      ]
       : undefined,
     keywords: post.tags?.join(", "),
     mainEntityOfPage: `https://femhealthclinic.in/blog/${post.slug}`,
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://femhealthclinic.in",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: "https://femhealthclinic.in/blog",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `https://femhealthclinic.in/blog/${post.slug}`,
+      },
+    ],
   };
 
   return (
@@ -107,6 +132,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Navbar />
 
@@ -258,7 +287,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                   MBBS, MS OBGY (MUHS Rank 15), FMAS, DNB OBGY
                 </p>
                 <p className="text-sm text-[#464647] font-light leading-relaxed">
-                  Consultant Obstetrician, Gynaecologist, Laparoscopic Surgeon, and Infertility Specialist dedicated to evidence-based, compassionate care for women in Hinjewadi and Pune.
+                  Consultant Obstetrician, Gynaecologist, Laparoscopic Surgeon, and Infertility Specialist dedicated to evidence-based, compassionate care for women in Hinjawadi and Pune.
                 </p>
                 <div className="pt-2">
                   <Link
@@ -280,7 +309,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 Need Clinical Advice for this Condition?
               </h3>
               <p className="text-sm text-[#FDFBFC]/90 font-light">
-                Consult with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjewadi.
+                Consult with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjawadi.
               </p>
             </div>
             <Link

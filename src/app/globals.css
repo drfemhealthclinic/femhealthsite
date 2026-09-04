@@ -108,23 +108,3 @@ h3,
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out;
 }
-
-/* Infinite Marquee for Testimonials / Reviews */
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 40s linear infinite;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
-}

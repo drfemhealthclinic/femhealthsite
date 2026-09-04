@@ -45,7 +45,7 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <Image
               src="/logo-footer.png"
-              alt="FemHealth Clinic"
+              alt="FemHealth Clinic – Gynecologist and Obstetrician in Hinjawadi Pune"
               width={150}
               height={150}
               style={{ height: "auto" }}

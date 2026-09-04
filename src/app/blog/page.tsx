@@ -93,14 +93,14 @@ export default function BlogIndexPage() {
       const matchesCategory =
         selectedCategory === "All" ||
         (post.category || "").trim().toLowerCase() ===
-          selectedCategory.trim().toLowerCase();
+        selectedCategory.trim().toLowerCase();
 
       const rawQ = searchQuery.toLowerCase().trim();
       if (!rawQ) return matchesCategory;
 
       const qClean = rawQ.replace(/^#/, "").trim();
       const tags = Array.isArray(post.tags) ? post.tags : [];
-      
+
       // Check exact query or clean query against all key fields including full body content
       const searchBlob = [
         post.title || "",
@@ -184,11 +184,10 @@ export default function BlogIndexPage() {
                       key={cat}
                       type="button"
                       onClick={() => handleSelectCategory(cat)}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer ${
-                        isSelected
+                      className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer ${isSelected
                           ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20 scale-105"
                           : "bg-white border border-[#CFC3CC]/50 text-[#464647] hover:border-[#7B5A7E] hover:text-[#7B5A7E]"
-                      }`}
+                        }`}
                     >
                       {cat}
                     </button>
@@ -507,7 +506,7 @@ export default function BlogIndexPage() {
                   Have questions about your specific condition?
                 </h3>
                 <p className="text-sm md:text-base text-[#FDFBFC]/90 font-light leading-relaxed">
-                  Book a confidential, one-on-one consultation with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjewadi or partner hospitals.
+                  Book a confidential, one-on-one consultation with Dr. Pooja Wadgaonkar Patil at FemHealth Clinic Hinjawadi or partner hospitals.
                 </p>
               </div>
 

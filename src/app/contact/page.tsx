@@ -17,6 +17,7 @@ export default function ContactPage() {
     notes: "",
   });
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
+  const [copied, setCopied] = useState(false);
 
   const validate = () => {
     const errs: { name?: string; phone?: string } = {};
@@ -32,6 +33,22 @@ export default function ContactPage() {
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
+  };
+
+  const openMailto = (mailtoUrl: string) => {
+    // Robust mail-client launch — append anchor to DOM before clicking
+    // (bare a.click() without append is ignored in most browsers,
+    // and window.location.href causes blank navigation on some setups)
+    try {
+      const a = document.createElement("a");
+      a.href = mailtoUrl;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch {
+      window.location.href = mailtoUrl;
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -56,14 +73,8 @@ export default function ContactPage() {
 
     const mailtoUrl = `${CLINIC.emailHref}?subject=${subject}&body=${body}`;
 
-    // Pure openmail client launch — no server SMTP / nodemailer
-    try {
-      window.location.href = mailtoUrl;
-    } catch {
-      const a = document.createElement("a");
-      a.href = mailtoUrl;
-      a.click();
-    }
+    // Pure mail client launch — no server SMTP / nodemailer
+    openMailto(mailtoUrl);
 
     setFormSubmitted(true);
   };
@@ -178,7 +189,10 @@ export default function ContactPage() {
                         Appointment Email Prepared
                       </h3>
                       <p className="text-sm text-[#464647] max-w-md mx-auto font-light leading-relaxed">
-                        Your appointment request has been drafted in your device&apos;s email app addressed directly to <strong>{CLINIC.email}</strong>. Simply tap <strong>Send</strong> to deliver it.
+                        Your details are ready — tap below to open your mail app
+                        with everything pre-filled for <strong>{CLINIC.email}</strong>.
+                        Then just hit <strong>Send</strong>. No mail app? Use copy
+                        or WhatsApp instead.
                       </p>
 
                       <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -192,10 +206,14 @@ export default function ContactPage() {
                             "Notes:",
                             formData.notes.trim() || "None",
                           ].join("\n"))}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            openMailto(e.currentTarget.href);
+                          }}
                           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#7B5A7E] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#4E3953] transition-colors shadow-sm"
                         >
                           <span className="material-symbols-outlined text-base">mail</span>
-                          <span>Re-open Email App</span>
+                          <span>Open Mail App</span>
                         </a>
 
                         <a
@@ -206,6 +224,34 @@ export default function ContactPage() {
                         >
                           <span>Send via WhatsApp</span>
                         </a>
+
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const text = [
+                              `Patient Name: ${formData.name.trim()}`,
+                              `Contact Phone: ${formData.phone.trim()}`,
+                              `Preferred Date: ${formData.date || "Flexible / Not specified"}`,
+                              `Service: ${formData.service || "General Consultation"}`,
+                              "",
+                              "Notes:",
+                              formData.notes.trim() || "None",
+                            ].join("\n");
+                            try {
+                              await navigator.clipboard.writeText(text);
+                              setCopied(true);
+                              setTimeout(() => setCopied(false), 2000);
+                            } catch {
+                              setCopied(false);
+                            }
+                          }}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-[#CFC3CC]/60 text-[#464647] text-xs font-semibold uppercase tracking-wider hover:border-[#7B5A7E] hover:text-[#7B5A7E] transition-colors cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-base">
+                            {copied ? "check" : "content_copy"}
+                          </span>
+                          <span>{copied ? "Copied!" : "Copy Details"}</span>
+                        </button>
                       </div>
 
                       <div className="pt-2">
@@ -258,7 +304,7 @@ export default function ContactPage() {
                               if (errors.phone) setErrors({ ...errors, phone: undefined });
                             }}
                             className={`medical-input ${errors.phone ? "border-red-400 focus:border-red-500" : ""}`}
-                            placeholder="+91 92723 79105"
+                            placeholder="92723 79105"
                             type="tel"
                           />
                           {errors.phone && (
@@ -325,7 +371,7 @@ export default function ContactPage() {
                           <span className="material-symbols-outlined text-sm">mail</span>
                           <span>Send Appointment Request via Email</span>
                         </motion.button>
-                        
+
                         <p className="text-[11px] text-[#878787] text-center font-light">
                           Directly opens your device&apos;s email client with pre-filled details addressed to {CLINIC.email}.
                         </p>

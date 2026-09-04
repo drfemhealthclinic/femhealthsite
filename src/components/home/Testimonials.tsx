@@ -77,8 +77,15 @@ const marqueeStories = [...stories, ...stories, ...stories, ...stories];
 export default function Testimonials() {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isPausedRef = useRef(false);
   const [isPaused, setIsPaused] = useState(false);
   const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const oneSetWidthRef = useRef(0);
+
+  // Sync state to ref so rAF loop reads latest without re-creating
+  useEffect(() => {
+    isPausedRef.current = isPaused;
+  }, [isPaused]);
 
   // Temporarily pause auto-scroll during user interaction, resumes after 4s
   const triggerUserPause = () => {
@@ -89,7 +96,16 @@ export default function Testimonials() {
     }, 4500);
   };
 
-  // Continuous auto-scroll loop
+  // Measure one complete set of stories for precise loop reset
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || el.children.length === 0) return;
+    const firstCard = el.children[0] as HTMLElement;
+    const gap = parseFloat(getComputedStyle(el).gap) || 0;
+    oneSetWidthRef.current = firstCard.offsetWidth * stories.length + gap * (stories.length - 1);
+  }, []);
+
+  // Continuous auto-scroll loop — runs once, reads isPausedRef.current each frame
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -97,11 +113,11 @@ export default function Testimonials() {
     let animationFrameId: number;
 
     const step = () => {
-      if (!isPaused && !selectedStory && el) {
+      if (!isPausedRef.current && !selectedStory && el) {
         el.scrollLeft += 0.8;
-        const halfWidth = el.scrollWidth / 2;
-        if (el.scrollLeft >= halfWidth) {
-          el.scrollLeft -= halfWidth;
+        const resetPoint = oneSetWidthRef.current;
+        if (resetPoint > 0 && el.scrollLeft >= resetPoint) {
+          el.scrollLeft -= resetPoint;
         }
       }
       animationFrameId = requestAnimationFrame(step);
@@ -112,7 +128,7 @@ export default function Testimonials() {
       cancelAnimationFrame(animationFrameId);
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     };
-  }, [isPaused, selectedStory]);
+  }, [selectedStory]);
 
   // Manual next/prev scroll handler
   const handleManualScroll = (direction: "left" | "right") => {
@@ -123,8 +139,8 @@ export default function Testimonials() {
     const cardWidth = el.clientWidth < 640 ? 320 : 390;
 
     // Wrap around gracefully if scrolling left at the boundary
-    if (direction === "left" && el.scrollLeft <= 20) {
-      el.scrollLeft = el.scrollWidth / 2;
+    if (direction === "left" && el.scrollLeft <= 20 && oneSetWidthRef.current > 0) {
+      el.scrollLeft += oneSetWidthRef.current;
     }
 
     el.scrollBy({
@@ -217,6 +233,7 @@ export default function Testimonials() {
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            willChange: "scroll-position",
           }}
         >
           {marqueeStories.map((story, idx) => (

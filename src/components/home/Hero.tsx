@@ -92,7 +92,7 @@ export default function Hero() {
               <FadeIn direction="up" delay={0.3}>
                 <p className="text-lg md:text-xl text-[#464647] max-w-lg leading-relaxed font-light">
                   Advanced Maternity, Gynaecological Care, Minimal Access
-                  Laparoscopic Surgery &amp; Complete Infertility Solutions in Hinjewadi, Pune.
+                  Laparoscopic Surgery &amp; Complete Infertility Solutions in Hinjawadi, Pune.
                 </p>
               </FadeIn>
 
@@ -193,7 +193,7 @@ export default function Hero() {
                 >
                   <Image
                     src="/dr-pooja-wadgaonkar-patil-gynaecologist-pune.jpeg"
-                    alt="Dr. Pooja Wadgaonkar Patil - Leading Consultant Gynaecologist and Obstetrician in Hinjewadi Pune"
+                    alt="Dr. Pooja Wadgaonkar Patil - Leading Consultant Gynaecologist and Obstetrician in Hinjawadi Pune"
                     fill
                     className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
                     sizes="(max-width: 1024px) 100vw, 50vw"

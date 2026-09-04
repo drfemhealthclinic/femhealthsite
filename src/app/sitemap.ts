@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/supabase";
 import { FALLBACK_POSTS } from "@/lib/blog-fallback";
 
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://femhealthclinic.in";
   const now = new Date();

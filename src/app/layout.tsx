@@ -21,34 +21,18 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   metadataBase: new URL("https://femhealthclinic.in"),
   title: {
-    default: "FemHealth Clinic | Dr. Pooja Wadgaonkar Patil - Gynecologist & Obstetrician in Pune",
+    default: "Dr. Pooja Patil – Gynecologist in Hinjawadi, Pune | FemHealth",
     template: "%s | FemHealth Clinic",
   },
   description:
-    "FemHealth Clinic in Hinjawadi (Hinjewadi), Pune, led by Dr. Pooja Wadgaonkar Patil (MBBS, MS OBGY, FMAS, DNB). Specializing in High-Risk Pregnancy, Laparoscopic Surgery, Infertility Solutions, and Comprehensive Gynaecological Care.",
+    "FemHealth Clinic in Hinjawadi, Pune by Dr. Pooja Patil – high-risk pregnancy, PCOS, infertility & laparoscopic surgery. Call +91 92723 79105.",
   keywords: [
     "Dr Pooja Wadgaonkar Patil",
-    "Dr Pooja Wadgaonkar",
-    "Dr Pooja Patil",
-    "FemHealth Clinic",
     "Gynecologist in Hinjawadi Pune",
-    "Gynecologist in Hinjewadi Pune",
-    "Best Gynecologist in Pune",
-    "Best Gynecologist in Hinjawadi",
-    "Best Gynecologist in Hinjewadi",
-    "Obstetrician Hinjawadi Pune",
-    "Obstetrician Hinjewadi Pune",
     "Obstetrician Pune",
-    "Maternity Hospital Hinjawadi",
-    "Maternity Hospital Hinjewadi",
-    "Laparoscopic Surgeon Pune",
-    "Infertility Specialist Hinjawadi",
-    "Infertility Specialist Hinjewadi",
     "High Risk Pregnancy Doctor Pune",
     "PCOS Treatment Pune",
-    "Endometriosis Specialist Pune",
-    "Female Gynecologist near me",
-    "VJ Happiness Street Clinic",
+    "Infertility Specialist Hinjawadi",
   ],
   alternates: {
     canonical: "/",
@@ -194,6 +178,53 @@ const clinicJsonLd = {
   ],
 };
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Who is the best gynecologist in Hinjawadi / Hinjewadi, Pune?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Dr. Pooja Wadgaonkar Patil (MBBS, MS OBGY, FMAS, DNB) is a Consultant Obstetrician, Gynaecologist and Laparoscopic Surgeon at FemHealth Clinic, located at VJ Happiness Street, Hinjawadi (Hinjewadi) Phase 2, Pune.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do you treat PCOS, PCOD and hormonal disorders?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. FemHealth Clinic offers evidence-based PCOS and PCOD management including hormonal assessment, lifestyle guidance and fertility support.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do you manage high-risk pregnancies?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Dr. Pooja Wadgaonkar Patil provides comprehensive antenatal care and high-risk pregnancy management including gestational diabetes, hypertension and multiple gestations.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do you offer infertility evaluation and treatment?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Comprehensive fertility evaluation, ovulation induction, follicular monitoring and personalised conception plans are offered at FemHealth Clinic.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How do I book an appointment at FemHealth Clinic Hinjawadi / Hinjewadi?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Call or WhatsApp +91 92723 79105, or use the Request an Appointment form on our website. Clinic timings are Monday to Saturday: 10:30 AM – 2:00 PM and 4:00 PM – 8:30 PM, at Shop No. 85, 1st Floor, VJ Happiness Street, Hinjawadi Phase 2 Road, Pune 411057.",
+      },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -209,6 +240,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(clinicJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </head>
       <body className="min-h-screen flex flex-col bg-[#fefcfd] text-[#1b1c1c] antialiased">

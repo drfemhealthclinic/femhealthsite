@@ -12,7 +12,7 @@ const HIGHLIGHTS = [
     desc: "Complete Pregnancy & High-Risk Maternity Care",
     icon: "pregnant_woman",
     image: "/IMG_4214.PNG",
-    imageAlt: "Obstetrics - Complete Pregnancy & High-Risk Maternity Care",
+    imageAlt: "Obstetrics and high-risk pregnancy care by Dr. Pooja Wadgaonkar Patil in Hinjawadi Pune",
   },
   {
     num: "02",
@@ -20,7 +20,7 @@ const HIGHLIGHTS = [
     desc: "Scarless, Fast-Recovery Surgical Solutions",
     icon: "healing",
     image: "/IMG_4215.JPG",
-    imageAlt: "Laparoscopy - Scarless, Fast-Recovery Surgical Solutions",
+    imageAlt: "Laparoscopic minimally invasive gynaecological surgery by Dr. Pooja Patil Hinjewadi Pune",
   },
   {
     num: "03",
@@ -28,7 +28,7 @@ const HIGHLIGHTS = [
     desc: "Personalised Conception Plans & Fertility Enhancement",
     icon: "family_restroom",
     image: "/infertility.webp",
-    imageAlt: "Infertility - Personalised Conception Plans & Fertility Enhancement",
+    imageAlt: "Infertility evaluation and personalised conception care by Dr. Pooja Patil Hinjawadi Pune",
   },
   {
     num: "04",
@@ -36,7 +36,7 @@ const HIGHLIGHTS = [
     desc: "Routine Gynaecological Check-ups & Cancer Screenings",
     icon: "health_and_safety",
     image: "/preventive.jpg",
-    imageAlt: "Preventive Care - Routine Gynaecological Check-ups & Cancer Screenings",
+    imageAlt: "Preventive gynaecology checkups and cancer screening by Dr. Pooja Patil Hinjewadi Pune",
   },
   {
     num: "05",
@@ -44,7 +44,7 @@ const HIGHLIGHTS = [
     desc: "Holistic, sustainable care for PCOS, hormonal balance, and metabolic health",
     icon: "spa",
     image: "/IMG_4219.JPG",
-    imageAlt: "Lifestyle and Endocrine Disorders Management",
+    imageAlt: "PCOS and hormonal endocrine disorder management by Dr. Pooja Patil Hinjawadi Pune",
   },
 ];
 

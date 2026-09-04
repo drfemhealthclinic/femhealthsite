@@ -12,15 +12,15 @@ import CustomVideoPlayer from "@/components/ui/CustomVideoPlayer";
 const CLINIC_PHOTOS = [
   {
     src: "/clinic photos/ac449978-74ee-4ae5-b1f4-370ea05317c3.jpg",
-    alt: "FemHealth Clinic Consultation Suite",
+    alt: "FemHealth Clinic consultation suite in Hinjawadi Pune",
   },
   {
     src: "/clinic photos/42087fee-1ef6-48ce-8e05-f55be982726f.jpg",
-    alt: "FemHealth Clinic Interior Care Area",
+    alt: "FemHealth Clinic interior care area Hinjawadi Pune",
   },
   {
     src: "/clinic photos/8e129c12-ce4b-458e-a3b6-231ffa20694b.jpg",
-    alt: "FemHealth Clinic Reception Setup",
+    alt: "FemHealth Clinic reception at VJ Happiness Street Hinjawadi",
   },
 ];
 

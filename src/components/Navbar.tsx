@@ -179,7 +179,7 @@ export default function Navbar() {
             >
               <Image
                 src="/logo-desktop.png"
-                alt="FemHealth Clinic"
+                alt="FemHealth Clinic – Dr. Pooja Patil, Gynecologist in Hinjawadi Pune"
                 width={180}
                 height={55}
                 priority

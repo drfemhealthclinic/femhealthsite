@@ -43,7 +43,7 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     title: "Minimally Invasive / Laparoscopic Surgery",
     image: "/laparoscopic-surgery.jpg",
     imageAlt:
-      "Advanced Laparoscopic Gynaecological Surgery and Minimal Access Procedures by Dr. Pooja Wadgaonkar Patil Hinjewadi",
+      "Advanced Laparoscopic Gynaecological Surgery and Minimal Access Procedures by Dr. Pooja Wadgaonkar Patil Hinjawadi",
     points: [
       "Keyhole Surgeries for Faster Recovery & Minimal Pain",
       "Laparoscopic Hysterectomy (Uterus Removal)",
@@ -64,7 +64,7 @@ const CLINICAL_SERVICES: ClinicalService[] = [
     title: "Comprehensive Obstetrics (Maternity Care)",
     image: "/maternity-care.jpg",
     imageAlt:
-      "Comprehensive Obstetrics, Maternity Care and Antenatal Guidance at FemHealth Clinic Hinjewadi Pune",
+      "Comprehensive Obstetrics, Maternity Care and Antenatal Guidance at FemHealth Clinic Hinjawadi Pune",
     points: [
       "Pre-conception Counseling & Health Optimization",
       "Antenatal (Pregnancy) Care & Routine Screenings",
@@ -253,11 +253,10 @@ export default function ServicesShowcase() {
                 }}
                 type="button"
                 onClick={() => scrollToService(idx)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                  activeTab === idx
+                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${activeTab === idx
                     ? "bg-[#7B5A7E] text-white shadow-md shadow-[#7B5A7E]/20"
                     : "bg-[#F3EEF5] text-[#4E3953] hover:bg-[#EBDDE5]"
-                }`}
+                  }`}
               >
                 {service.title}
               </button>
@@ -370,17 +369,15 @@ export default function ServicesShowcase() {
               <FadeIn key={service.title} direction="up">
                 <div
                   id={`clinical-service-${idx}`}
-                  className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center scroll-mt-32 ${
-                    idx !== CLINICAL_SERVICES.length - 1
+                  className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center scroll-mt-32 ${idx !== CLINICAL_SERVICES.length - 1
                       ? "pb-16 md:pb-24 border-b border-[#CFC3CC]/25"
                       : ""
-                  }`}
+                    }`}
                 >
                   {/* Photo Column */}
                   <div
-                    className={`lg:col-span-5 ${
-                      isEven ? "lg:order-2" : "lg:order-1"
-                    }`}
+                    className={`lg:col-span-5 ${isEven ? "lg:order-2" : "lg:order-1"
+                      }`}
                   >
                     <motion.div
                       whileHover={{ scale: 1.015 }}
@@ -399,9 +396,8 @@ export default function ServicesShowcase() {
 
                   {/* Content Column: Category, Heading & Full Keypoints */}
                   <div
-                    className={`lg:col-span-7 space-y-6 ${
-                      isEven ? "lg:order-1" : "lg:order-2"
-                    }`}
+                    className={`lg:col-span-7 space-y-6 ${isEven ? "lg:order-1" : "lg:order-2"
+                      }`}
                   >
                     <div className="space-y-2">
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-serif-display font-semibold text-[#4E3953] leading-snug">
