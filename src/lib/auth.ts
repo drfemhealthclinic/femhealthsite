@@ -9,66 +9,50 @@ const LOCAL_AUTH_KEY = "femhealth_admin_session";
 
 /**
  * Sign in as admin with email and password
+ * Authenticates directly with Supabase Auth to ensure cryptographic credential verification.
  */
 export async function signInAdmin(
   email: string,
   password: string
 ): Promise<{ success: boolean; error?: string }> {
-  // If Supabase is active, try Supabase Auth first
+  // If Supabase is active, strictly enforce Supabase Auth
   if (isSupabaseConfigured && supabase) {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
         password,
       });
 
-      if (!error) {
-        return { success: true };
+      if (error) {
+        return { success: false, error: error.message };
       }
-      
-      // If error is not a demo fallback case, allow admin credentials fallback below
-      console.warn("Supabase auth notice:", error.message);
-    } catch (err: unknown) {
-      console.warn("Supabase auth exception:", err);
-    }
-  }
 
-  // Local development / demo fallback mode
-  // Accepts standard clinic admin email with password
-  if (
-    email.toLowerCase().trim() === "femhealthclinic@gmail.com" ||
-    email.toLowerCase().trim() === "admin@femhealthclinic.in" ||
-    email.toLowerCase().trim() === "doctor@femhealthclinic.in"
-  ) {
-    if (password.length >= 6) {
+      if (!data.user) {
+        return {
+          success: false,
+          error: "Authentication failed. No user found.",
+        };
+      }
+
+      // Clear any legacy mock session keys
       if (typeof window !== "undefined") {
-        sessionStorage.setItem(
-          LOCAL_AUTH_KEY,
-          JSON.stringify({ email, role: "admin", loggedInAt: Date.now() })
-        );
+        sessionStorage.removeItem(LOCAL_AUTH_KEY);
+        localStorage.removeItem(LOCAL_AUTH_KEY);
       }
+
       return { success: true };
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Authentication failed.";
+      return { success: false, error: message };
     }
-    return {
-      success: false,
-      error: "Password must be at least 6 characters.",
-    };
   }
 
-  // If testing with any clinic email in local mode
-  if (email.includes("@") && password.length >= 6) {
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem(
-        LOCAL_AUTH_KEY,
-        JSON.stringify({ email, role: "admin", loggedInAt: Date.now() })
-      );
-    }
-    return { success: true };
-  }
-
+  // If Supabase is NOT configured, reject login attempt
   return {
     success: false,
-    error: "Invalid email or password. Please check your credentials.",
+    error:
+      "Authentication service is not configured. Please check your Supabase configuration.",
   };
 }
 
@@ -96,30 +80,21 @@ export async function signOutAdmin(): Promise<void> {
 export async function checkAdminSession(): Promise<AdminUser | null> {
   if (isSupabaseConfigured && supabase) {
     try {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user?.email) {
-        return {
-          email: data.user.email,
-          role: "admin",
-        };
-      }
-    } catch (e) {
-      console.error("Session check error:", e);
-    }
-  }
-
-  if (typeof window !== "undefined") {
-    const raw = sessionStorage.getItem(LOCAL_AUTH_KEY);
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw);
-        return {
-          email: parsed.email || "femhealthclinic@gmail.com",
-          role: "admin",
-        };
-      } catch {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data?.user?.email) {
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem(LOCAL_AUTH_KEY);
+        }
         return null;
       }
+
+      return {
+        email: data.user.email,
+        role: "admin",
+      };
+    } catch (e) {
+      console.error("Session check error:", e);
+      return null;
     }
   }
 

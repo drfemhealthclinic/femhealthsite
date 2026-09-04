@@ -46,13 +46,8 @@ CREATE POLICY "Admins have full access to all posts"
   USING (true) 
   WITH CHECK (true);
 
--- Allow anon public key full CRUD access for admin operations
-CREATE POLICY "Allow anon CRUD for posts" 
-  ON public.posts
-  FOR ALL 
-  TO anon 
-  USING (true) 
-  WITH CHECK (true);
+-- Ensure anon access does not allow write operations
+DROP POLICY IF EXISTS "Allow anon CRUD for posts" ON public.posts;
 
 -- 3. Automatic updated_at timestamp trigger
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
