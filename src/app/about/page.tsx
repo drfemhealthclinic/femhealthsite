@@ -489,9 +489,9 @@ export default function AboutPage() {
         </section>
 
         {/* OUR CLINIC INTERIOR SECTION */}
-        <section id="facilities" className="py-12 md:py-20 px-5 md:px-12 max-w-7xl mx-auto scroll-mt-24 space-y-6 md:space-y-8">
+        <section id="facilities" className="py-12 md:py-20 px-0 sm:px-5 md:px-12 max-w-7xl mx-auto scroll-mt-24 space-y-6 md:space-y-8">
           <FadeIn direction="up">
-            <div className="text-center mb-10 space-y-2">
+            <div className="text-center mb-10 space-y-2 px-5 sm:px-0">
               <span className="text-xs uppercase tracking-widest text-[#D46789] font-bold">
                 A Calm &amp; Welcoming Space
               </span>
@@ -511,11 +511,12 @@ export default function AboutPage() {
                 loop={true}
                 showCenterPlayButton={false}
                 aspectRatioClass="aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9]"
+                className="rounded-none sm:rounded-3xl border-y sm:border border-[#CFC3CC]/40 shadow-none sm:shadow-2xl sm:shadow-[#7B5A7E]/10"
               />
             </FadeIn>
 
             {/* 3 Photos with Left/Right Navigation Arrows (Arrows on Mobile only) */}
-            <div className="relative group/gallery">
+            <div className="relative group/gallery px-5 sm:px-0">
               {/* Left Arrow Button (Mobile/Tablet only) */}
               <button
                 type="button"

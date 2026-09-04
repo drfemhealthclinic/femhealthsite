@@ -204,9 +204,11 @@ export default function CustomVideoPlayer({
       onMouseMove={isMobile ? undefined : handleMouseMove}
       onMouseLeave={isMobile ? undefined : handleMouseLeave}
       onClick={isMobile ? undefined : togglePlay}
-      className={`relative w-full overflow-hidden rounded-3xl bg-black border border-[#CFC3CC]/40 shadow-2xl shadow-[#7B5A7E]/10 select-none group ${
+      className={`relative w-full overflow-hidden bg-black select-none group ${
         isMobile ? "" : "cursor-pointer"
-      } ${aspectRatioClass} ${className}`}
+      } ${aspectRatioClass} ${
+        className ? className : "rounded-none sm:rounded-3xl border-y sm:border border-[#CFC3CC]/40 sm:shadow-2xl sm:shadow-[#7B5A7E]/10"
+      }`}
     >
       {/* Video Element */}
       <video
