@@ -15,6 +15,7 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [adminEmail, setAdminEmail] = useState<string>("");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const isLoginPage = pathname === "/admin/login";
@@ -37,6 +38,7 @@ export default function AdminLayout({
           setIsAuthenticated(false);
           router.replace("/admin/login");
         } else {
+          setAdminEmail(session.email);
           setIsAuthenticated(true);
         }
       } catch {
@@ -172,10 +174,10 @@ export default function AdminLayout({
             </div>
             <div className="overflow-hidden">
               <p className="text-xs font-bold text-[#4E3953] truncate">
-                Dr. Pooja Wadgaonkar
+                Dr. Pooja Wadgaonkar Patil
               </p>
               <p className="text-[10px] text-[#878787] truncate">
-                Clinic Administrator
+                {adminEmail || "Clinic Administrator"}
               </p>
             </div>
           </div>

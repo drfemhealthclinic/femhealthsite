@@ -244,7 +244,6 @@ export default function AdminPostsPage() {
                   <th className="py-4 px-6">Article</th>
                   <th className="py-4 px-4">Category</th>
                   <th className="py-4 px-4">Status &amp; Toggle</th>
-                  <th className="py-4 px-4">Views</th>
                   <th className="py-4 px-4">Date</th>
                   <th className="py-4 px-6 text-right">Actions</th>
                 </tr>
@@ -324,10 +323,7 @@ export default function AdminPostsPage() {
                       </div>
                     </td>
 
-                    {/* Views */}
-                    <td className="py-4 px-4 text-[#878787] whitespace-nowrap font-medium">
-                      {post.views_count || 0}
-                    </td>
+
 
                     {/* Date */}
                     <td className="py-4 px-4 text-[#878787] whitespace-nowrap">

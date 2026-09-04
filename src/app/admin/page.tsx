@@ -27,7 +27,6 @@ export default function AdminDashboardPage() {
   const totalPosts = posts.length;
   const publishedPosts = posts.filter((p) => p.published).length;
   const draftPosts = posts.filter((p) => !p.published).length;
-  const totalViews = posts.reduce((sum, p) => sum + (p.views_count || 0), 0);
 
   const stats = [
     {
@@ -50,13 +49,6 @@ export default function AdminDashboardPage() {
       icon: "edit_note",
       color: "text-[#E65100]",
       bg: "bg-[#FFF3E0]",
-    },
-    {
-      title: "Estimated Patient Views",
-      value: totalViews.toLocaleString(),
-      icon: "visibility",
-      color: "text-[#0288D1]",
-      bg: "bg-[#E1F5FE]",
     },
   ];
 
@@ -88,7 +80,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {stats.map((stat, i) => (
           <motion.div
             key={stat.title}
