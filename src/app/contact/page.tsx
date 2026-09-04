@@ -164,7 +164,7 @@ export default function ContactPage() {
               {/* BOOKING FORM CARD */}
               <FadeIn direction="up" delay={0.1}>
                 <div
-                  className="bg-white p-8 md:p-10 organic-shadow rounded-2xl border border-[#CFC3CC]/30 scroll-mt-24"
+                  className="bg-white p-6 sm:p-8 md:p-10 organic-shadow rounded-2xl sm:rounded-3xl border border-[#CFC3CC]/30 scroll-mt-24"
                   id="book"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -361,19 +361,19 @@ export default function ContactPage() {
                         />
                       </div>
 
-                      <div className="space-y-3">
+                      <div className="space-y-3 pt-2">
                         <motion.button
                           whileHover={{ scale: 1.01 }}
-                          whileTap={{ scale: 0.99 }}
+                          whileTap={{ scale: 0.98 }}
                           type="submit"
-                          className="w-full bg-[#7B5A7E] text-white py-4 rounded-xl text-xs font-semibold uppercase tracking-widest hover:bg-[#4E3953] transition-colors organic-shadow cursor-pointer flex items-center justify-center gap-2"
+                          className="w-full bg-[#7B5A7E] text-white py-3.5 sm:py-4 px-5 sm:px-6 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider hover:bg-[#4E3953] active:bg-[#3D2B41] transition-all organic-shadow cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-[#7B5A7E]/20"
                         >
-                          <span className="material-symbols-outlined text-sm">mail</span>
-                          <span>Send Appointment Request via Email</span>
+                          <span className="material-symbols-outlined text-lg shrink-0">calendar_month</span>
+                          <span>Send Appointment Request</span>
                         </motion.button>
 
-                        <p className="text-[11px] text-[#878787] text-center font-light">
-                          Directly opens your device&apos;s email client with pre-filled details addressed to {CLINIC.email}.
+                        <p className="text-[11px] sm:text-xs text-[#878787] text-center font-light leading-relaxed">
+                          Opens your mail app with pre-filled details addressed to {CLINIC.email}.
                         </p>
                       </div>
                     </form>
